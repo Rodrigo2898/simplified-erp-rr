@@ -1,6 +1,6 @@
-# 🚀 ERP Simplificado - Microservices com Spring Boot
+# ERP Simplificado - Microservices com Spring Boot
 
-## 📌 Descrição
+## Descrição
 Este projeto é um **ERP Simplificado** para pequenas empresas, permitindo o gerenciamento de clientes, fornecedores, produtos, pedidos e pagamentos em uma arquitetura de microservices.
 
 ## 🛠️ Tecnologias
@@ -17,20 +17,20 @@ Este projeto é um **ERP Simplificado** para pequenas empresas, permitindo o ger
 📌 **Serviços principais:**
 1. **API Gateway** → Entrada única para os serviços
 2. **Autenticação** → Keycloak para segurança JWT
-3. **Pessoa (Clientes e Fornecedores)* → PostgreSQL para armazenar dados estruturados
+3. **Pessoas (Clientes e Fornecedores)** → PostgreSQL para armazenar dados estruturados
 4. **Produtos (Cadastro e controle de estoque)** → PostgreSQL para cadastros e controle de estoque
 5. **Pedidos** → MongoDB para flexibilidade e escalabilidade
 6. **Pagamentos** → MongoDB para armazenar transações financeiras
 7. **Notificações** → Kafka/RabbitMQ para eventos assíncronos
 8. **Relatórios** → OpenSearch + Grafana para monitoramento
 
-## 🚀 Roadmap de Desenvolvimento - Inicio previsto dia 20/02/2025
+## � Roadmap de Desenvolvimento - Inicio previsto dia 20/02/2025
 
 ### 🔥 Sprint 1 - Base do Projeto
 ✅ Criar o **API Gateway** com Spring Cloud Gateway
 ✅ Configurar **Keycloak** para autenticação e autorização
-✅ Criar o serviço de **Clientes e Fornecedores** com CRUD básico (PostgreSQL)
-✅ Criar o serviço de **Produtos e Estoque** (PostgreSQL)
+✅ Criar o serviço de **Pessoas** com CRUD básico (PostgreSQL)
+✅ Criar o serviço de **Produtos** (PostgreSQL)
 
 ### 🔥 Sprint 2 - Processamento de Pedidos
 ✅ Criar o serviço de **Pedidos** com MongoDB
@@ -47,6 +47,4 @@ Este projeto é um **ERP Simplificado** para pequenas empresas, permitindo o ger
 ✅ Criar painéis de métricas com **Grafana + Prometheus**
 ✅ Monitoramento de eventos e falhas em serviços
 
-
 Esse README pode ser expandido conforme o projeto evolui. 🚀
-
