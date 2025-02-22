@@ -1,4 +1,4 @@
-package com.ms.rr.pessoa_service.domain.endereco;
+package com.ms.rr.pessoa_service.domain.model;
 
 public class Endereco {
 

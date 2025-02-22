@@ -1,6 +1,4 @@
-package com.ms.rr.pessoa_service.domain.pessoa;
-
-import com.ms.rr.pessoa_service.domain.endereco.Endereco;
+package com.ms.rr.pessoa_service.domain.model;
 
 import java.time.LocalDate;
 import java.util.List;
