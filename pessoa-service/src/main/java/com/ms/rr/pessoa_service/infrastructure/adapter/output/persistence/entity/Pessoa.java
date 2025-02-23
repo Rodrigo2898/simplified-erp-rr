@@ -1,6 +1,6 @@
-package com.ms.rr.pessoa_service.infrastructure.db.model;
+package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity;
 
-import com.ms.rr.pessoa_service.infrastructure.db.model.enums.TipoPessoa;
+import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity.enums.TipoPessoa;
 import jakarta.persistence.*;
 
 import java.util.List;

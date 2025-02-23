@@ -1,4 +1,4 @@
-package com.ms.rr.pessoa_service.infrastructure.db.model;
+package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity;
 
 import jakarta.persistence.*;
 
