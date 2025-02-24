@@ -6,9 +6,10 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public interface BaseRepository<Entity extends Pessoa, ID extends Serializable> {
+public interface PessoaRepository<Entity extends Pessoa, ID extends Serializable> {
 
     void save(Entity entity);
     Optional<Entity> findById(ID id);
     List<Entity> findAll();
+    void deleteById(ID id);
 }
