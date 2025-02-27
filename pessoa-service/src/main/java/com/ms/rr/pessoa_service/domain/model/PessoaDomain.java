@@ -2,17 +2,17 @@ package com.ms.rr.pessoa_service.domain.model;
 
 import java.util.List;
 
-public abstract class Pessoa {
+public abstract class PessoaDomain {
 
     protected Long id;
     protected String nome;
     protected String email;
     protected String telefone;
     protected TipoPessoa tipoPessoa;
-    protected List<Endereco> enderecos;
+    protected List<EnderecoDomain> enderecos;
 
-    public Pessoa(Long id, String nome, String email, String telefone,
-                  TipoPessoa tipoPessoa, List<Endereco> enderecos) {
+    public PessoaDomain(Long id, String nome, String email, String telefone,
+                        TipoPessoa tipoPessoa, List<EnderecoDomain> enderecos) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -61,11 +61,11 @@ public abstract class Pessoa {
         this.tipoPessoa = tipoPessoa;
     }
 
-    public List<Endereco> getEnderecos() {
+    public List<EnderecoDomain> getEnderecos() {
         return enderecos;
     }
 
-    public void setEnderecos(List<Endereco> enderecos) {
+    public void setEnderecos(List<EnderecoDomain> enderecos) {
         this.enderecos = enderecos;
     }
 }

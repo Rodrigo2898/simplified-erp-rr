@@ -1,6 +1,8 @@
 package com.ms.rr.pessoa_service.domain.model;
 
-public class Endereco {
+import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity.Endereco;
+
+public class EnderecoDomain {
 
     private Long id;
     private String rua;
@@ -9,7 +11,7 @@ public class Endereco {
     private String cep;
     private Long pessoaId;
 
-    public Endereco(Long id, String rua, String cidade, String estado, String cep, Long pessoaId) {
+    public EnderecoDomain(Long id, String rua, String cidade, String estado, String cep, Long pessoaId) {
         this.id = id;
         this.rua = rua;
         this.cidade = cidade;
@@ -65,4 +67,5 @@ public class Endereco {
     public void setPessoaId(Long pessoaId) {
         this.pessoaId = pessoaId;
     }
+
 }

@@ -1,6 +1,6 @@
 package com.ms.rr.pessoa_service.application.dto.out;
 
-import com.ms.rr.pessoa_service.domain.model.Endereco;
+import com.ms.rr.pessoa_service.domain.model.EnderecoDomain;
 import com.ms.rr.pessoa_service.domain.model.TipoPessoa;
 
 import java.time.LocalDate;
@@ -13,5 +13,5 @@ public record ClienteResponse(Long id,
                               TipoPessoa tipoPessoa,
                               String cpf,
                               LocalDate dataCadastro,
-                              List<Endereco> enderecos) {
+                              List<EnderecoDomain> enderecos) {
 }
