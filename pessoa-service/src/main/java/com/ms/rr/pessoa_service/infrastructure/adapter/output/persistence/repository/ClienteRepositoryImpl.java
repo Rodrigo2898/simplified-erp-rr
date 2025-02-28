@@ -22,8 +22,10 @@ public class ClienteRepositoryImpl implements ClienteOutputPort {
     }
 
     @Override
-    public Optional<ClienteDomain> findById(Long aLong) {
-        return Optional.empty();
+    public Optional<ClienteDomain> findById(Long id) {
+        var cliente = entityManager.find(Cliente.class, id);
+        return Optional.ofNullable(cliente)
+                .map(Cliente::toDomain);
     }
 
     @Override
@@ -33,11 +35,19 @@ public class ClienteRepositoryImpl implements ClienteOutputPort {
 
     @Override
     public List<ClienteDomain> findAll() {
-        return List.of();
+        List<Cliente> clientes = entityManager
+                .createQuery("SELECT c FROM Cliente c", Cliente.class)
+                .getResultList();
+        return clientes.stream()
+                .map(Cliente::toDomain)
+                .toList();
     }
 
     @Override
-    public void deleteById(Long aLong) {
-
+    public void delete(ClienteDomain domain) {
+        var entity = entityManager.find(Cliente.class, domain.getId());
+        if (entity != null) {
+            entityManager.remove(entity);
+        }
     }
 }

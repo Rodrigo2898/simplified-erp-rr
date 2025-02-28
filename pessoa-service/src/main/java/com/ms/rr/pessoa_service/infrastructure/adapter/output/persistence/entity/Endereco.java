@@ -81,7 +81,6 @@ public class Endereco {
         this.pessoa = pessoa;
     }
 
-
     public static Endereco fromDomain(EnderecoDomain domain) {
         Endereco endereco = new Endereco();
 
@@ -91,5 +90,9 @@ public class Endereco {
         endereco.setEstado(domain.getEstado());
         endereco.setCep(domain.getCep());
         return endereco;
+    }
+
+    public EnderecoDomain toDomain() {
+        return new EnderecoDomain(id, rua, cidade, estado, cep);
     }
 }

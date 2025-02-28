@@ -18,11 +18,11 @@ public class FornecedorServiceImpl implements FornecedorUseCase {
 
     @Override
     public void salvar(CreateFornecedor pessoa) {
-
+        fornecedorOutputPort.save(pessoa.toDomain());
     }
 
     @Override
-    public Optional<FornecedorResponse> buscarPorId(Long aLong) {
+    public Optional<FornecedorResponse> buscarPorId(Long id) {
         return Optional.empty();
     }
 
@@ -32,7 +32,7 @@ public class FornecedorServiceImpl implements FornecedorUseCase {
     }
 
     @Override
-    public void excluir(Long aLong) {
+    public void excluir(Long id) {
 
     }
 }

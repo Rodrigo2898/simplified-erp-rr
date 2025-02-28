@@ -10,7 +10,7 @@ public class ClienteDomain extends PessoaDomain {
     private LocalDate dataCadastro;
 
 
-    public ClienteDomain(Long id, String nome, String email, String telefone, TipoPessoa tipoPessoa,
+    public ClienteDomain(Long id, String nome, String email, String telefone, TipoPessoaDomain tipoPessoa,
                          List<EnderecoDomain> enderecos, String cpf, LocalDate dataCadastro) {
         super(id, nome, email, telefone, tipoPessoa, enderecos);
         this.cpf = cpf;
@@ -33,7 +33,7 @@ public class ClienteDomain extends PessoaDomain {
         this.dataCadastro = dataCadastro;
     }
 
-    public static ClienteDomain create(String nome, String email, String telefone, TipoPessoa tipoPessoa,
+    public static ClienteDomain create(String nome, String email, String telefone, TipoPessoaDomain tipoPessoa,
                                        List<EnderecoDomain> enderecos, String cpf, LocalDate dataCadastro) {
         return new ClienteDomain(
                 new Random().nextLong(),

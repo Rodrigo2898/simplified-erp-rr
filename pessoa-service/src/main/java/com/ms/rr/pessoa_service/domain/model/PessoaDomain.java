@@ -8,11 +8,11 @@ public abstract class PessoaDomain {
     protected String nome;
     protected String email;
     protected String telefone;
-    protected TipoPessoa tipoPessoa;
+    protected TipoPessoaDomain tipoPessoa;
     protected List<EnderecoDomain> enderecos;
 
     public PessoaDomain(Long id, String nome, String email, String telefone,
-                        TipoPessoa tipoPessoa, List<EnderecoDomain> enderecos) {
+                        TipoPessoaDomain tipoPessoa, List<EnderecoDomain> enderecos) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -53,11 +53,11 @@ public abstract class PessoaDomain {
         this.telefone = telefone;
     }
 
-    public TipoPessoa getTipoPessoa() {
+    public TipoPessoaDomain getTipoPessoa() {
         return tipoPessoa;
     }
 
-    public void setTipoPessoa(TipoPessoa tipoPessoa) {
+    public void setTipoPessoa(TipoPessoaDomain tipoPessoa) {
         this.tipoPessoa = tipoPessoa;
     }
 
@@ -68,4 +68,5 @@ public abstract class PessoaDomain {
     public void setEnderecos(List<EnderecoDomain> enderecos) {
         this.enderecos = enderecos;
     }
+
 }

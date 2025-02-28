@@ -9,15 +9,16 @@ public class EnderecoDomain {
     private String cidade;
     private String estado;
     private String cep;
-    private Long pessoaId;
 
-    public EnderecoDomain(Long id, String rua, String cidade, String estado, String cep, Long pessoaId) {
+    public EnderecoDomain() {
+    }
+
+    public EnderecoDomain(Long id, String rua, String cidade, String estado, String cep) {
         this.id = id;
         this.rua = rua;
         this.cidade = cidade;
         this.estado = estado;
         this.cep = cep;
-        this.pessoaId = pessoaId;
     }
 
     public Long getId() {
@@ -59,13 +60,4 @@ public class EnderecoDomain {
     public void setCep(String cep) {
         this.cep = cep;
     }
-
-    public Long getPessoaId() {
-        return pessoaId;
-    }
-
-    public void setPessoaId(Long pessoaId) {
-        this.pessoaId = pessoaId;
-    }
-
 }

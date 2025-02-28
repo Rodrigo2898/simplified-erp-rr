@@ -1,6 +1,6 @@
 package com.ms.rr.pessoa_service.domain.model;
 
-public enum TipoPessoa {
+public enum TipoPessoaDomain {
     CLIENTE,
     FORNECEDOR;
 }

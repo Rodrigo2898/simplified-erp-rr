@@ -22,8 +22,10 @@ public class FornecedorRepositoryImpl implements FornecedorOutputPort {
     }
 
     @Override
-    public Optional<FornecedorDomain> findById(Long aLong) {
-        return Optional.empty();
+    public Optional<FornecedorDomain> findById(Long id) {
+        var fornecedor = entityManager.find(Fornecedor.class, id);
+        return Optional.ofNullable(fornecedor)
+                .map(Fornecedor::toDomain);
     }
 
     @Override
@@ -33,11 +35,19 @@ public class FornecedorRepositoryImpl implements FornecedorOutputPort {
 
     @Override
     public List<FornecedorDomain> findAll() {
-        return List.of();
+        List<Fornecedor> fornecedores = entityManager
+                .createQuery("SELECT f FROM Fornecedor f", Fornecedor.class)
+                .getResultList();
+        return fornecedores.stream()
+                .map(Fornecedor::toDomain)
+                .toList();
     }
 
     @Override
-    public void deleteById(Long aLong) {
-
+    public void delete(FornecedorDomain domain) {
+        var entity = entityManager.find(Fornecedor.class, domain.getId());
+        if (entity != null) {
+            entityManager.remove(entity);
+        }
     }
 }

@@ -9,7 +9,15 @@ import java.util.Optional;
 public interface PessoaOutputPort<Entity extends PessoaDomain, ID extends Serializable> {
 
     void save(Entity entity);
+
     Optional<Entity> findById(ID id);
+
     List<Entity> findAll();
-    void deleteById(ID id);
+
+    void delete(Entity entity);
+
+    default void deleteById(ID id) {
+        Entity entity = findById(id).orElseThrow();
+        delete(entity);
+    }
 }

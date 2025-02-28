@@ -2,7 +2,7 @@ package com.ms.rr.pessoa_service.application.dto.in;
 
 import com.ms.rr.pessoa_service.domain.model.ClienteDomain;
 import com.ms.rr.pessoa_service.domain.model.EnderecoDomain;
-import com.ms.rr.pessoa_service.domain.model.TipoPessoa;
+import com.ms.rr.pessoa_service.domain.model.TipoPessoaDomain;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 public record CreateCliente(String nome,
                             String email,
                             String telefone,
-                            TipoPessoa tipoPessoa,
+                            TipoPessoaDomain tipoPessoa,
                             List<EnderecoDomain> enderecos,
                             String cpf,
                             LocalDate dataCadastro) {

@@ -1,6 +1,7 @@
 package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity;
 
 import com.ms.rr.pessoa_service.domain.model.EnderecoDomain;
+import com.ms.rr.pessoa_service.domain.model.TipoPessoaDomain;
 import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity.enums.TipoPessoa;
 import jakarta.persistence.*;
 
@@ -80,7 +81,7 @@ public abstract class Pessoa {
         return enderecos;
     }
 
-    protected static TipoPessoa getTipoFromDomain(com.ms.rr.pessoa_service.domain.model.TipoPessoa tipoPessoa) {
+    protected static TipoPessoa getTipoFromDomain(TipoPessoaDomain tipoPessoa) {
         return switch (tipoPessoa) {
             case CLIENTE -> TipoPessoa.CLIENTE;
             case FORNECEDOR -> TipoPessoa.FORNECEDOR;

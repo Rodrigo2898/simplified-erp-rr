@@ -1,15 +1,11 @@
 package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity;
 
 import com.ms.rr.pessoa_service.domain.model.ClienteDomain;
-import com.ms.rr.pessoa_service.domain.model.EnderecoDomain;
 import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity.enums.TipoPessoa;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @DiscriminatorValue("CLIENTE")
@@ -18,9 +14,11 @@ public class Cliente extends Pessoa {
     private LocalDate dataCadastro;
 
     public Cliente() {
+        this.setTipo(TipoPessoa.CLIENTE);
     }
 
     public Cliente(String cpf, LocalDate dataCadastro) {
+        this();
         this.cpf = cpf;
         this.dataCadastro = dataCadastro;
     }
@@ -48,10 +46,25 @@ public class Cliente extends Pessoa {
         entity.setNome(domain.getNome());
         entity.setEmail(domain.getEmail());
         entity.setTelefone(domain.getTelefone());
-        entity.setTipo(getTipoFromDomain(domain.getTipoPessoa()));
+        entity.setTipo(TipoPessoa.fromDomain(domain.getTipoPessoa()));
         entity.setEnderecos(getEnderecoFromDomain(domain.getEnderecos()));
         entity.setCpf(domain.getCpf());
         entity.setDataCadastro(domain.getDataCadastro());
         return entity;
     }
+
+    public ClienteDomain toDomain() {
+        return new ClienteDomain(
+                getId(),
+                getNome(),
+                getEmail(),
+                getTelefone(),
+                getTipo().toDomain(),
+                getEnderecos().stream()
+                        .map(Endereco::toDomain)
+                        .toList(),
+                getCpf(),
+                getDataCadastro());
+    }
+
 }
