@@ -1,8 +1,7 @@
 package com.ms.rr.pessoa_service.application.port.input;
 
-import com.ms.rr.pessoa_service.application.dto.in.CreateCliente;
-import com.ms.rr.pessoa_service.application.dto.out.ClienteResponse;
+import com.ms.rr.pessoa_service.domain.model.ClienteDomain;
 
-public interface ClienteUseCase extends PessoaUseCase<CreateCliente, ClienteResponse, Long> {
+public interface ClienteUseCase extends PessoaUseCase<ClienteDomain, Long> {
 
 }

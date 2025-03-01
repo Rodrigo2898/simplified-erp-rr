@@ -4,10 +4,13 @@ import com.ms.rr.pessoa_service.application.dto.in.CreateFornecedor;
 import com.ms.rr.pessoa_service.application.dto.out.FornecedorResponse;
 import com.ms.rr.pessoa_service.application.port.input.FornecedorUseCase;
 import com.ms.rr.pessoa_service.application.port.output.FornecedorOutputPort;
+import com.ms.rr.pessoa_service.domain.model.FornecedorDomain;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class FornecedorServiceImpl implements FornecedorUseCase {
 
     private final FornecedorOutputPort fornecedorOutputPort;
@@ -17,22 +20,22 @@ public class FornecedorServiceImpl implements FornecedorUseCase {
     }
 
     @Override
-    public void salvar(CreateFornecedor pessoa) {
-        fornecedorOutputPort.save(pessoa.toDomain());
+    public void salvar(FornecedorDomain pessoa) {
+        fornecedorOutputPort.save(pessoa);
     }
 
     @Override
-    public Optional<FornecedorResponse> buscarPorId(Long id) {
-        return Optional.empty();
+    public Optional<FornecedorDomain> buscarPorId(Long id) {
+        return Optional.of(fornecedorOutputPort.findById(id).orElseThrow());
     }
 
     @Override
-    public List<FornecedorResponse> buscarTodos() {
-        return List.of();
+    public List<FornecedorDomain> buscarTodos() {
+        return fornecedorOutputPort.findAll();
     }
 
     @Override
     public void excluir(Long id) {
-
+        fornecedorOutputPort.deleteById(id);
     }
 }

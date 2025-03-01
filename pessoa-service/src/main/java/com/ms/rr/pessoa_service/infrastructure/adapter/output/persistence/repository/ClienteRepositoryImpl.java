@@ -6,6 +6,7 @@ import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ public class ClienteRepositoryImpl implements ClienteOutputPort {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Transactional
     @Override
     public void save(ClienteDomain clienteDomain) {
         entityManager.persist(Cliente.fromDomain(clienteDomain));
@@ -43,6 +45,7 @@ public class ClienteRepositoryImpl implements ClienteOutputPort {
                 .toList();
     }
 
+    @Transactional
     @Override
     public void delete(ClienteDomain domain) {
         var entity = entityManager.find(Cliente.class, domain.getId());

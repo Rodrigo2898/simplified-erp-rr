@@ -1,13 +1,14 @@
 package com.ms.rr.pessoa_service.domain.service.impl;
 
-import com.ms.rr.pessoa_service.application.dto.in.CreateCliente;
-import com.ms.rr.pessoa_service.application.dto.out.ClienteResponse;
 import com.ms.rr.pessoa_service.application.port.input.ClienteUseCase;
 import com.ms.rr.pessoa_service.application.port.output.ClienteOutputPort;
+import com.ms.rr.pessoa_service.domain.model.ClienteDomain;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ClienteServiceImpl implements ClienteUseCase {
 
     private final ClienteOutputPort clienteOutputPort;
@@ -17,22 +18,22 @@ public class ClienteServiceImpl implements ClienteUseCase {
     }
 
     @Override
-    public void salvar(CreateCliente pessoa) {
-
+    public void salvar(ClienteDomain domain) {
+        clienteOutputPort.save(domain);
     }
 
     @Override
-    public Optional<ClienteResponse> buscarPorId(Long aLong) {
-        return Optional.empty();
+    public Optional<ClienteDomain> buscarPorId(Long id) {
+        return Optional.of(clienteOutputPort.findById(id).orElseThrow());
     }
 
     @Override
-    public List<ClienteResponse> buscarTodos() {
-        return List.of();
+    public List<ClienteDomain> buscarTodos() {
+        return clienteOutputPort.findAll();
     }
 
     @Override
-    public void excluir(Long aLong) {
-
+    public void excluir(Long id) {
+        clienteOutputPort.deleteById(id);
     }
 }
