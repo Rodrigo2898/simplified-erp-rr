@@ -1,7 +1,5 @@
 package com.ms.rr.pessoa_service.domain.service.impl;
 
-import com.ms.rr.pessoa_service.application.dto.in.CreateFornecedor;
-import com.ms.rr.pessoa_service.application.dto.out.FornecedorResponse;
 import com.ms.rr.pessoa_service.application.port.input.FornecedorUseCase;
 import com.ms.rr.pessoa_service.application.port.output.FornecedorOutputPort;
 import com.ms.rr.pessoa_service.domain.model.FornecedorDomain;

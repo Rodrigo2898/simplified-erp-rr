@@ -3,10 +3,12 @@ package com.ms.rr.pessoa_service.application.api;
 import com.ms.rr.pessoa_service.application.dto.in.CreateFornecedor;
 import com.ms.rr.pessoa_service.application.dto.out.FornecedorResponse;
 import com.ms.rr.pessoa_service.domain.service.impl.FornecedorServiceImpl;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class FornecedorApi implements BaseApi<CreateFornecedor, FornecedorResponse, Long> {
 
     private final FornecedorServiceImpl fornecedorService;
