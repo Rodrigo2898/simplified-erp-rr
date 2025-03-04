@@ -10,12 +10,11 @@ import java.util.List;
 public record CreateCliente(String nome,
                             String email,
                             String telefone,
-                            TipoPessoaDomain tipoPessoa,
                             List<EnderecoDomain> enderecos,
                             String cpf,
                             LocalDate dataCadastro) {
 
     public ClienteDomain toDomain() {
-        return ClienteDomain.create(nome, email, telefone, tipoPessoa, enderecos, cpf, dataCadastro);
+        return ClienteDomain.create(nome, email, telefone, TipoPessoaDomain.CLIENTE, enderecos, cpf, dataCadastro);
     }
 }

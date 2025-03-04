@@ -46,7 +46,7 @@ public class Cliente extends Pessoa {
         entity.setNome(domain.getNome());
         entity.setEmail(domain.getEmail());
         entity.setTelefone(domain.getTelefone());
-        entity.setTipo(TipoPessoa.fromDomain(domain.getTipoPessoa()));
+//        entity.setTipo(TipoPessoa.fromDomain(domain.getTipoPessoa()));
         entity.setEnderecos(getEnderecoFromDomain(domain.getEnderecos()));
         entity.setCpf(domain.getCpf());
         entity.setDataCadastro(domain.getDataCadastro());
