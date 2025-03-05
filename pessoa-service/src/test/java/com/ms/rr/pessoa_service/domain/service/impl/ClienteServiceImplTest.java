@@ -11,8 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,7 +30,6 @@ class ClienteServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        // ARRANGE
         cliente = CreateClienteDomainFactory.buildWithOneItem();
     }
 
@@ -81,11 +79,62 @@ class ClienteServiceImplTest {
             // ARRANGE
             when(clienteOutputPort.findById(cliente.getId())).thenReturn(Optional.empty());
 
-
             // ACT & ASSERT
             assertThrows(NoSuchElementException.class, () -> clienteService.buscarPorId(cliente.getId()));
 
             verify(clienteOutputPort).findById(cliente.getId());
+            verifyNoMoreInteractions(clienteOutputPort);
+        }
+    }
+
+    @Nested
+    class FindAllClientes {
+
+        @Test
+        void shouldReturnListOfClientes() {
+            // ARRANGE
+            List<ClienteDomain> clientes = List.of(cliente);
+            when(clienteOutputPort.findAll()).thenReturn(clientes);
+
+            // ACT
+            var resultado = clienteService.buscarTodos();
+
+            // ASSERT
+            assertFalse(resultado.isEmpty());
+            assertEquals(resultado, clientes);
+            assertEquals(resultado.size(), clientes.size());
+            verify(clienteOutputPort, times(1)).findAll();
+            verifyNoMoreInteractions(clienteOutputPort);
+        }
+
+        @Test
+        void shouldReturnEmptyListWhenListIsEmpty() {
+            // ARRANGE
+            when(clienteOutputPort.findAll()).thenReturn(List.of());
+
+            // ACT
+            var resultado = clienteService.buscarTodos();
+
+            assertTrue(resultado.isEmpty());
+            assertEquals(0, resultado.size());
+            verify(clienteOutputPort, times(1)).findAll();
+            verifyNoMoreInteractions(clienteOutputPort);
+        }
+    }
+
+    @Nested
+    class DeleteCliente {
+
+        @Test
+        void shouldCallDeleteClienteById() {
+            // ARRANGE
+            var clienteId = new Random().nextLong();
+
+            // ACT
+            clienteService.excluir(clienteId);
+
+            // ASSERT
+            verify(clienteOutputPort, times(1)).deleteById(clienteId);
             verifyNoMoreInteractions(clienteOutputPort);
         }
     }
