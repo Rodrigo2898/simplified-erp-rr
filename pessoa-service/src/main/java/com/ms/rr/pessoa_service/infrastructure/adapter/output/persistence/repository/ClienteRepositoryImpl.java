@@ -17,6 +17,13 @@ public class ClienteRepositoryImpl implements ClienteOutputPort {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public ClienteRepositoryImpl() {
+    }
+
+    public ClienteRepositoryImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     @Transactional
     @Override
     public void save(ClienteDomain clienteDomain) {

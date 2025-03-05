@@ -22,6 +22,7 @@ public abstract class Pessoa {
     protected String telefone;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_pessoa", insertable = false, updatable = false)
     protected TipoPessoa tipo;
 
     @OneToMany(mappedBy = "pessoa")
