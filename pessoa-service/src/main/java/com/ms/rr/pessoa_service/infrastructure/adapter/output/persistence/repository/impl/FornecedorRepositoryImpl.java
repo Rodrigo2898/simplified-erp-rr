@@ -1,4 +1,4 @@
-package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.repository;
+package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.repository.impl;
 
 import com.ms.rr.pessoa_service.application.port.output.FornecedorOutputPort;
 import com.ms.rr.pessoa_service.domain.model.FornecedorDomain;

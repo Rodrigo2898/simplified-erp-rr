@@ -2,25 +2,24 @@ package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.repos
 
 import com.ms.rr.pessoa_service.api.output.ClienteOutputPortTest;
 import com.ms.rr.pessoa_service.application.port.output.ClienteOutputPort;
-import com.ms.rr.pessoa_service.domain.model.ClienteDomain;
-import jakarta.persistence.EntityManager;
+import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.repository.impl.ClienteRepositoryImpl;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static org.junit.jupiter.api.Assertions.*;
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ComponentScan
-@DataJpaTest
+@SpringBootTest
 class ClienteRepositoryImplTest extends ClienteOutputPortTest {
 
     @Autowired
@@ -43,5 +42,10 @@ class ClienteRepositoryImplTest extends ClienteOutputPortTest {
     @Override
     public ClienteOutputPort getClienteOutputPort() {
         return clienteRepository;
+    }
+
+    @AfterAll
+    void stop() {
+        postgreSQLContainer.stop();
     }
 }

@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Transactional
+//@Transactional
 public abstract class ClienteOutputPortTest {
     public abstract ClienteOutputPort getClienteOutputPort();
 

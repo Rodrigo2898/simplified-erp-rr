@@ -23,6 +23,18 @@ public class CreateClienteDomainFactory {
                 LocalDate.parse("2025-01-08"));
     }
 
+    public static ClienteDomain buildWithOneItemNoId() {
+        return new ClienteDomain(
+                null,
+                "Goku",
+                "goku@gmail.com",
+                "999999999",
+                TipoPessoaDomain.CLIENTE,
+                createEndereos(),
+                "00000000001",
+                LocalDate.parse("2025-01-08"));
+    }
+
     private static List<EnderecoDomain> createEndereos() {
         EnderecoDomain enderecoDomain = new EnderecoDomain();
         enderecoDomain.setId(new Random().nextLong());
