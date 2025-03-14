@@ -12,9 +12,11 @@ public class Fornecedor extends Pessoa {
     private String razaoSocial;
 
     public Fornecedor() {
+        this.setTipo(TipoPessoa.FORNECEDOR);
     }
 
     public Fornecedor(String cnpj, String razaoSocial) {
+        this();
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
     }
@@ -41,7 +43,6 @@ public class Fornecedor extends Pessoa {
         entity.setNome(domain.getNome());
         entity.setEmail(domain.getEmail());
         entity.setTelefone(domain.getTelefone());
-//        entity.setTipo(TipoPessoa.fromDomain(domain.getTipoPessoa()));
         entity.setEnderecos(getEnderecoFromDomain(domain.getEnderecos()));
         entity.setCnpj(domain.getCnpj());
         entity.setRazaoSocial(domain.getRazaoSocial());

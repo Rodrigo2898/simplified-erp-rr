@@ -16,8 +16,8 @@ public class Endereco {
     private String estado;
     private String cep;
 
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-    @JoinColumn(name = "pessoa_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "pessoa_id", referencedColumnName = "id")
     private Pessoa pessoa;
 
     public Endereco() {
@@ -84,11 +84,12 @@ public class Endereco {
     public static Endereco fromDomain(EnderecoDomain domain) {
         Endereco endereco = new Endereco();
 
-        endereco.setId(domain.getId());
+//        endereco.setId(domain.getId());
         endereco.setRua(domain.getRua());
         endereco.setCidade(domain.getCidade());
         endereco.setEstado(domain.getEstado());
         endereco.setCep(domain.getCep());
+        endereco.setPessoa(endereco.pessoa);
         return endereco;
     }
 

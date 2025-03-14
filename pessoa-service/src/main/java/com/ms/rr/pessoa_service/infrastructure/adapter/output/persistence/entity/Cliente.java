@@ -42,12 +42,12 @@ public class Cliente extends Pessoa {
     public static Cliente fromDomain(ClienteDomain domain) {
         Cliente entity = new Cliente();
 
-        entity.setId(domain.getId());
+//        entity.setId(domain.getId());
         entity.setNome(domain.getNome());
         entity.setEmail(domain.getEmail());
         entity.setTelefone(domain.getTelefone());
 //        entity.setTipo(TipoPessoa.fromDomain(domain.getTipoPessoa()));
-        entity.setEnderecos(getEnderecoFromDomain(domain.getEnderecos()));
+        entity.setEnderecos(domain.getEnderecos().stream().map(Endereco::fromDomain).toList());
         entity.setCpf(domain.getCpf());
         entity.setDataCadastro(domain.getDataCadastro());
         return entity;

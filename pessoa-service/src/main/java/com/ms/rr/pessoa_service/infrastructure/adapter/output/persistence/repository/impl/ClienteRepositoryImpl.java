@@ -6,6 +6,7 @@ import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity
 import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.repository.ClienteRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +21,10 @@ public class ClienteRepositoryImpl implements ClienteOutputPort {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public ClienteRepositoryImpl(ClienteRepository clienteRepository) {
+    public ClienteRepositoryImpl(@Lazy ClienteRepository clienteRepository) {
         this.clienteRepository = clienteRepository;
     }
 
-    @Transactional
     @Override
     public void save(ClienteDomain clienteDomain) {
         clienteRepository.save(Cliente.fromDomain(clienteDomain));

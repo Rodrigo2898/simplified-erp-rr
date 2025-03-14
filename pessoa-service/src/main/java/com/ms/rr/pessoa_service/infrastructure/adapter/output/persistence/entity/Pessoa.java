@@ -25,7 +25,7 @@ public abstract class Pessoa {
     @Column(name = "tipo_pessoa", insertable = false, updatable = false)
     protected TipoPessoa tipo;
 
-    @OneToMany(mappedBy = "pessoa", cascade =  CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "pessoa", cascade =  CascadeType.ALL)
     protected List<Endereco> enderecos;
 
     public Long getId() {
