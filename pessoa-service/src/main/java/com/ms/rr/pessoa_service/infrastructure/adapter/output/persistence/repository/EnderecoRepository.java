@@ -4,4 +4,5 @@ import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EnderecoRepository extends JpaRepository<Endereco, Long> {
+
 }

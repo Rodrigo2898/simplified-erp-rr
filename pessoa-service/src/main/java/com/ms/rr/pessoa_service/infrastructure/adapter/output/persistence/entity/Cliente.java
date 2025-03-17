@@ -48,12 +48,6 @@ public class Cliente extends Pessoa {
         entity.setTelefone(domain.getTelefone());
         entity.setCpf(domain.getCpf());
         entity.setDataCadastro(domain.getDataCadastro());
-        if (domain.getEnderecos() != null) {
-            domain.getEnderecos().forEach(enderecoDomain -> {
-                Endereco endereco = Endereco.fromDomain(enderecoDomain);
-                entity.addEndereco(endereco);
-            });
-        }
         return entity;
     }
 
@@ -63,10 +57,6 @@ public class Cliente extends Pessoa {
                 getNome(),
                 getEmail(),
                 getTelefone(),
-                getTipo().toDomain(),
-                getEnderecos().stream()
-                        .map(Endereco::toDomain)
-                        .toList(),
                 getCpf(),
                 getDataCadastro());
     }

@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -23,7 +24,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @DataJpaTest
 class ClienteRepositoryImplTest extends ClienteOutputPortTest {
 
-    @Autowired
+    @MockitoBean
     private ClienteRepositoryImpl clienteRepository;
 
     @Container

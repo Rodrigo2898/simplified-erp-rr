@@ -15,6 +15,6 @@ public record CreateCliente(String nome,
                             LocalDate dataCadastro) {
 
     public ClienteDomain toDomain() {
-        return ClienteDomain.create(nome, email, telefone, TipoPessoaDomain.CLIENTE, enderecos, cpf, dataCadastro);
+        return ClienteDomain.create(nome, email, telefone, cpf, dataCadastro, enderecos);
     }
 }

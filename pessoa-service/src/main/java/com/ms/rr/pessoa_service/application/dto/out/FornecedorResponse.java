@@ -12,8 +12,7 @@ public record FornecedorResponse(Long id,
                                  String telefone,
                                  TipoPessoaDomain tipoPessoa,
                                  String cpnj,
-                                 String razaoSocial,
-                                 List<EnderecoDomain> enderecos) {
+                                 String razaoSocial) {
 
     public static FornecedorResponse fromDomain(FornecedorDomain domain) {
         return new FornecedorResponse(
@@ -23,7 +22,6 @@ public record FornecedorResponse(Long id,
                 domain.getTelefone(),
                 domain.getTipoPessoa(),
                 domain.getCnpj(),
-                domain.getRazaoSocial(),
-                domain.getEnderecos());
+                domain.getRazaoSocial());
     }
 }

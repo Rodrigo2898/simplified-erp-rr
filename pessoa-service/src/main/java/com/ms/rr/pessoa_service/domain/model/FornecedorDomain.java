@@ -8,9 +8,8 @@ public class FornecedorDomain extends PessoaDomain {
     private String cnpj;
     private String razaoSocial;
 
-    public FornecedorDomain(Long id, String nome, String email, String telefone, TipoPessoaDomain tipoPessoa,
-                            List<EnderecoDomain> enderecos, String cnpj, String razaoSocial) {
-        super(id, nome, email, telefone, tipoPessoa, enderecos);
+    public FornecedorDomain(Long id, String nome, String email, String telefone, TipoPessoaDomain tipoPessoa, String cnpj, String razaoSocial) {
+        super(id, nome, email, telefone, tipoPessoa);
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
     }
@@ -32,14 +31,13 @@ public class FornecedorDomain extends PessoaDomain {
     }
 
     public static FornecedorDomain create(String nome, String email, String telefone, TipoPessoaDomain tipoPessoa,
-                                          List<EnderecoDomain> enderecos, String cnpj, String razaoSocial) {
+                                          String cnpj, String razaoSocial) {
         return new FornecedorDomain(
                 new Random().nextLong(),
                 nome,
                 email,
                 telefone,
                 tipoPessoa,
-                enderecos,
                 cnpj,
                 razaoSocial);
     }

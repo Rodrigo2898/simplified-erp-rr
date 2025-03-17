@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public interface PessoaOutputPort<Entity extends PessoaDomain, ID extends Serializable> {
+public interface PessoaOutputPort<Entity, ID extends Serializable> {
 
     void save(Entity entity);
 

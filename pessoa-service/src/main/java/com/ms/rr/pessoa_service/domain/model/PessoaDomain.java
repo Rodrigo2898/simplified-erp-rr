@@ -9,16 +9,13 @@ public abstract class PessoaDomain {
     protected String email;
     protected String telefone;
     protected TipoPessoaDomain tipoPessoa;
-    protected List<EnderecoDomain> enderecos;
 
-    public PessoaDomain(Long id, String nome, String email, String telefone,
-                        TipoPessoaDomain tipoPessoa, List<EnderecoDomain> enderecos) {
+    public PessoaDomain(Long id, String nome, String email, String telefone, TipoPessoaDomain tipoPessoa) {
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
         this.tipoPessoa = tipoPessoa;
-        this.enderecos = enderecos;
     }
 
     public Long getId() {
@@ -60,13 +57,4 @@ public abstract class PessoaDomain {
     public void setTipoPessoa(TipoPessoaDomain tipoPessoa) {
         this.tipoPessoa = tipoPessoa;
     }
-
-    public List<EnderecoDomain> getEnderecos() {
-        return enderecos;
-    }
-
-    public void setEnderecos(List<EnderecoDomain> enderecos) {
-        this.enderecos = enderecos;
-    }
-
 }

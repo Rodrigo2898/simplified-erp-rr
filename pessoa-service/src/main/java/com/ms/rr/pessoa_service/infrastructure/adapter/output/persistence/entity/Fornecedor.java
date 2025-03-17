@@ -43,7 +43,6 @@ public class Fornecedor extends Pessoa {
         entity.setNome(domain.getNome());
         entity.setEmail(domain.getEmail());
         entity.setTelefone(domain.getTelefone());
-        entity.setEnderecos(getEnderecoFromDomain(domain.getEnderecos()));
         entity.setCnpj(domain.getCnpj());
         entity.setRazaoSocial(domain.getRazaoSocial());
         return entity;
@@ -56,9 +55,6 @@ public class Fornecedor extends Pessoa {
                 getEmail(),
                 getTelefone(),
                 getTipo().toDomain(),
-                getEnderecos().stream()
-                        .map(Endereco::toDomain)
-                        .toList(),
                 getCnpj(),
                 getRazaoSocial());
     }

@@ -27,9 +27,6 @@ public abstract class Pessoa {
     @Column(name = "tipo_pessoa", insertable = false, updatable = false)
     protected TipoPessoa tipo;
 
-    @OneToMany(mappedBy = "pessoa", cascade =  CascadeType.PERSIST)
-    protected List<Endereco> enderecos = new ArrayList<>();;
-
     public Long getId() {
         return id;
     }
@@ -70,19 +67,6 @@ public abstract class Pessoa {
         this.tipo = tipo;
     }
 
-    public List<Endereco> getEnderecos() {
-        return enderecos;
-    }
-
-    public void setEnderecos(List<Endereco> enderecos) {
-        this.enderecos = enderecos;
-    }
-
-    protected static List<Endereco> getEnderecoFromDomain(List<EnderecoDomain> enderecoDomain) {
-        List<Endereco> enderecos = enderecoDomain.
-                stream().map(Endereco::fromDomain).toList();
-        return enderecos;
-    }
 
     protected static TipoPessoa getTipoFromDomain(TipoPessoaDomain tipoPessoa) {
         return switch (tipoPessoa) {
@@ -90,10 +74,5 @@ public abstract class Pessoa {
             case FORNECEDOR -> TipoPessoa.FORNECEDOR;
             default -> throw new IllegalArgumentException("Tipo desconhecido: " + tipoPessoa);
         };
-    }
-
-    public void addEndereco(Endereco endereco) {
-        this.enderecos.add(endereco);
-        endereco.setPessoa(this);
     }
 }
