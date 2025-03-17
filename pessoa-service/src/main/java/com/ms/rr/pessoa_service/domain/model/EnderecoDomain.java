@@ -9,6 +9,7 @@ public class EnderecoDomain {
     private String cidade;
     private String estado;
     private String cep;
+    private PessoaDomain pessoaDomain;
 
     public EnderecoDomain() {
     }

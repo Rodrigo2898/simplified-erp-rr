@@ -3,6 +3,7 @@ package com.ms.rr.pessoa_service.api.output;
 import com.ms.rr.pessoa_service.application.port.output.ClienteOutputPort;
 import com.ms.rr.pessoa_service.domain.model.ClienteDomain;
 import com.ms.rr.pessoa_service.factory.CreateClienteDomainFactory;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,11 +18,10 @@ public abstract class ClienteOutputPortTest {
     @Test
     void save() {
         ClienteDomain clienteDomain = CreateClienteDomainFactory.buildWithOneItem();
-
         getClienteOutputPort().save(clienteDomain);
 
+        // Verifique se o Endereco foi salvo com pessoa_id não nulo
         Optional<ClienteDomain> result = getClienteOutputPort().findById(clienteDomain.getId());
-
         assertTrue(result.isPresent());
         assertEquals(clienteDomain, result.get());
     }

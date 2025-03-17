@@ -17,6 +17,7 @@ public class ClienteDomain extends PessoaDomain {
         this.dataCadastro = dataCadastro;
     }
 
+
     public String getCpf() {
         return cpf;
     }

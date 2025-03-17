@@ -1,10 +1,12 @@
 package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity;
 
 import com.ms.rr.pessoa_service.domain.model.EnderecoDomain;
+import com.ms.rr.pessoa_service.domain.model.PessoaDomain;
 import com.ms.rr.pessoa_service.domain.model.TipoPessoaDomain;
 import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity.enums.TipoPessoa;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,8 +27,8 @@ public abstract class Pessoa {
     @Column(name = "tipo_pessoa", insertable = false, updatable = false)
     protected TipoPessoa tipo;
 
-    @OneToMany(mappedBy = "pessoa", cascade =  CascadeType.ALL)
-    protected List<Endereco> enderecos;
+    @OneToMany(mappedBy = "pessoa", cascade =  CascadeType.PERSIST)
+    protected List<Endereco> enderecos = new ArrayList<>();;
 
     public Long getId() {
         return id;
@@ -88,5 +90,10 @@ public abstract class Pessoa {
             case FORNECEDOR -> TipoPessoa.FORNECEDOR;
             default -> throw new IllegalArgumentException("Tipo desconhecido: " + tipoPessoa);
         };
+    }
+
+    public void addEndereco(Endereco endereco) {
+        this.enderecos.add(endereco);
+        endereco.setPessoa(this);
     }
 }

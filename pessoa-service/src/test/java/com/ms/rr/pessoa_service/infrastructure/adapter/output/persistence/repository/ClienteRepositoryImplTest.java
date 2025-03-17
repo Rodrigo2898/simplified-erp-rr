@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -19,7 +20,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ComponentScan
-@SpringBootTest
+@DataJpaTest
 class ClienteRepositoryImplTest extends ClienteOutputPortTest {
 
     @Autowired
@@ -27,7 +28,7 @@ class ClienteRepositoryImplTest extends ClienteOutputPortTest {
 
     @Container
     private static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:16.6")
-            .withDatabaseName("pessoa_service")
+            .withDatabaseName("pessoa_service_test")
             .withUsername("rod")
             .withPassword("password");
 
@@ -37,6 +38,7 @@ class ClienteRepositoryImplTest extends ClienteOutputPortTest {
         System.setProperty("spring.datasource.username", postgreSQLContainer.getUsername());
         System.setProperty("spring.datasource.password", postgreSQLContainer.getPassword());
         System.setProperty("spring.datasource.driver-class-name", postgreSQLContainer.getDriverClassName());
+        postgreSQLContainer.start();
     }
 
     @Override
