@@ -1,13 +1,8 @@
 package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity;
 
-import com.ms.rr.pessoa_service.domain.model.EnderecoDomain;
-import com.ms.rr.pessoa_service.domain.model.PessoaDomain;
 import com.ms.rr.pessoa_service.domain.model.TipoPessoaDomain;
 import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity.enums.TipoPessoa;
 import jakarta.persistence.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "tb_pessoa")

@@ -3,6 +3,7 @@ package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.repos
 import com.ms.rr.pessoa_service.api.output.ClienteOutputPortTest;
 import com.ms.rr.pessoa_service.application.port.output.ClienteOutputPort;
 import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.repository.impl.ClienteRepositoryImpl;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
@@ -24,7 +25,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @DataJpaTest
 class ClienteRepositoryImplTest extends ClienteOutputPortTest {
 
-    @MockitoBean
+    @Inject
     private ClienteRepositoryImpl clienteRepository;
 
     @Container

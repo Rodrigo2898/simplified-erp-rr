@@ -14,13 +14,3 @@ CREATE TABLE tb_pessoa (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-CREATE TABLE tb_endereco (
-    id SERIAL PRIMARY KEY,
-    rua VARCHAR(255) NOT NULL,
-    cidade VARCHAR(100) NOT NULL,
-    estado VARCHAR(50) NOT NULL,
-    cep  VARCHAR(10) NOT NULL,
-    pessoa_id BIGINT NOT NULL,
-    FOREIGN KEY (pessoa_id) REFERENCES tb_pessoa(id) ON DELETE CASCADE
-);

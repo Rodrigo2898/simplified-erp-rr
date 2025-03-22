@@ -4,6 +4,7 @@ import com.ms.rr.pessoa_service.domain.model.ClienteDomain;
 import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity.enums.TipoPessoa;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Version;
 
 import java.time.LocalDate;
 
@@ -39,15 +40,29 @@ public class Cliente extends Pessoa {
         this.dataCadastro = dataCadastro;
     }
 
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "cpf='" + cpf + '\'' +
+                ", dataCadastro=" + dataCadastro +
+                ", id=" + id +
+                ", nome='" + nome + '\'' +
+                ", email='" + email + '\'' +
+                ", telefone='" + telefone + '\'' +
+                ", tipo=" + tipo +
+                '}';
+    }
+
     public static Cliente fromDomain(ClienteDomain domain) {
         Cliente entity = new Cliente();
 
-//        entity.setId(domain.getId());
+        entity.setId(domain.getId());
         entity.setNome(domain.getNome());
         entity.setEmail(domain.getEmail());
         entity.setTelefone(domain.getTelefone());
         entity.setCpf(domain.getCpf());
         entity.setDataCadastro(domain.getDataCadastro());
+        System.out.println("Convertendo ClienteDomain -> Cliente: " + entity);
         return entity;
     }
 
@@ -60,5 +75,4 @@ public class Cliente extends Pessoa {
                 getCpf(),
                 getDataCadastro());
     }
-
 }

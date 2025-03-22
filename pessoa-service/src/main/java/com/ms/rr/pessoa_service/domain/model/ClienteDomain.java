@@ -1,7 +1,6 @@
 package com.ms.rr.pessoa_service.domain.model;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Random;
 
 public class ClienteDomain {
@@ -12,7 +11,6 @@ public class ClienteDomain {
     private String telefone;
     private String cpf;
     private LocalDate dataCadastro;
-    private List<EnderecoDomain> enderecos;
 
     public ClienteDomain() {
     }
@@ -24,17 +22,6 @@ public class ClienteDomain {
         this.telefone = telefone;
         this.cpf = cpf;
         this.dataCadastro = dataCadastro;
-    }
-
-    public ClienteDomain(Long id, String nome, String email, String telefone, String cpf,
-                         LocalDate dataCadastro, List<EnderecoDomain> enderecos) {
-        this.id = id;
-        this.nome = nome;
-        this.email = email;
-        this.telefone = telefone;
-        this.cpf = cpf;
-        this.dataCadastro = dataCadastro;
-        this.enderecos = enderecos;
     }
 
     public Long getId() {
@@ -85,23 +72,14 @@ public class ClienteDomain {
         this.dataCadastro = dataCadastro;
     }
 
-    public List<EnderecoDomain> getEnderecos() {
-        return enderecos;
-    }
-
-    public void setEnderecos(List<EnderecoDomain> enderecos) {
-        this.enderecos = enderecos;
-    }
-
     public static ClienteDomain create(String nome, String email, String telefone,
-                                       String cpf, LocalDate dataCadastro, List<EnderecoDomain> enderecos) {
+                                       String cpf, LocalDate dataCadastro) {
         return new ClienteDomain(
                 new Random().nextLong(),
                 nome,
                 email,
                 telefone,
                 cpf,
-                dataCadastro,
-                enderecos);
+                dataCadastro);
     }
 }
