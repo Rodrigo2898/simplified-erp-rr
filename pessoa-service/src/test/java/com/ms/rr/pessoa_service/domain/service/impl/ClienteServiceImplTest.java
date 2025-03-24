@@ -42,7 +42,7 @@ class ClienteServiceImplTest {
             clienteService.salvar(cliente);
 
             // ASSERT
-            verify(clienteOutputPort, times(1)).save(any());
+            verify(clienteOutputPort, times(1)).save(cliente);
         }
 
         @Test

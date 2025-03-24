@@ -2,17 +2,17 @@ package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.repos
 
 import com.ms.rr.pessoa_service.api.output.ClienteOutputPortTest;
 import com.ms.rr.pessoa_service.application.port.output.ClienteOutputPort;
-import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.repository.impl.ClienteRepositoryImpl;
+import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.repository.impl.SQLClienteRepository;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -23,16 +23,19 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ComponentScan
 @DataJpaTest
-class ClienteRepositoryImplTest extends ClienteOutputPortTest {
+class SQLClienteRepositoryTest extends ClienteOutputPortTest {
 
-    @Inject
-    private ClienteRepositoryImpl clienteRepository;
+    @Autowired
+    ClienteOutputPort clienteRepository;
+
+    @Autowired
+    EntityManager entityManager;
 
     @Container
-    private static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:16.6")
+    private static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>( "postgres:16.6")
             .withDatabaseName("pessoa_service_test")
-            .withUsername("rod")
-            .withPassword("password");
+            .withUsername("rodtest")
+            .withPassword("passwordtest");
 
     @BeforeAll
     void setUp() {
@@ -48,8 +51,9 @@ class ClienteRepositoryImplTest extends ClienteOutputPortTest {
         return clienteRepository;
     }
 
-    @AfterAll
-    void stop() {
-        postgreSQLContainer.stop();
-    }
+//    @Transactional
+//    @AfterEach
+//    void tearDown() {
+//        entityManager.createNativeQuery("TRUNCATE TABLE tb_pessoa").executeUpdate();
+//    }
 }

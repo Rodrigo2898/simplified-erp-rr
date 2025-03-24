@@ -24,6 +24,15 @@ public class ClienteDomain {
         this.dataCadastro = dataCadastro;
     }
 
+    public ClienteDomain(String nome, String email, String telefone, String cpf, LocalDate dataCadastro) {
+        this.nome = nome;
+        this.email = email;
+        this.telefone = telefone;
+        this.cpf = cpf;
+        this.dataCadastro = dataCadastro;
+    }
+
+
     public Long getId() {
         return id;
     }

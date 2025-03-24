@@ -11,14 +11,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class FornecedorRepositoryImpl implements FornecedorOutputPort {
+public class SQLFornecedorRepository implements FornecedorOutputPort {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Override
-    public void save(FornecedorDomain fornecedorDomain) {
-        entityManager.persist(Fornecedor.fromDomain(fornecedorDomain));
+    public void save(List<FornecedorDomain> fornecedores) {
+        fornecedores.stream()
+                .map(Fornecedor::fromDomain)
+                .forEach(entityManager::persist);
     }
 
     @Override

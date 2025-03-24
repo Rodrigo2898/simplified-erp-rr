@@ -6,38 +6,43 @@ import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity
 import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.repository.ClienteRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 import java.util.Optional;
 
+//@Scope(proxyMode = ScopedProxyMode.INTERFACES)
 @Repository
-public class ClienteRepositoryImpl implements ClienteOutputPort {
+public class SQLClienteRepository implements ClienteOutputPort {
 
-    private final ClienteRepository clienteRepository;
     @PersistenceContext
     private EntityManager entityManager;
 
-    public ClienteRepositoryImpl(@Lazy ClienteRepository clienteRepository) {
-        this.clienteRepository = clienteRepository;
-    }
 
-    @Transactional
     @Override
-    public void save(ClienteDomain clienteDomain) {
-        Cliente cliente = Cliente.fromDomain(clienteDomain);
-        entityManager.merge(cliente);
+    @Transactional
+    public void save(List<ClienteDomain> clientes) {
+        clientes.stream()
+                .map(Cliente::fromDomain)
+                .forEach(cliente -> {
+                    entityManager.persist(cliente);
+                    System.out.println(cliente.toString());
+                });
+        entityManager.flush();
+        entityManager.clear();
     }
 
     @Override
     public Optional<ClienteDomain> findById(Long id) {
-        Cliente cliente = entityManager.find(Cliente.class, id);
-        if (cliente != null) {
-            return Optional.of(cliente.toDomain());
+        if (id == null) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        Cliente cliente = entityManager.find(Cliente.class, id);
+        return Optional.ofNullable(cliente).map(Cliente::toDomain);
     }
 
     @Override
@@ -47,7 +52,7 @@ public class ClienteRepositoryImpl implements ClienteOutputPort {
 
     @Override
     public List<ClienteDomain> findAll() {
-        return clienteRepository.findAll().stream().map(Cliente::toDomain).toList();
+        return null;
     }
 
     @Transactional

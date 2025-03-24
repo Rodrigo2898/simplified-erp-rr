@@ -56,7 +56,7 @@ public class Cliente extends Pessoa {
     public static Cliente fromDomain(ClienteDomain domain) {
         Cliente entity = new Cliente();
 
-        entity.setId(domain.getId());
+//        entity.setId(domain.getId());
         entity.setNome(domain.getNome());
         entity.setEmail(domain.getEmail());
         entity.setTelefone(domain.getTelefone());
@@ -68,7 +68,6 @@ public class Cliente extends Pessoa {
 
     public ClienteDomain toDomain() {
         return new ClienteDomain(
-                getId(),
                 getNome(),
                 getEmail(),
                 getTelefone(),

@@ -8,7 +8,11 @@ import java.util.Optional;
 
 public interface PessoaOutputPort<Entity, ID extends Serializable> {
 
-    void save(Entity entity);
+    void save(List<Entity> entities);
+
+    default void save(Entity entity) {
+        save(List.of(entity));
+    }
 
     Optional<Entity> findById(ID id);
 
