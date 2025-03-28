@@ -2,6 +2,7 @@ package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.repos
 
 import com.ms.rr.pessoa_service.application.port.output.FornecedorOutputPort;
 import com.ms.rr.pessoa_service.domain.model.FornecedorDomain;
+import com.ms.rr.pessoa_service.domain.query.FornecedorQuery;
 import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity.Fornecedor;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -36,6 +37,11 @@ public class SQLFornecedorRepository implements FornecedorOutputPort {
     }
 
     @Override
+    public List<FornecedorDomain> find(FornecedorQuery fornecedorQuery) {
+        return List.of();
+    }
+
+    @Override
     public List<FornecedorDomain> findAll() {
         List<Fornecedor> fornecedores = entityManager
                 .createQuery("SELECT f FROM Fornecedor f", Fornecedor.class)
@@ -47,7 +53,7 @@ public class SQLFornecedorRepository implements FornecedorOutputPort {
 
     @Override
     public void delete(FornecedorDomain domain) {
-        var entity = entityManager.find(Fornecedor.class, domain.getId());
+        var entity = entityManager.find(Fornecedor.class, domain.id());
         if (entity != null) {
             entityManager.remove(entity);
         }

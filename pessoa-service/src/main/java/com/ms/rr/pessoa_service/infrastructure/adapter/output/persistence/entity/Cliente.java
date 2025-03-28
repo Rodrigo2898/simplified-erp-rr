@@ -2,6 +2,7 @@ package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entit
 
 import com.ms.rr.pessoa_service.domain.model.ClienteDomain;
 import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity.enums.TipoPessoa;
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Version;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 @DiscriminatorValue("CLIENTE")
 public class Cliente extends Pessoa {
     private String cpf;
+    @Column(name = "data_cadastro")
     private LocalDate dataCadastro;
 
     public Cliente() {
@@ -55,19 +57,19 @@ public class Cliente extends Pessoa {
 
     public static Cliente fromDomain(ClienteDomain domain) {
         Cliente entity = new Cliente();
-
-//        entity.setId(domain.getId());
-        entity.setNome(domain.getNome());
-        entity.setEmail(domain.getEmail());
-        entity.setTelefone(domain.getTelefone());
-        entity.setCpf(domain.getCpf());
-        entity.setDataCadastro(domain.getDataCadastro());
+        entity.setId(domain.id());
+        entity.setNome(domain.nome());
+        entity.setEmail(domain.email());
+        entity.setTelefone(domain.telefone());
+        entity.setCpf(domain.cpf());
+        entity.setDataCadastro(domain.dataCadastro());
         System.out.println("Convertendo ClienteDomain -> Cliente: " + entity);
         return entity;
     }
 
     public ClienteDomain toDomain() {
         return new ClienteDomain(
+                getId(),
                 getNome(),
                 getEmail(),
                 getTelefone(),

@@ -2,7 +2,7 @@
 CREATE TYPE pessoa_type_enum AS ENUM ('CLIENTE', 'FORNECEDOR');
 
 CREATE TABLE tb_pessoa (
-    id SERIAL PRIMARY KEY,
+    id BIGINT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     telefone VARCHAR(250) NOT NULL,

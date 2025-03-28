@@ -9,7 +9,7 @@ public class CreateClienteDomainFactory {
 
     public static ClienteDomain buildWithOneItem() {
         return new ClienteDomain(
-                1L,
+                new Random().nextLong(),
                 "Goku",
                 "goku" + new Random().nextInt(1000) + "@gmail.com",
                 "999999",

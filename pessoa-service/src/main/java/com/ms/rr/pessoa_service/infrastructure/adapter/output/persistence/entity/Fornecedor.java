@@ -2,6 +2,7 @@ package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entit
 
 import com.ms.rr.pessoa_service.domain.model.FornecedorDomain;
 import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity.enums.TipoPessoa;
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
@@ -9,6 +10,7 @@ import jakarta.persistence.Entity;
 @DiscriminatorValue("FORNECEDOR")
 public class Fornecedor extends Pessoa {
     private String cnpj;
+    @Column(name = "razao_social")
     private String razaoSocial;
 
     public Fornecedor() {
@@ -39,12 +41,12 @@ public class Fornecedor extends Pessoa {
 
     public static Fornecedor fromDomain(FornecedorDomain domain) {
         Fornecedor entity = new Fornecedor();
-        entity.setId(domain.getId());
-        entity.setNome(domain.getNome());
-        entity.setEmail(domain.getEmail());
-        entity.setTelefone(domain.getTelefone());
-        entity.setCnpj(domain.getCnpj());
-        entity.setRazaoSocial(domain.getRazaoSocial());
+        entity.setId(domain.id());
+        entity.setNome(domain.nome());
+        entity.setEmail(domain.email());
+        entity.setTelefone(domain.telefone());
+        entity.setCnpj(domain.cnpj());
+        entity.setRazaoSocial(domain.razaoSocial());
         return entity;
     }
 
@@ -54,7 +56,6 @@ public class Fornecedor extends Pessoa {
                 getNome(),
                 getEmail(),
                 getTelefone(),
-                getTipo().toDomain(),
                 getCnpj(),
                 getRazaoSocial());
     }

@@ -2,20 +2,23 @@ package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.repos
 
 import com.ms.rr.pessoa_service.application.port.output.ClienteOutputPort;
 import com.ms.rr.pessoa_service.domain.model.ClienteDomain;
+import com.ms.rr.pessoa_service.domain.query.ClienteQuery;
 import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity.Cliente;
-import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.repository.ClienteRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-//@Scope(proxyMode = ScopedProxyMode.INTERFACES)
 @Repository
 public class SQLClienteRepository implements ClienteOutputPort {
 
@@ -32,17 +35,13 @@ public class SQLClienteRepository implements ClienteOutputPort {
                     entityManager.persist(cliente);
                     System.out.println(cliente.toString());
                 });
-        entityManager.flush();
-        entityManager.clear();
     }
 
     @Override
     public Optional<ClienteDomain> findById(Long id) {
-        if (id == null) {
-            return Optional.empty();
-        }
-        Cliente cliente = entityManager.find(Cliente.class, id);
-        return Optional.ofNullable(cliente).map(Cliente::toDomain);
+        Cliente entity = entityManager.find(Cliente.class, id);
+        return Optional.ofNullable(entity)
+                .map(Cliente::toDomain);
     }
 
     @Override
@@ -51,14 +50,36 @@ public class SQLClienteRepository implements ClienteOutputPort {
     }
 
     @Override
-    public List<ClienteDomain> findAll() {
-        return null;
+    public List<ClienteDomain> find(ClienteQuery clienteQuery) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Cliente> criteriaQuery = criteriaBuilder.createQuery(Cliente.class);
+        Root<Cliente> root = criteriaQuery.from(Cliente.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        clienteQuery.ids().ifPresent(ids -> predicates.add(root.get("id").in(ids)));
+
+        clienteQuery.nome().ifPresent(nome -> predicates.add(
+                criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("nome")),
+                        nome.toLowerCase() + "%")));
+
+        clienteQuery.cpf().ifPresent(cpf -> predicates.add(criteriaBuilder.equal(root.get("cpf"), cpf)));
+
+        if (!predicates.isEmpty()) {
+            criteriaQuery.where(predicates.toArray(new Predicate[0]));
+        }
+
+        TypedQuery<Cliente> query = entityManager.createQuery(criteriaQuery);
+        return query.getResultList().stream()
+                .map(Cliente::toDomain)
+                .toList();
     }
 
     @Transactional
     @Override
     public void delete(ClienteDomain domain) {
-        var entity = entityManager.find(Cliente.class, domain.getId());
+        var entity = entityManager.find(Cliente.class, domain.id());
         if (entity != null) {
             entityManager.remove(entity);
         }

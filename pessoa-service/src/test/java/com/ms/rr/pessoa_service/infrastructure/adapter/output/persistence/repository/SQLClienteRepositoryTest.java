@@ -51,9 +51,9 @@ class SQLClienteRepositoryTest extends ClienteOutputPortTest {
         return clienteRepository;
     }
 
-//    @Transactional
-//    @AfterEach
-//    void tearDown() {
-//        entityManager.createNativeQuery("TRUNCATE TABLE tb_pessoa").executeUpdate();
-//    }
+    @Transactional
+    @AfterEach
+    void tearDown() {
+        entityManager.createNativeQuery("TRUNCATE TABLE tb_pessoa").executeUpdate();
+    }
 }

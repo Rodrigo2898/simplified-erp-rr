@@ -13,11 +13,11 @@ public record ClienteResponse(Long id,
 
     public static ClienteResponse fromDomain(ClienteDomain domain) {
         return new ClienteResponse(
-                domain.getId(),
-                domain.getNome(),
-                domain.getEmail(),
-                domain.getTelefone(),
-                domain.getCpf(),
-                domain.getDataCadastro());
+                domain.id(),
+                domain.nome(),
+                domain.email(),
+                domain.telefone(),
+                domain.cpf(),
+                domain.dataCadastro());
     }
 }

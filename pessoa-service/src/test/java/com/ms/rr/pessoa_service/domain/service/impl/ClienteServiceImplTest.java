@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -62,27 +61,27 @@ class ClienteServiceImplTest {
         @Test
         void shouldReturnClienteWhenExistst() {
             // ARRANGE
-            when(clienteOutputPort.findById(cliente.getId())).thenReturn(Optional.of(cliente));
+            when(clienteOutputPort.findById(cliente.id())).thenReturn(Optional.of(cliente));
 
             // ACT
-            var resultado = clienteService.buscarPorId(cliente.getId());
+            var resultado = clienteService.buscarPorId(cliente.id());
 
             // ASSERT
             assertTrue(resultado.isPresent());
-            assertEquals(cliente.getId(), resultado.get().getId());
-            verify(clienteOutputPort, times(1)).findById(cliente.getId());
+            assertEquals(cliente.id(), resultado.get().id());
+            verify(clienteOutputPort, times(1)).findById(cliente.id());
             verifyNoMoreInteractions(clienteOutputPort);
         }
 
         @Test
         void shouldReturnClienteWhenNotExistst() {
             // ARRANGE
-            when(clienteOutputPort.findById(cliente.getId())).thenReturn(Optional.empty());
+            when(clienteOutputPort.findById(cliente.id())).thenReturn(Optional.empty());
 
             // ACT & ASSERT
-            assertThrows(NoSuchElementException.class, () -> clienteService.buscarPorId(cliente.getId()));
+            assertThrows(NoSuchElementException.class, () -> clienteService.buscarPorId(cliente.id()));
 
-            verify(clienteOutputPort).findById(cliente.getId());
+            verify(clienteOutputPort).findById(cliente.id());
             verifyNoMoreInteractions(clienteOutputPort);
         }
     }

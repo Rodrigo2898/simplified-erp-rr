@@ -1,7 +1,6 @@
 package com.ms.rr.pessoa_service.application.dto.in;
 
 import com.ms.rr.pessoa_service.domain.model.FornecedorDomain;
-import com.ms.rr.pessoa_service.domain.model.TipoPessoaDomain;
 
 public record CreateFornecedor(String nome,
                                String email,
@@ -10,6 +9,6 @@ public record CreateFornecedor(String nome,
                                String razaoSocial) {
 
     public FornecedorDomain toDomain() {
-        return FornecedorDomain.create(nome, email, telefone, TipoPessoaDomain.FORNECEDOR, cnpj, razaoSocial);
+        return FornecedorDomain.create(nome, email, telefone, cnpj, razaoSocial);
     }
 }

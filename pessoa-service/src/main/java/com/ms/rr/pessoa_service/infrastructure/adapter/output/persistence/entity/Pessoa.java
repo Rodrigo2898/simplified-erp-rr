@@ -1,6 +1,5 @@
 package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity;
 
-import com.ms.rr.pessoa_service.domain.model.TipoPessoaDomain;
 import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity.enums.TipoPessoa;
 import jakarta.persistence.*;
 
@@ -11,7 +10,6 @@ import jakarta.persistence.*;
 public abstract class Pessoa {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
     protected String nome;
@@ -62,12 +60,4 @@ public abstract class Pessoa {
         this.tipo = tipo;
     }
 
-
-    protected static TipoPessoa getTipoFromDomain(TipoPessoaDomain tipoPessoa) {
-        return switch (tipoPessoa) {
-            case CLIENTE -> TipoPessoa.CLIENTE;
-            case FORNECEDOR -> TipoPessoa.FORNECEDOR;
-            default -> throw new IllegalArgumentException("Tipo desconhecido: " + tipoPessoa);
-        };
-    }
 }
