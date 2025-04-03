@@ -67,8 +67,8 @@ class ClienteServiceImplTest {
             var resultado = clienteService.buscarPorId(cliente.id());
 
             // ASSERT
-            assertTrue(resultado.isPresent());
-            assertEquals(cliente.id(), resultado.get().id());
+            assertNotNull(resultado.id());
+            assertEquals(cliente.id(), resultado.id());
             verify(clienteOutputPort, times(1)).findById(cliente.id());
             verifyNoMoreInteractions(clienteOutputPort);
         }

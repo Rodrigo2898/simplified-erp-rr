@@ -32,7 +32,7 @@ public class ClienteResource {
 
     @GetMapping("/{id}")
     public ResponseEntity<ClienteResponse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok().body(clienteApi.findById(id).orElseThrow());
+        return ResponseEntity.ok().body(clienteApi.findById(id));
     }
 
     @DeleteMapping("/{id}")

@@ -7,6 +7,6 @@ public interface BaseApi<CreateDTO, ResponseDTO, ID> {
 
     void create(CreateDTO createDTO);
     List<ResponseDTO> list();
-    Optional<ResponseDTO> findById(ID id);
+    ResponseDTO findById(ID id);
     void delete(ID id);
 }

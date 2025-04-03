@@ -31,9 +31,8 @@ public class FornecedorApi implements BaseApi<CreateFornecedor, FornecedorRespon
     }
 
     @Override
-    public Optional<FornecedorResponse> findById(Long id) {
-        return fornecedorService.buscarPorId(id)
-                .map(FornecedorResponse::fromDomain);
+    public FornecedorResponse findById(Long id) {
+        return FornecedorResponse.fromDomain(fornecedorService.buscarPorId(id));
     }
 
     @Override

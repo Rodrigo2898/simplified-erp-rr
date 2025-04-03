@@ -32,7 +32,7 @@ public class FornecedorResource {
 
     @GetMapping("/{id}")
     public ResponseEntity<FornecedorResponse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok().body(fornecedorApi.findById(id).orElseThrow());
+        return ResponseEntity.ok().body(fornecedorApi.findById(id));
     }
 
     @DeleteMapping("/{id}")

@@ -6,7 +6,6 @@ import com.ms.rr.pessoa_service.domain.model.FornecedorDomain;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class FornecedorServiceImpl implements FornecedorUseCase {
@@ -23,8 +22,8 @@ public class FornecedorServiceImpl implements FornecedorUseCase {
     }
 
     @Override
-    public Optional<FornecedorDomain> buscarPorId(Long id) {
-        return Optional.of(fornecedorOutputPort.findById(id).orElseThrow());
+    public FornecedorDomain buscarPorId(Long id) {
+        return fornecedorOutputPort.findById(id).orElseThrow();
     }
 
     @Override

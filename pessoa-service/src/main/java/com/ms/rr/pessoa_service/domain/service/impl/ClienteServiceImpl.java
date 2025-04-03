@@ -23,8 +23,8 @@ public class ClienteServiceImpl implements ClienteUseCase {
     }
 
     @Override
-    public Optional<ClienteDomain> buscarPorId(Long id) {
-        return Optional.of(clienteOutputPort.findById(id).orElseThrow());
+    public ClienteDomain buscarPorId(Long id) {
+        return clienteOutputPort.findById(id).orElseThrow();
     }
 
     @Override
