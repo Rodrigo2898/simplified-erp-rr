@@ -2,6 +2,7 @@ package com.ms.rr.pessoa_service.infrastructure.adapter.input.web.rest;
 
 import com.ms.rr.pessoa_service.application.api.ClienteApi;
 import com.ms.rr.pessoa_service.application.dto.in.CreateCliente;
+import com.ms.rr.pessoa_service.application.dto.in.UpdateCliente;
 import com.ms.rr.pessoa_service.application.dto.out.ClienteResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,11 @@ public class ClienteResource {
     @GetMapping("/{id}")
     public ResponseEntity<ClienteResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok().body(clienteApi.findById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ClienteResponse> update(@PathVariable Long id, @RequestBody UpdateCliente dto) {
+        return ResponseEntity.ok().body(clienteApi.update(id,dto));
     }
 
     @DeleteMapping("/{id}")
