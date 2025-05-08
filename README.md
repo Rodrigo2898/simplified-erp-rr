@@ -32,7 +32,7 @@ Este projeto é um **ERP Simplificado** para pequenas empresas, permitindo o ger
 
 ✅ Criar o serviço de **Produtos** (PostgreSQL)
 
-✅ Criar o serviço de **Estoqu** (PostgreSQL)
+✅ Criar o serviço de **Estoque** (PostgreSQL)
 
 ### 🔥 Sprint 2 - Criação comunicação e Fluxo Pessoa→Produto→Estoque
 ✅ Criar serviço de notificação
