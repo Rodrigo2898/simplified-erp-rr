@@ -3,6 +3,7 @@ package com.ms.rr.produto_service.infrastructure.adapter.input.web.rest;
 import com.ms.rr.produto_service.application.dto.in.CreateProduto;
 import com.ms.rr.produto_service.application.dto.in.UpdateProduto;
 import com.ms.rr.produto_service.application.dto.out.ProdutoResponse;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public interface ProdutoResource {
 
     @PostMapping
-    ResponseEntity<String> create(@RequestBody CreateProduto createProduto);
+    ResponseEntity<String> create(@Valid @RequestBody CreateProduto createProduto);
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<ProdutoResponse> findById(@PathVariable("id") Long id);
