@@ -11,7 +11,7 @@ public interface ProdutoApi {
 
     Page<ProdutoResponse> list(int page, int size);
 
-    Page<ProdutoResponse> listByNome(String nome, int page, int size);
+    Page<ProdutoResponse> listByCategoria(String categoria, int page, int size);
 
     ProdutoResponse findById(Long id);
 

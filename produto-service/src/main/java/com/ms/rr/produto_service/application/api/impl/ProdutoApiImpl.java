@@ -36,8 +36,8 @@ public class ProdutoApiImpl implements ProdutoApi {
     }
 
     @Override
-    public Page<ProdutoResponse> listByNome(String nome, int page, int size) {
-        return produtoUseCase.buscarProdutosPorNome(nome, page, size)
+    public Page<ProdutoResponse> listByCategoria(String categoria, int page, int size) {
+        return produtoUseCase.buscarProdutosPorCategoria(categoria, page, size)
                 .map(ProdutoResponse::fromDomain);
     }
 

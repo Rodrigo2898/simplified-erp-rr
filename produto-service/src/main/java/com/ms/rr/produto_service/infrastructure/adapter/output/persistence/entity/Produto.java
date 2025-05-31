@@ -4,6 +4,7 @@ import com.ms.rr.produto_service.domain.model.ProdutoDomain;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tb_produto")
@@ -15,6 +16,7 @@ public class Produto {
     private String descricao;
     private String categoria;
     private BigDecimal preco;
+    @Column(name = "fornecedor_id")
     private Long fornecedorId;
 
     public Produto() {

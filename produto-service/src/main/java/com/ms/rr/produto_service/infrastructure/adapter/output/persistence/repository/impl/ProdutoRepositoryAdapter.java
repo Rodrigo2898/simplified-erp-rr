@@ -37,8 +37,8 @@ public class ProdutoRepositoryAdapter implements ProdutoOutputPort {
     }
 
     @Override
-    public Page<ProdutoDomain> findByNomeContaining(String nome, Pageable pageable) {
-        return produtoRepository.findAllProductsByNomeContaining(nome, pageable)
+    public Page<ProdutoDomain> findAllByCategoria(String categoria, Pageable pageable) {
+        return produtoRepository.findAllProductsByCategoria(categoria, pageable)
                 .map(Produto::toDomain);
     }
 

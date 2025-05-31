@@ -12,7 +12,7 @@ public interface ProdutoOutputPort {
 
     Page<ProdutoDomain> findAll(Pageable pageable);
 
-    Page<ProdutoDomain> findByNomeContaining(String nome, Pageable pageable);
+    Page<ProdutoDomain> findAllByCategoria(String categoria, Pageable pageable);
 
     void delete(Long id);
 }

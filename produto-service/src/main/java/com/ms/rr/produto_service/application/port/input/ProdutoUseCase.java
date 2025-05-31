@@ -12,7 +12,7 @@ public interface ProdutoUseCase {
 
     Page<ProdutoDomain> buscarTodosProdutos(int page, int size);
 
-    Page<ProdutoDomain> buscarProdutosPorNome(String nome, int page, int size);
+    Page<ProdutoDomain> buscarProdutosPorCategoria(String categoria, int page, int size);
 
     void excluir(Long id);
 }

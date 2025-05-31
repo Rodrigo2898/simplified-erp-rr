@@ -46,9 +46,9 @@ public class ProdutoResourceImpl implements ProdutoResource {
     }
 
     @Override
-    public ResponseEntity<Page<ProdutoResponse>> findAllByNomeContaining(String nome, Integer page, Integer size) {
-        log.info("Buscando produtos com nome: {}", nome);
-        Page<ProdutoResponse> produtos = produtoApi.listByNome(nome, page, size);
+    public ResponseEntity<Page<ProdutoResponse>> findAllByCategoria(String categoria, Integer page, Integer size) {
+        log.info("Buscando produtos com nome: {}", categoria);
+        Page<ProdutoResponse> produtos = produtoApi.listByCategoria(categoria, page, size);
         return ResponseEntity.status(HttpStatus.OK).body(produtos);
     }
 

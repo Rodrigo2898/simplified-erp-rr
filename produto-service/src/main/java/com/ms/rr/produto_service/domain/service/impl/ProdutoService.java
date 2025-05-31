@@ -34,9 +34,9 @@ public class ProdutoService implements ProdutoUseCase {
     }
 
     @Override
-    public Page<ProdutoDomain> buscarProdutosPorNome(String nome, int page, int size) {
+    public Page<ProdutoDomain> buscarProdutosPorCategoria(String categoria, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return produtoOutputPort.findByNomeContaining(nome, pageable);
+        return produtoOutputPort.findAllByCategoria(categoria, pageable);
     }
 
     @Override

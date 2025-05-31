@@ -21,10 +21,10 @@ public interface ProdutoResource {
     ResponseEntity<Page<ProdutoResponse>> findAll(@RequestParam(defaultValue = "0") Integer page,
                                                   @RequestParam(defaultValue = "10") Integer size);
 
-    @GetMapping(value = "/{nome}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Page<ProdutoResponse>> findAllByNomeContaining(@PathVariable("nome") String nome,
-                                                                  @RequestParam(defaultValue = "0") Integer page,
-                                                                  @RequestParam(defaultValue = "10") Integer size);
+    @GetMapping(value = "/categoria-produto/{categoria}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Page<ProdutoResponse>> findAllByCategoria(@PathVariable("categoria") String categoria,
+                                                             @RequestParam(defaultValue = "0") Integer page,
+                                                             @RequestParam(defaultValue = "10") Integer size);
 
     @PutMapping(value = "/{id}")
     ResponseEntity<ProdutoResponse> update(@PathVariable("id") Long id, @RequestBody UpdateProduto updateProduto);
