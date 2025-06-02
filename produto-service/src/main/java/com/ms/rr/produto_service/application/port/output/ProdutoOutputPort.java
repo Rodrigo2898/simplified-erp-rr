@@ -3,8 +3,11 @@ package com.ms.rr.produto_service.application.port.output;
 import com.ms.rr.produto_service.domain.model.ProdutoDomain;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import reactor.core.publisher.Mono;
 
 public interface ProdutoOutputPort {
+
+    Mono<Void> saveProduto(ProdutoDomain produto);
 
     void save(ProdutoDomain produtoDomain);
 

@@ -8,6 +8,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 @Component
 public class ProdutoRepositoryAdapter implements ProdutoOutputPort {
@@ -16,6 +17,12 @@ public class ProdutoRepositoryAdapter implements ProdutoOutputPort {
 
     public ProdutoRepositoryAdapter(ProdutoRepository produtoRepository) {
         this.produtoRepository = produtoRepository;
+    }
+
+    @Override
+    public Mono<Void> saveProduto(ProdutoDomain produto) {
+        produtoRepository.save(Produto.fromDomain(produto));
+        return Mono.empty();
     }
 
     @Override
