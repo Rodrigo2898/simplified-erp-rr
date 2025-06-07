@@ -1,8 +1,6 @@
 package com.ms.rr.produto_service.infrastructure.adapter.input.web.client;
 
 import com.ms.rr.produto_service.application.dto.in.FornecedorDTO;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,11 +10,11 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 
 @Component
-public class PessoaServiceClient {
+public class PessoaWebClientAdapter {
 
     private final WebClient webClient;
 
-    public PessoaServiceClient(WebClient webClient) {
+    public PessoaWebClientAdapter(WebClient webClient) {
         this.webClient = webClient;
     }
 

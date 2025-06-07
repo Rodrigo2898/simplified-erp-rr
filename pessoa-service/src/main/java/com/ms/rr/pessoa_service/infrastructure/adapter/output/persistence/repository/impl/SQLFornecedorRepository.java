@@ -7,6 +7,7 @@ import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,7 @@ public class SQLFornecedorRepository implements FornecedorOutputPort {
     private EntityManager entityManager;
 
     @Override
+    @Transactional
     public void save(List<FornecedorDomain> fornecedores) {
         fornecedores.stream()
                 .map(Fornecedor::fromDomain)

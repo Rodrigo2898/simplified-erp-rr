@@ -4,6 +4,7 @@ import com.ms.rr.pessoa_service.application.port.input.FornecedorUseCase;
 import com.ms.rr.pessoa_service.application.port.output.FornecedorOutputPort;
 import com.ms.rr.pessoa_service.domain.model.FornecedorDomain;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class FornecedorServiceImpl implements FornecedorUseCase {
     }
 
     @Override
+    @Transactional
     public void salvar(FornecedorDomain pessoa) {
         fornecedorOutputPort.save(pessoa);
     }

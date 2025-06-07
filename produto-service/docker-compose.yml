@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: produto_service
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       # Monta o arquivo init.sql para inicialização do banco
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql

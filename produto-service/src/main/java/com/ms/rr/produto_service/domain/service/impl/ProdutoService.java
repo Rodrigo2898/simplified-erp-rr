@@ -3,7 +3,7 @@ package com.ms.rr.produto_service.domain.service.impl;
 import com.ms.rr.produto_service.application.port.input.ProdutoUseCase;
 import com.ms.rr.produto_service.application.port.output.ProdutoOutputPort;
 import com.ms.rr.produto_service.domain.model.ProdutoDomain;
-import com.ms.rr.produto_service.infrastructure.adapter.input.web.client.PessoaServiceClient;
+import com.ms.rr.produto_service.infrastructure.adapter.input.web.client.PessoaWebClientAdapter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,16 +14,16 @@ import reactor.core.publisher.Mono;
 public class ProdutoService implements ProdutoUseCase {
 
     private final ProdutoOutputPort produtoOutputPort;
-    private final PessoaServiceClient pessoaServiceClient;
+    private final PessoaWebClientAdapter pessoaWebClientAdapter;
 
-    public ProdutoService(ProdutoOutputPort produtoOutputPort, PessoaServiceClient pessoaServiceClient) {
+    public ProdutoService(ProdutoOutputPort produtoOutputPort, PessoaWebClientAdapter pessoaWebClientAdapter) {
         this.produtoOutputPort = produtoOutputPort;
-        this.pessoaServiceClient = pessoaServiceClient;
+        this.pessoaWebClientAdapter = pessoaWebClientAdapter;
     }
 
 
     public Mono<Void> salvarProduto(ProdutoDomain produtoDomain) {
-        return pessoaServiceClient.buscaFornecedorPoId(produtoDomain.fornecedorId())
+        return pessoaWebClientAdapter.buscaFornecedorPoId(produtoDomain.fornecedorId())
                 .flatMap(fornecedorDTO -> produtoOutputPort.saveProduto(produtoDomain));
     }
 
