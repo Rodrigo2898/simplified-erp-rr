@@ -8,8 +8,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 public interface ProdutoResource {
+
+    @PostMapping("/client")
+    Mono<ResponseEntity<Object>> createProduto(@Valid @RequestBody CreateProduto createProduto);
 
     @PostMapping
     ResponseEntity<String> create(@Valid @RequestBody CreateProduto createProduto);

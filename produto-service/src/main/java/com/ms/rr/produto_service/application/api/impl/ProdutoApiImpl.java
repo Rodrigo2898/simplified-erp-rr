@@ -8,6 +8,7 @@ import com.ms.rr.produto_service.application.port.input.ProdutoUseCase;
 import com.ms.rr.produto_service.domain.model.ProdutoDomain;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 @Component
 public class ProdutoApiImpl implements ProdutoApi {
@@ -16,6 +17,11 @@ public class ProdutoApiImpl implements ProdutoApi {
 
     public ProdutoApiImpl(ProdutoUseCase produtoUseCase) {
         this.produtoUseCase = produtoUseCase;
+    }
+
+    @Override
+    public Mono<Void> saveProduto(CreateProduto produto) {
+        return produtoUseCase.salvarProduto(produto.toDomain());
     }
 
     @Override

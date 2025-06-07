@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/produto")
@@ -23,6 +24,19 @@ public class ProdutoResourceImpl implements ProdutoResource {
 
     public ProdutoResourceImpl(ProdutoApi produtoApi) {
         this.produtoApi = produtoApi;
+    }
+
+
+    @Override
+    public Mono<ResponseEntity<Object>> createProduto(CreateProduto createProduto) {
+        log.info("Criando produto com fornecedor válido: {}", createProduto.toString());
+
+        return produtoApi.saveProduto(createProduto)
+                .then(Mono.just(ResponseEntity.status(HttpStatus.CREATED).build()))
+                .onErrorResume(e -> {
+                    log.error("Erro ao criar produto: {}", e.getMessage(), e);
+                    return Mono.just(ResponseEntity.badRequest().build());
+                });
     }
 
     @Override

@@ -4,8 +4,11 @@ import com.ms.rr.produto_service.application.dto.in.CreateProduto;
 import com.ms.rr.produto_service.application.dto.in.UpdateProduto;
 import com.ms.rr.produto_service.application.dto.out.ProdutoResponse;
 import org.springframework.data.domain.Page;
+import reactor.core.publisher.Mono;
 
 public interface ProdutoApi {
+
+    Mono<Void> saveProduto(CreateProduto produto);
 
     void create(CreateProduto createDTO);
 

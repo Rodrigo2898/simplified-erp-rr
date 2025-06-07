@@ -1,6 +1,8 @@
 package com.ms.rr.produto_service.infrastructure.adapter.input.web.client;
 
-import com.ms.rr.produto_service.application.dto.in.FornecedorDTO;
+import com.ms.rr.produto_service.application.dto.out.FornecedorResponse;
+import com.ms.rr.produto_service.domain.model.FornecedorDomain;
+import com.ms.rr.produto_service.application.port.output.FornecedorOutputPort;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -10,7 +12,7 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 
 @Component
-public class PessoaWebClientAdapter {
+public class PessoaWebClientAdapter implements FornecedorOutputPort {
 
     private final WebClient webClient;
 
@@ -18,15 +20,28 @@ public class PessoaWebClientAdapter {
         this.webClient = webClient;
     }
 
-    public Mono<FornecedorDTO> buscaFornecedorPoId(Long id) {
+    @Override
+    public Mono<FornecedorDomain> findFornecedorById(Long id) {
         return webClient.get()
                 .uri("/api/fornecedor/".concat(id.toString()))
                 .retrieve()
                 .onStatus(
                         HttpStatusCode::is4xxClientError,
                         response -> Mono.error(new RuntimeException("Fornecedor não encntrado, informar um id válido")))
-                .bodyToMono(FornecedorDTO.class)
+                .bodyToMono(FornecedorResponse.class)
+                .map(this::toDomain)
                 .timeout(Duration.ofSeconds(5))
                 .retryWhen(Retry.backoff(3, Duration.ofMillis(100)));
+    }
+
+    private FornecedorDomain toDomain(FornecedorResponse fornecedor) {
+        return new FornecedorDomain(
+                fornecedor.id(),
+                fornecedor.nome(),
+                fornecedor.email(),
+                fornecedor.telefone(),
+                fornecedor.cpnj(),
+                fornecedor.razaoSocial()
+        );
     }
 }

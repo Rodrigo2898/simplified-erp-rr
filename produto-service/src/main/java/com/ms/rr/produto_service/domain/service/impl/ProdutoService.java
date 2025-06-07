@@ -22,8 +22,9 @@ public class ProdutoService implements ProdutoUseCase {
     }
 
 
+    @Override
     public Mono<Void> salvarProduto(ProdutoDomain produtoDomain) {
-        return pessoaWebClientAdapter.buscaFornecedorPoId(produtoDomain.fornecedorId())
+        return pessoaWebClientAdapter.findFornecedorById(produtoDomain.fornecedorId())
                 .flatMap(fornecedorDTO -> produtoOutputPort.saveProduto(produtoDomain));
     }
 
