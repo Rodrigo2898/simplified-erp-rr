@@ -28,11 +28,11 @@ public class ProdutoResourceImpl implements ProdutoResource {
 
 
     @Override
-    public Mono<ResponseEntity<Object>> createProduto(CreateProduto createProduto) {
+    public Mono<ResponseEntity<String>> createProduto(CreateProduto createProduto) {
         log.info("Criando produto com fornecedor válido: {}", createProduto.toString());
 
         return produtoApi.saveProduto(createProduto)
-                .then(Mono.just(ResponseEntity.status(HttpStatus.CREATED).build()))
+                .then(Mono.just(ResponseEntity.status(HttpStatus.CREATED).body("Produto com fornecedor criado com sucesso")))
                 .onErrorResume(e -> {
                     log.error("Erro ao criar produto: {}", e.getMessage(), e);
                     return Mono.just(ResponseEntity.badRequest().build());

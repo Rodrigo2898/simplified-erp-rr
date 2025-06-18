@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 public interface ProdutoResource {
 
     @PostMapping("/client")
-    Mono<ResponseEntity<Object>> createProduto(@Valid @RequestBody CreateProduto createProduto);
+    Mono<ResponseEntity<String>> createProduto(@Valid @RequestBody CreateProduto createProduto);
 
     @PostMapping
     ResponseEntity<String> create(@Valid @RequestBody CreateProduto createProduto);

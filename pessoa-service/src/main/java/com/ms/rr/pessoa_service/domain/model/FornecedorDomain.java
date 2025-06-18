@@ -14,7 +14,7 @@ public record FornecedorDomain(Long id,
                                           String cnpj,
                                           String razaoSocial) {
         return new FornecedorDomain(
-                new Random().nextLong(),
+                Integer.toUnsignedLong(new Random().nextInt()),
                 nome,
                 email,
                 telefone,

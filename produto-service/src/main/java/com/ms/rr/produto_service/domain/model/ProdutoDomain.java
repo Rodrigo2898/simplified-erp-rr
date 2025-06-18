@@ -18,7 +18,7 @@ public record ProdutoDomain(Long id,
                                        BigDecimal preco,
                                        Long fornecedorId) {
         return new ProdutoDomain(
-                new Random().nextLong(),
+                Integer.toUnsignedLong(new Random().nextInt()),
                 nome,
                 descricao,
                 categoria,

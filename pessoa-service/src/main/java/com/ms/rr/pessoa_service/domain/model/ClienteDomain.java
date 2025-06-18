@@ -16,7 +16,7 @@ public record ClienteDomain(Long id,
                                        String cpf,
                                        LocalDate dataCadastro) {
         return new ClienteDomain(
-                new Random().nextLong(),
+                Integer.toUnsignedLong(new Random().nextInt()),
                 nome,
                 email,
                 telefone,

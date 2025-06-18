@@ -11,9 +11,6 @@ public class WebClientConfig {
     @Value("${integracao.pessoas-service.url}")
     private String pessoaHost;
 
-    public WebClientConfig(String pessoaHost) {
-        this.pessoaHost = pessoaHost;
-    }
 
     @Bean
     public WebClient getWebClient() {
