@@ -26,4 +26,23 @@ public record ProdutoDomain(Long id,
                 fornecedorId
         );
     }
+
+    public Produto atualizar(String nome,
+                             String descricao,
+                             String categoria,
+                             BigDecimal preco,
+                             Long fornecedorId) {
+        if (!this.fornecedorId.equals(fornecedorId)) {
+            throw new RuntimeException("Fornecedor não é válido ou não criou o produto");
+        }
+
+        return new Produto(
+                this.id,
+                nome != null ? nome : this.nome,
+                descricao != null ? descricao : this.descricao,
+                categoria != null ? categoria : this.categoria,
+                preco != null ? preco : this.preco,
+                this.fornecedorId
+                );
+    }
 }

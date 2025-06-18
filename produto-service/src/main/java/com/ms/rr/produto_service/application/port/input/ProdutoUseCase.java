@@ -1,5 +1,6 @@
 package com.ms.rr.produto_service.application.port.input;
 
+import com.ms.rr.produto_service.application.dto.out.ProdutoResponse;
 import com.ms.rr.produto_service.domain.model.ProdutoDomain;
 import org.springframework.data.domain.Page;
 import reactor.core.publisher.Mono;
@@ -16,6 +17,8 @@ public interface ProdutoUseCase {
     Page<ProdutoDomain> buscarTodosProdutos(int page, int size);
 
     Page<ProdutoDomain> buscarProdutosPorCategoria(String categoria, int page, int size);
+
+    Mono<ProdutoResponse> atualizarProduto(Long id, ProdutoDomain produtoDomain);
 
     void excluir(Long id);
 }
