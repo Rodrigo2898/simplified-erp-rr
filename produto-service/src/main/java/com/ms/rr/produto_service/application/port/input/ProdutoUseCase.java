@@ -8,17 +8,13 @@ import reactor.core.publisher.Mono;
 
 public interface ProdutoUseCase {
 
-    Mono<Void> salvarProduto(ProdutoDomain produtoDomain);
-
-    void salvar(ProdutoDomain produtoDomain);
+    Mono<Void> salvar(ProdutoDomain produtoDomain);
 
     ProdutoDomain buscarPorId(Long id);
 
     Page<ProdutoDomain> buscarTodosProdutos(int page, int size);
 
     Page<ProdutoDomain> buscarProdutosPorCategoria(String categoria, int page, int size);
-
-    Mono<ProdutoResponse> atualizarProduto(Long id, ProdutoDomain produtoDomain);
 
     void excluir(Long id);
 }

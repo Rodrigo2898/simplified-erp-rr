@@ -20,14 +20,9 @@ public class ProdutoRepositoryAdapter implements ProdutoOutputPort {
     }
 
     @Override
-    public Mono<Void> saveProduto(ProdutoDomain produto) {
+    public Mono<Void> save(ProdutoDomain produto) {
         produtoRepository.save(Produto.fromDomain(produto));
         return Mono.empty();
-    }
-
-    @Override
-    public void save(ProdutoDomain produtoDomain) {
-        produtoRepository.save(Produto.fromDomain(produtoDomain));
     }
 
     @Override

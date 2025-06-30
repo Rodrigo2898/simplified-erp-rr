@@ -26,24 +26,15 @@ public class ProdutoResourceImpl implements ProdutoResource {
         this.produtoApi = produtoApi;
     }
 
-
     @Override
-    public Mono<ResponseEntity<String>> createProduto(CreateProduto createProduto) {
+    public Mono<ResponseEntity<String>> create(CreateProduto createProduto) {
         log.info("Criando produto com fornecedor válido: {}", createProduto.toString());
-
-        return produtoApi.saveProduto(createProduto)
+        return produtoApi.create(createProduto)
                 .then(Mono.just(ResponseEntity.status(HttpStatus.CREATED).body("Produto com fornecedor criado com sucesso")))
                 .onErrorResume(e -> {
                     log.error("Erro ao criar produto: {}", e.getMessage(), e);
                     return Mono.just(ResponseEntity.badRequest().build());
                 });
-    }
-
-    @Override
-    public ResponseEntity<String> create(CreateProduto createProduto) {
-        log.info("Criando produto: {}", createProduto);
-        produtoApi.create(createProduto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Produto criado com sucesso");
     }
 
     @Override

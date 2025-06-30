@@ -12,11 +12,8 @@ import reactor.core.publisher.Mono;
 
 public interface ProdutoResource {
 
-    @PostMapping("/client")
-    Mono<ResponseEntity<String>> createProduto(@Valid @RequestBody CreateProduto createProduto);
-
     @PostMapping
-    ResponseEntity<String> create(@Valid @RequestBody CreateProduto createProduto);
+    Mono<ResponseEntity<String>> create(@Valid @RequestBody CreateProduto createProduto);
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<ProdutoResponse> findById(@PathVariable("id") Long id);

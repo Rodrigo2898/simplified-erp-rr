@@ -1,6 +1,5 @@
 package com.ms.rr.produto_service.domain.service.impl;
 
-import com.ms.rr.produto_service.application.dto.out.ProdutoResponse;
 import com.ms.rr.produto_service.application.port.input.ProdutoUseCase;
 import com.ms.rr.produto_service.application.port.output.ProdutoOutputPort;
 import com.ms.rr.produto_service.domain.model.ProdutoDomain;
@@ -22,16 +21,10 @@ public class ProdutoService implements ProdutoUseCase {
         this.pessoaWebClientAdapter = pessoaWebClientAdapter;
     }
 
-
     @Override
-    public Mono<Void> salvarProduto(ProdutoDomain produtoDomain) {
+    public Mono<Void> salvar(ProdutoDomain produtoDomain) {
         return pessoaWebClientAdapter.findFornecedorById(produtoDomain.fornecedorId())
-                .flatMap(fornecedorDTO -> produtoOutputPort.saveProduto(produtoDomain));
-    }
-
-    @Override
-    public void salvar(ProdutoDomain produtoDomain) {
-        produtoOutputPort.save(produtoDomain);
+                .flatMap(fornecedorDTO -> produtoOutputPort.save(produtoDomain));
     }
 
     @Override
@@ -49,11 +42,6 @@ public class ProdutoService implements ProdutoUseCase {
     public Page<ProdutoDomain> buscarProdutosPorCategoria(String categoria, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return produtoOutputPort.findAllByCategoria(categoria, pageable);
-    }
-
-    @Override
-    public Mono<ProdutoResponse> atualizarProduto(Long id, ProdutoDomain produtoDomain) {
-        return null;
     }
 
     @Override

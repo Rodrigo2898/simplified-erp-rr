@@ -20,13 +20,8 @@ public class ProdutoApiImpl implements ProdutoApi {
     }
 
     @Override
-    public Mono<Void> saveProduto(CreateProduto produto) {
-        return produtoUseCase.salvarProduto(produto.toDomain());
-    }
-
-    @Override
-    public void create(CreateProduto createProduto) {
-        produtoUseCase.salvar(createProduto.toDomain());
+    public Mono<Void> create(CreateProduto produto) {
+        return produtoUseCase.salvar(produto.toDomain());
     }
 
     @Override

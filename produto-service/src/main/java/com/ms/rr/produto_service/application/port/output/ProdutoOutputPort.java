@@ -7,9 +7,7 @@ import reactor.core.publisher.Mono;
 
 public interface ProdutoOutputPort {
 
-    Mono<Void> saveProduto(ProdutoDomain produto);
-
-    void save(ProdutoDomain produtoDomain);
+    Mono<Void> save(ProdutoDomain produto);
 
     ProdutoDomain findById(Long id);
 

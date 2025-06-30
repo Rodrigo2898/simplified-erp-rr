@@ -8,9 +8,7 @@ import reactor.core.publisher.Mono;
 
 public interface ProdutoApi {
 
-    Mono<Void> saveProduto(CreateProduto produto);
-
-    void create(CreateProduto createDTO);
+    Mono<Void> create(CreateProduto produto);
 
     Page<ProdutoResponse> list(int page, int size);
 
