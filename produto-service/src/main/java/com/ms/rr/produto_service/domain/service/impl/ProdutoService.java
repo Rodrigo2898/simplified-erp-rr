@@ -2,6 +2,8 @@ package com.ms.rr.produto_service.domain.service.impl;
 
 import com.ms.rr.produto_service.application.port.input.ProdutoUseCase;
 import com.ms.rr.produto_service.application.port.output.ProdutoOutputPort;
+import com.ms.rr.produto_service.domain.exception.FornecedorNotFoundException;
+import com.ms.rr.produto_service.domain.exception.ProdutoNotFoundException;
 import com.ms.rr.produto_service.domain.model.ProdutoDomain;
 import com.ms.rr.produto_service.infrastructure.adapter.input.web.client.PessoaWebClientAdapter;
 import org.springframework.data.domain.Page;
@@ -9,6 +11,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import static com.ms.rr.produto_service.domain.exception.BaseErrorMessage.FORNECEDOR_NOT_FOUND;
+import static com.ms.rr.produto_service.domain.exception.BaseErrorMessage.PRODUTO_NOT_FOUND;
 
 @Service
 public class ProdutoService implements ProdutoUseCase {
@@ -24,12 +29,20 @@ public class ProdutoService implements ProdutoUseCase {
     @Override
     public Mono<Void> salvar(ProdutoDomain produtoDomain) {
         return pessoaWebClientAdapter.findFornecedorById(produtoDomain.fornecedorId())
+                .switchIfEmpty(Mono.defer(() -> Mono.error(
+                        new FornecedorNotFoundException(FORNECEDOR_NOT_FOUND.params(produtoDomain.fornecedorId().toString())
+                                .getMessage())
+                )))
                 .flatMap(fornecedorDTO -> produtoOutputPort.save(produtoDomain));
     }
 
     @Override
     public ProdutoDomain buscarPorId(Long id) {
-        return produtoOutputPort.findById(id);
+        var produto = produtoOutputPort.findById(id);
+        if (produto != null) {
+            return produto;
+        }
+        throw new ProdutoNotFoundException(PRODUTO_NOT_FOUND.params(id.toString()).getMessage());
     }
 
     @Override
@@ -46,6 +59,9 @@ public class ProdutoService implements ProdutoUseCase {
 
     @Override
     public void excluir(Long id) {
-        produtoOutputPort.delete(id);
+        if (produtoOutputPort.findById(id) != null) {
+            produtoOutputPort.delete(id);
+        }
+        throw new ProdutoNotFoundException(PRODUTO_NOT_FOUND.params(id.toString()).getMessage());
     }
 }

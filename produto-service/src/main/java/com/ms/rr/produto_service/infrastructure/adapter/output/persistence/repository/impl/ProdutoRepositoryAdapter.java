@@ -4,7 +4,6 @@ import com.ms.rr.produto_service.application.port.output.ProdutoOutputPort;
 import com.ms.rr.produto_service.domain.model.ProdutoDomain;
 import com.ms.rr.produto_service.infrastructure.adapter.output.persistence.entity.Produto;
 import com.ms.rr.produto_service.infrastructure.adapter.output.persistence.repository.ProdutoRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -28,8 +27,7 @@ public class ProdutoRepositoryAdapter implements ProdutoOutputPort {
     @Override
     public ProdutoDomain findById(Long id) {
         return produtoRepository.findById(id)
-                .map(Produto::toDomain)
-                .orElseThrow(() -> new EntityNotFoundException("Produto: " + id + " não encontrado"));
+                .map(Produto::toDomain).orElseThrow();
     }
 
     @Override
