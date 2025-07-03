@@ -33,7 +33,13 @@ public class ProdutoService implements ProdutoUseCase {
                         new FornecedorNotFoundException(FORNECEDOR_NOT_FOUND.params(produtoDomain.fornecedorId().toString())
                                 .getMessage())
                 )))
-                .flatMap(fornecedorDTO -> produtoOutputPort.save(produtoDomain));
+                .flatMap(fornecedorDTO -> produtoOutputPort.save(produtoDomain))
+                .onErrorMap(e -> {
+                    if (!(e instanceof FornecedorNotFoundException)) {
+                        return new RuntimeException("Erro ao salvar produto", e);
+                    }
+                    return e;
+                });
     }
 
     @Override
@@ -47,12 +53,24 @@ public class ProdutoService implements ProdutoUseCase {
 
     @Override
     public Page<ProdutoDomain> buscarTodosProdutos(int page, int size) {
+        if (page < 0) {
+            throw new IllegalArgumentException("Número da página não pode ser negativo");
+        }
+        if (size <= 0) {
+            throw new IllegalArgumentException("Tamnho da página deve ser maior que zero");
+        }
         Pageable pageable = PageRequest.of(page, size);
         return produtoOutputPort.findAll(pageable);
     }
 
     @Override
     public Page<ProdutoDomain> buscarProdutosPorCategoria(String categoria, int page, int size) {
+        if (page < 0) {
+            throw new IllegalArgumentException("Número da página não pode ser negativo");
+        }
+        if (size <= 0) {
+            throw new IllegalArgumentException("Tamnho da página deve ser maior que zero");
+        }
         Pageable pageable = PageRequest.of(page, size);
         return produtoOutputPort.findAllByCategoria(categoria, pageable);
     }
@@ -61,6 +79,7 @@ public class ProdutoService implements ProdutoUseCase {
     public void excluir(Long id) {
         if (produtoOutputPort.findById(id) != null) {
             produtoOutputPort.delete(id);
+            return;
         }
         throw new ProdutoNotFoundException(PRODUTO_NOT_FOUND.params(id.toString()).getMessage());
     }
