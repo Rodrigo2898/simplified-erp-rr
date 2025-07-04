@@ -16,6 +16,8 @@ public class BaseErrorMessage {
     public static final BaseErrorMessage GENERIC_MAX_RETRIES = new BaseErrorMessage("generic.maxRetries");
     public static final BaseErrorMessage PRODUTO_NOT_FOUND = new BaseErrorMessage("NotFound.produto");
     public static final BaseErrorMessage FORNECEDOR_NOT_FOUND = new BaseErrorMessage("NotFound.produto.fornecedor");
+    public static final BaseErrorMessage INVALID_PAGE_NUMBER = new BaseErrorMessage("Pagination.invalid.page.number");
+    public static final BaseErrorMessage INVALID_PAGE_SIZE = new BaseErrorMessage("Pagination.invalid.page.size");
 
     private final String key;
     private String[] params;

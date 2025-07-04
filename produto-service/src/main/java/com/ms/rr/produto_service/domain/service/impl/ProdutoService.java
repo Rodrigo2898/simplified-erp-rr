@@ -3,6 +3,7 @@ package com.ms.rr.produto_service.domain.service.impl;
 import com.ms.rr.produto_service.application.port.input.ProdutoUseCase;
 import com.ms.rr.produto_service.application.port.output.ProdutoOutputPort;
 import com.ms.rr.produto_service.domain.exception.FornecedorNotFoundException;
+import com.ms.rr.produto_service.domain.exception.InvalidPaginationException;
 import com.ms.rr.produto_service.domain.exception.ProdutoNotFoundException;
 import com.ms.rr.produto_service.domain.model.ProdutoDomain;
 import com.ms.rr.produto_service.infrastructure.adapter.input.web.client.PessoaWebClientAdapter;
@@ -12,8 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import static com.ms.rr.produto_service.domain.exception.BaseErrorMessage.FORNECEDOR_NOT_FOUND;
-import static com.ms.rr.produto_service.domain.exception.BaseErrorMessage.PRODUTO_NOT_FOUND;
+import static com.ms.rr.produto_service.domain.exception.BaseErrorMessage.*;
 
 @Service
 public class ProdutoService implements ProdutoUseCase {
@@ -54,10 +54,10 @@ public class ProdutoService implements ProdutoUseCase {
     @Override
     public Page<ProdutoDomain> buscarTodosProdutos(int page, int size) {
         if (page < 0) {
-            throw new IllegalArgumentException("Número da página não pode ser negativo");
+            throw new InvalidPaginationException(INVALID_PAGE_NUMBER.getMessage());
         }
         if (size <= 0) {
-            throw new IllegalArgumentException("Tamnho da página deve ser maior que zero");
+            throw new InvalidPaginationException(INVALID_PAGE_SIZE.getMessage());
         }
         Pageable pageable = PageRequest.of(page, size);
         return produtoOutputPort.findAll(pageable);
@@ -66,10 +66,10 @@ public class ProdutoService implements ProdutoUseCase {
     @Override
     public Page<ProdutoDomain> buscarProdutosPorCategoria(String categoria, int page, int size) {
         if (page < 0) {
-            throw new IllegalArgumentException("Número da página não pode ser negativo");
+            throw new InvalidPaginationException(INVALID_PAGE_NUMBER.getMessage());
         }
         if (size <= 0) {
-            throw new IllegalArgumentException("Tamnho da página deve ser maior que zero");
+            throw new InvalidPaginationException(INVALID_PAGE_SIZE.getMessage());
         }
         Pageable pageable = PageRequest.of(page, size);
         return produtoOutputPort.findAllByCategoria(categoria, pageable);

@@ -28,7 +28,11 @@ public abstract class AbstractHandleException<T extends Exception> {
     }
 
     protected ApiError buildError(final HttpStatus status, final String errorDescription) {
-        return new ApiError(status.value(), errorDescription, LocalDateTime.now());
+        return ApiError.builder()
+                .status(status.value())
+                .message(errorDescription)
+                .timestamp(LocalDateTime.now())
+                .build();
     }
 
     protected Mono<Void> writeResponse(ServerWebExchange exchange, ApiError problemResponse) {
