@@ -1,17 +1,16 @@
 package com.ms.rr.produto_service.adapter.output.persistence.repository;
 
-import com.ms.rr.produto_service.adapter.output.persistence.entity.Produto;
-import org.springframework.data.domain.Page;
+import com.ms.rr.produto_service.adapter.output.persistence.document.Produto;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-public interface ProdutoRepository extends JpaRepository<Produto, Long> {
+public interface ProdutoRepository extends ReactiveMongoRepository<Produto, Long> {
 
-    @Query(value = "SELECT p FROM Produto p ORDER BY p.id")
-    Page<Produto> findAllProductsWithPagination(Pageable pageable);
+    Flux<Produto> findAll(Pageable pageable);
 
-    @Query(value = "SELECT p FROM Produto p WHERE LOWER(p.categoria) LIKE LOWER(CONCAT('%', :categoria, '%')) ")
-    Page<Produto> findAllProductsByCategoria(@Param("categoria") String categoria, Pageable pageable);
+    Flux<Produto> findAllByCategoria(String categoria, Pageable pageable);
+
+    Mono<Long> countByCategoria(String categoria);
 }

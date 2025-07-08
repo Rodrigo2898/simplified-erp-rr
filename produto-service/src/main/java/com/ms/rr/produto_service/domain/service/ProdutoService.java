@@ -9,7 +9,10 @@ import com.ms.rr.produto_service.domain.port.output.ProdutoOutputPort;
 import com.ms.rr.produto_service.domain.exception.FornecedorNotFoundException;
 import com.ms.rr.produto_service.domain.exception.InvalidPaginationException;
 import com.ms.rr.produto_service.domain.exception.ProdutoNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ import static com.ms.rr.produto_service.domain.exception.BaseErrorMessage.*;
 @Service
 public class ProdutoService implements ProdutoUseCase {
 
+    private final Logger log = LoggerFactory.getLogger(ProdutoService.class);
     private final ProdutoOutputPort produtoOutputPort;
     private final FornecedorOutputPort fornecedorOutputPort;
 
@@ -31,30 +35,27 @@ public class ProdutoService implements ProdutoUseCase {
     @Override
     public Mono<Void> salvar(CreateProduto createProduto) {
         return fornecedorOutputPort.findFornecedorById(createProduto.fornecedorId())
-                .switchIfEmpty(Mono.defer(() -> Mono.error(
-                        new FornecedorNotFoundException(FORNECEDOR_NOT_FOUND.params(createProduto.fornecedorId().toString())
-                                .getMessage())
-                )))
+                .switchIfEmpty(Mono.error(new FornecedorNotFoundException(
+                        FORNECEDOR_NOT_FOUND.params(createProduto.fornecedorId().toString()).getMessage())))
                 .flatMap(fornecedorDTO -> produtoOutputPort.save(createProduto.toDomain()))
-                .onErrorMap(e -> {
-                    if (!(e instanceof FornecedorNotFoundException)) {
-                        return new RuntimeException("Erro ao salvar produto", e);
-                    }
-                    return e;
-                });
+                .doOnSuccess(produto -> log.info("Produto Salvo com sucesso"))
+                .doOnError(e -> log.error("Erro ao salvar produto", e))
+                .then();
     }
 
     @Override
-    public ProdutoResponse buscarPorId(Long id) {
-        var produto = ProdutoResponse.fromDomain(produtoOutputPort.findById(id));
-        if (produto == null) {
-            throw new ProdutoNotFoundException(PRODUTO_NOT_FOUND.params(id.toString()).getMessage());
-        }
-        return produto;
+    public Mono<ProdutoResponse> buscarPorId(Long id) {
+        return produtoOutputPort.findById(id)
+                .switchIfEmpty(Mono.error(new ProdutoNotFoundException(
+                        PRODUTO_NOT_FOUND.params(id.toString()).getMessage()
+                )))
+                .map(ProdutoResponse::fromDomain)
+                .doOnSuccess(produto -> log.info("Produto encontrado: {}", id))
+                .doOnError(e -> log.error("Erro ao buscar produto", e));
     }
 
     @Override
-    public Page<ProdutoResponse> buscarTodosProdutos(int page, int size) {
+    public Mono<Page<ProdutoResponse>> buscarTodosProdutos(int page, int size) {
         if (page < 0) {
             throw new InvalidPaginationException(INVALID_PAGE_NUMBER.getMessage());
         }
@@ -63,11 +64,14 @@ public class ProdutoService implements ProdutoUseCase {
         }
         Pageable pageable = PageRequest.of(page, size);
         return produtoOutputPort.findAll(pageable)
-                .map(ProdutoResponse::fromDomain);
+                .map(ProdutoResponse::fromDomain)
+                .collectList()
+                .zipWith(produtoOutputPort.count())
+                .map(tuple -> new PageImpl<>(tuple.getT1(), pageable, tuple.getT2()));
     }
 
     @Override
-    public Page<ProdutoResponse> buscarProdutosPorCategoria(String categoria, int page, int size) {
+    public Mono<Page<ProdutoResponse>> buscarProdutosPorCategoria(String categoria, int page, int size) {
         if (page < 0) {
             throw new InvalidPaginationException(INVALID_PAGE_NUMBER.getMessage());
         }
@@ -76,7 +80,10 @@ public class ProdutoService implements ProdutoUseCase {
         }
         Pageable pageable = PageRequest.of(page, size);
         return produtoOutputPort.findAllByCategoria(categoria, pageable)
-                .map(ProdutoResponse::fromDomain);
+                .map(ProdutoResponse::fromDomain)
+                .collectList()
+                .zipWith(produtoOutputPort.countByCategoria(categoria))
+                .map(tuple -> new PageImpl<>(tuple.getT1(), pageable, tuple.getT2()));
     }
 
     /**
@@ -85,22 +92,22 @@ public class ProdutoService implements ProdutoUseCase {
      * Melhorar a atualização de produtos com os fornecedores vinculados
      * */
     @Override
-    public ProdutoResponse atualizar(Long id, UpdateProduto updateProduto) {
-        var produtoExistente = ProdutoResponse.fromDomain(produtoOutputPort.findById(id));
-        if (produtoExistente == null) {
-            throw new ProdutoNotFoundException(PRODUTO_NOT_FOUND.params(id.toString()).getMessage());
-        }
-        produtoOutputPort.save(updateProduto.toDomain(produtoExistente.id()))
-                .onErrorMap(e -> new RuntimeException("Erro ao atualizar produto", e));
-        return ProdutoResponse.fromDomain(produtoOutputPort.findById(id));
+    public Mono<ProdutoResponse> atualizar(Long id, UpdateProduto updateProduto) {
+        return produtoOutputPort.findById(id)
+                .switchIfEmpty(Mono.error(new ProdutoNotFoundException(
+                        PRODUTO_NOT_FOUND.params(id.toString()).getMessage())))
+                .flatMap(produto -> produtoOutputPort.save(updateProduto.toDomain(produto.id())))
+                .map(ProdutoResponse::fromDomain)
+                .doOnSuccess(produto -> log.info("Produto atualizado: {}", id))
+                .doOnError(e -> log.error("Erro ao atualizar produto", e));
     }
 
     @Override
-    public void excluir(Long id) {
-        if (produtoOutputPort.findById(id) != null) {
-            produtoOutputPort.delete(id);
-            return;
-        }
-        throw new ProdutoNotFoundException(PRODUTO_NOT_FOUND.params(id.toString()).getMessage());
+    public Mono<Void> excluir(Long id) {
+        return produtoOutputPort.findById(id)
+                .switchIfEmpty(Mono.error(new ProdutoNotFoundException(
+                        PRODUTO_NOT_FOUND.params(id.toString()).getMessage())))
+                .flatMap(produto -> produtoOutputPort.delete(id))
+                .doOnError(e -> log.error("Erro ao excluir produto", e));
     }
 }

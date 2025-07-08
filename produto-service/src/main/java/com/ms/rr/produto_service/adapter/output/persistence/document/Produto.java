@@ -1,12 +1,12 @@
-package com.ms.rr.produto_service.adapter.output.persistence.entity;
+package com.ms.rr.produto_service.adapter.output.persistence.document;
 
 import com.ms.rr.produto_service.domain.model.ProdutoDomain;
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "tb_produto")
+@Document(collection = "products")
 public class Produto {
 
     @Id
@@ -15,7 +15,6 @@ public class Produto {
     private String descricao;
     private String categoria;
     private BigDecimal preco;
-    @Column(name = "fornecedor_id")
     private Long fornecedorId;
 
     public Produto() {
