@@ -1,20 +1,16 @@
 version: '4'
 services:
-  postgres-user:
-    image: postgres:16.6
-    container_name: postgres-produto
+  mongo_product:
+    image: mongo:latest
+    container_name: mongo_consent
     environment:
-      POSTGRES_USER: rod
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: produto_service
+      MONGO_INITDB_ROOT_USERNAME: produto
+      MONGO_INITDB_ROOT_PASSWORD: produto
+      MONGO_INITDB_DATABASE: produtodb
     ports:
-      - "5433:5432"
+      - "27017:27017"
     volumes:
-      # Monta o arquivo init.sql para inicialização do banco
-      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
-      # Volume para os dados do banco de dados.
-      - postgres-data:/var/lib/postgresql/data
+      - mongo_data:/data/db
 
-# Definindo o volume Docker para os dados
 volumes:
-  postgres-data:
+  mongo_data:
