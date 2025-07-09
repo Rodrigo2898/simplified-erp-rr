@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static com.ms.rr.produto_service.domain.exception.BaseErrorMessage.*;
@@ -55,35 +56,15 @@ public class ProdutoService implements ProdutoUseCase {
     }
 
     @Override
-    public Mono<Page<ProdutoResponse>> buscarTodosProdutos(int page, int size) {
-        if (page < 0) {
-            throw new InvalidPaginationException(INVALID_PAGE_NUMBER.getMessage());
-        }
-        if (size <= 0) {
-            throw new InvalidPaginationException(INVALID_PAGE_SIZE.getMessage());
-        }
-        Pageable pageable = PageRequest.of(page, size);
-        return produtoOutputPort.findAll(pageable)
-                .map(ProdutoResponse::fromDomain)
-                .collectList()
-                .zipWith(produtoOutputPort.count())
-                .map(tuple -> new PageImpl<>(tuple.getT1(), pageable, tuple.getT2()));
+    public Flux<ProdutoResponse> buscarTodosProdutos() {
+        return produtoOutputPort.findAll()
+                .map(ProdutoResponse::fromDomain);
     }
 
     @Override
-    public Mono<Page<ProdutoResponse>> buscarProdutosPorCategoria(String categoria, int page, int size) {
-        if (page < 0) {
-            throw new InvalidPaginationException(INVALID_PAGE_NUMBER.getMessage());
-        }
-        if (size <= 0) {
-            throw new InvalidPaginationException(INVALID_PAGE_SIZE.getMessage());
-        }
-        Pageable pageable = PageRequest.of(page, size);
-        return produtoOutputPort.findAllByCategoria(categoria, pageable)
-                .map(ProdutoResponse::fromDomain)
-                .collectList()
-                .zipWith(produtoOutputPort.countByCategoria(categoria))
-                .map(tuple -> new PageImpl<>(tuple.getT1(), pageable, tuple.getT2()));
+    public Flux<ProdutoResponse> buscarProdutosPorCategoria(String categoria) {
+        return produtoOutputPort.findAllByCategoria(categoria)
+                .map(ProdutoResponse::fromDomain);
     }
 
     /**

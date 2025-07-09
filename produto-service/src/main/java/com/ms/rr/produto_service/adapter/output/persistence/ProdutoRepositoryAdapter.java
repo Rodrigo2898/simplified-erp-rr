@@ -4,8 +4,6 @@ import com.ms.rr.produto_service.adapter.output.persistence.repository.ProdutoRe
 import com.ms.rr.produto_service.domain.port.output.ProdutoOutputPort;
 import com.ms.rr.produto_service.domain.model.ProdutoDomain;
 import com.ms.rr.produto_service.adapter.output.persistence.document.Produto;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -33,25 +31,15 @@ public class ProdutoRepositoryAdapter implements ProdutoOutputPort {
     }
 
     @Override
-    public Flux<ProdutoDomain> findAll(Pageable pageable) {
-        return produtoRepository.findAll(pageable)
+    public Flux<ProdutoDomain> findAll() {
+        return produtoRepository.findAll()
                 .map(Produto::toDomain);
     }
 
     @Override
-    public Flux<ProdutoDomain> findAllByCategoria(String categoria, Pageable pageable) {
-        return produtoRepository.findAllByCategoria(categoria, pageable)
+    public Flux<ProdutoDomain> findAllByCategoria(String categoria) {
+        return produtoRepository.findAllByCategoria(categoria)
                 .map(Produto::toDomain);
-    }
-
-    @Override
-    public Mono<Long> count() {
-        return produtoRepository.count();
-    }
-
-    @Override
-    public Mono<Long> countByCategoria(String categoria) {
-        return produtoRepository.countByCategoria(categoria);
     }
 
     @Override

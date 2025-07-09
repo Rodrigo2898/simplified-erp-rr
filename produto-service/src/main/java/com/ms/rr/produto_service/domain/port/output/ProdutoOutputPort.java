@@ -11,13 +11,9 @@ public interface ProdutoOutputPort {
 
     Mono<ProdutoDomain> findById(Long id);
 
-    Flux<ProdutoDomain> findAll(Pageable pageable);
+    Flux<ProdutoDomain> findAll();
 
-    Flux<ProdutoDomain> findAllByCategoria(String categoria, Pageable pageable);
-
-    Mono<Long> count();
-
-    Mono<Long> countByCategoria(String categoria);
+    Flux<ProdutoDomain> findAllByCategoria(String categoria);
 
     Mono<Void> delete(Long id);
 }
