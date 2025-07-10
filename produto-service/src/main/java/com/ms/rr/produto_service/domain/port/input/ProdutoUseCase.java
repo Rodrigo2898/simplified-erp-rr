@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 public interface ProdutoUseCase {
 
-    Mono<Void> salvar(CreateProduto createProduto);
+    Mono<ProdutoResponse> salvar(CreateProduto createProduto);
 
     Mono<ProdutoResponse> buscarPorId(Long id);
 

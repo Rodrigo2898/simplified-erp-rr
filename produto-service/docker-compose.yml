@@ -1,8 +1,8 @@
 version: '4'
 services:
-  mongo_product:
+  mongo_produto:
     image: mongo:latest
-    container_name: mongo_consent
+    container_name: mongo_produto
     environment:
       MONGO_INITDB_ROOT_USERNAME: produto
       MONGO_INITDB_ROOT_PASSWORD: produto

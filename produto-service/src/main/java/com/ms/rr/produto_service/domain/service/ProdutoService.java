@@ -7,14 +7,9 @@ import com.ms.rr.produto_service.domain.port.input.ProdutoUseCase;
 import com.ms.rr.produto_service.domain.port.output.FornecedorOutputPort;
 import com.ms.rr.produto_service.domain.port.output.ProdutoOutputPort;
 import com.ms.rr.produto_service.domain.exception.FornecedorNotFoundException;
-import com.ms.rr.produto_service.domain.exception.InvalidPaginationException;
 import com.ms.rr.produto_service.domain.exception.ProdutoNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -34,14 +29,14 @@ public class ProdutoService implements ProdutoUseCase {
     }
 
     @Override
-    public Mono<Void> salvar(CreateProduto createProduto) {
+    public Mono<ProdutoResponse> salvar(CreateProduto createProduto) {
         return fornecedorOutputPort.findFornecedorById(createProduto.fornecedorId())
                 .switchIfEmpty(Mono.error(new FornecedorNotFoundException(
                         FORNECEDOR_NOT_FOUND.params(createProduto.fornecedorId().toString()).getMessage())))
                 .flatMap(fornecedorDTO -> produtoOutputPort.save(createProduto.toDomain()))
+                .map(ProdutoResponse::fromDomain)
                 .doOnSuccess(produto -> log.info("Produto Salvo com sucesso"))
-                .doOnError(e -> log.error("Erro ao salvar produto", e))
-                .then();
+                .doOnError(e -> log.error("Erro ao salvar produto", e));
     }
 
     @Override
