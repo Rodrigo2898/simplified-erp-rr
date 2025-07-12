@@ -2,7 +2,7 @@ package com.ms.rr.produto_service.factory;
 
 import com.ms.rr.produto_service.domain.model.FornecedorDomain;
 
-public class CreateFornecedorFactory {
+public class FornecedorFactory {
 
     public static FornecedorDomain createFornecedor() {
         return new FornecedorDomain(
