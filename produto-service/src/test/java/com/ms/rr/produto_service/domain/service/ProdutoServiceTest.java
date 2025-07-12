@@ -1,6 +1,7 @@
 package com.ms.rr.produto_service.domain.service;
 
 import com.ms.rr.produto_service.domain.dto.in.CreateProduto;
+import com.ms.rr.produto_service.domain.dto.out.ProdutoResponse;
 import com.ms.rr.produto_service.domain.exception.FornecedorNotFoundException;
 import com.ms.rr.produto_service.domain.exception.ProdutoNotFoundException;
 import com.ms.rr.produto_service.domain.model.FornecedorDomain;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -98,7 +100,7 @@ class ProdutoServiceTest {
 
             // ACT
             StepVerifier.create(produtoService.buscarPorId(id))
-                    .expectNextMatches(produto -> produto.id().equals(id))
+                    .expectNext(response)
                     .verifyComplete();
 
             verify(produtoOutputPort, times(1)).findById(id);
@@ -107,16 +109,68 @@ class ProdutoServiceTest {
 
         @Test
         void shouldThrowExceptionWhenProdutoNotFound() {
+            Long id = 987456321L;
             when(produtoOutputPort.findById(domain.id()))
                     .thenReturn(Mono.error(new ProdutoNotFoundException(
-                            PRODUTO_NOT_FOUND.params(domain.id().toString()).getMessage()
+                            PRODUTO_NOT_FOUND.params(id.toString()).getMessage()
                     )));
 
-            StepVerifier.create(produtoService.buscarPorId(domain.id()))
+            StepVerifier.create(produtoService.buscarPorId(id))
                     .expectErrorMatches(throwable -> throwable instanceof ProdutoNotFoundException &&
                             throwable.getMessage().equals(PRODUTO_NOT_FOUND
                                     .params(domain.fornecedorId().toString()).getMessage()))
                     .verify();
+
+            verify(produtoOutputPort, times(1)).findById(id);
+            verifyNoMoreInteractions(produtoOutputPort);
         }
+    }
+
+    @Nested
+    class BuscandoTodosOsProdutos {
+
+        @Test
+        void shouldFindAllProdutosSuccessfully() {
+            var produto1 = ProdutoFactory.buildProdutoWithId(1L);
+            var produto2 = ProdutoFactory.buildProdutoWithId(2L);
+            
+            when(produtoOutputPort.findAll())
+                    .thenReturn(Flux.just(produto1, produto2));
+
+            StepVerifier.create(produtoService.buscarTodosProdutos())
+                    .expectNext(ProdutoResponse.fromDomain(produto1))
+                    .expectNext(ProdutoResponse.fromDomain(produto2))
+                    .verifyComplete();
+
+            verify(produtoOutputPort, times(1)).findAll();
+            verifyNoMoreInteractions(produtoOutputPort);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenProdutoNotFound() {}
+    }
+
+    @Nested
+    class BuscandoProdutosPorCategoria {
+
+        @Test
+        void shouldfindAllByCategoriaSuccessfully() {
+            String categoria = "Roupas";
+            var produto1 = ProdutoFactory.buildProdutoWithCategoria(categoria);
+            var produto2 = ProdutoFactory.buildProdutoWithCategoria(categoria);
+            when(produtoOutputPort.findAllByCategoria(categoria))
+                    .thenReturn(Flux.just(produto1, produto2));
+
+            StepVerifier.create(produtoService.buscarProdutosPorCategoria(categoria))
+                    .expectNext(ProdutoResponse.fromDomain(produto1))
+                    .expectNext(ProdutoResponse.fromDomain(produto2))
+                    .verifyComplete();
+
+            verify(produtoOutputPort, times(1)).findAllByCategoria(categoria);
+            verifyNoMoreInteractions(produtoOutputPort);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenCategoriaNotFound() {}
     }
 }

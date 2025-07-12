@@ -39,4 +39,24 @@ public class ProdutoFactory {
                 123456789L
         );
     }
+
+    public static ProdutoDomain buildProdutoWithId(long id) {
+        return new ProdutoDomain(
+                id,
+                "CAMISA Barcelona",
+                "Camisa Barcelona 24/25",
+                "Roupas",
+                new BigDecimal("123.45"),
+                123456789L);
+    }
+
+    public static ProdutoDomain buildProdutoWithCategoria(String categoria) {
+        return new ProdutoDomain(
+                987456321L,
+                "CAMISA Barcelona",
+                "Camisa Barcelona 24/25",
+                categoria,
+                new BigDecimal("123.45"),
+                123456789L);
+    }
 }
