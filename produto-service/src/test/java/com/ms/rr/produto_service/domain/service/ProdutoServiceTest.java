@@ -1,6 +1,7 @@
 package com.ms.rr.produto_service.domain.service;
 
 import com.ms.rr.produto_service.domain.dto.in.CreateProduto;
+import com.ms.rr.produto_service.domain.dto.in.UpdateProduto;
 import com.ms.rr.produto_service.domain.dto.out.ProdutoResponse;
 import com.ms.rr.produto_service.domain.exception.FornecedorNotFoundException;
 import com.ms.rr.produto_service.domain.exception.ProdutoNotFoundException;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,6 +26,7 @@ import reactor.test.StepVerifier;
 
 import static com.ms.rr.produto_service.domain.exception.BaseErrorMessage.FORNECEDOR_NOT_FOUND;
 import static com.ms.rr.produto_service.domain.exception.BaseErrorMessage.PRODUTO_NOT_FOUND;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -133,7 +136,7 @@ class ProdutoServiceTest {
         void shouldFindAllProdutosSuccessfully() {
             var produto1 = ProdutoFactory.buildProdutoWithId(1L);
             var produto2 = ProdutoFactory.buildProdutoWithId(2L);
-            
+
             when(produtoOutputPort.findAll())
                     .thenReturn(Flux.just(produto1, produto2));
 
@@ -172,5 +175,39 @@ class ProdutoServiceTest {
 
         @Test
         void shouldThrowExceptionWhenCategoriaNotFound() {}
+    }
+
+    @Nested
+    class AtualizandoProduto {
+
+        @Test
+        void shouldUpdateProdutoSuccessfully() {
+            // Arrange
+            Long id = 987456321L;
+            var update = ProdutoFactory.buildUpdateProduto();
+            var domain = ProdutoFactory.buildProdutoWithId(id);
+
+            ArgumentCaptor<UpdateProduto> updateCaptor = ArgumentCaptor.forClass(UpdateProduto.class);
+
+            when(produtoOutputPort.findById(id))
+                    .thenReturn(Mono.just(domain));
+            when(produtoOutputPort.save(any()))
+                    .thenReturn(Mono.just(domain));
+
+
+            // Act
+            Mono<ProdutoResponse> result = produtoService.atualizar(id, update);
+
+            // Assert
+            StepVerifier.create(result)
+                    .expectNextMatches(response ->
+                            response.id().equals(id)
+                                    && response.nome().equals(domain.nome())
+                    )
+                    .verifyComplete();
+
+            verify(produtoOutputPort).findById(id);
+            verify(produtoOutputPort).save(any());
+        }
     }
 }
