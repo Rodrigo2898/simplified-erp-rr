@@ -185,14 +185,12 @@ class ProdutoServiceTest {
             // Arrange
             Long id = 987456321L;
             var update = ProdutoFactory.buildUpdateProduto();
-            var domain = ProdutoFactory.buildProdutoWithId(id);
-
-            ArgumentCaptor<UpdateProduto> updateCaptor = ArgumentCaptor.forClass(UpdateProduto.class);
+            var domainWithId = ProdutoFactory.buildProdutoWithId(id);
 
             when(produtoOutputPort.findById(id))
                     .thenReturn(Mono.just(domain));
             when(produtoOutputPort.save(any()))
-                    .thenReturn(Mono.just(domain));
+                    .thenReturn(Mono.just(domainWithId));
 
 
             // Act
@@ -202,12 +200,36 @@ class ProdutoServiceTest {
             StepVerifier.create(result)
                     .expectNextMatches(response ->
                             response.id().equals(id)
-                                    && response.nome().equals(domain.nome())
+                                    && response.nome().equals(domainWithId.nome())
+                                    && response.descricao().equals(domainWithId.descricao())
                     )
                     .verifyComplete();
 
-            verify(produtoOutputPort).findById(id);
-            verify(produtoOutputPort).save(any());
+            verify(produtoOutputPort, times(1)).findById(id);
+            verify(produtoOutputPort, times(1)).save(any());
+            verifyNoMoreInteractions(produtoOutputPort);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenProdutoNotFound() {
+            Long id = 987456321L;
+            var update = ProdutoFactory.buildUpdateProduto();
+            var domainWithId = ProdutoFactory.buildProdutoWithId(id);
+
+            when(produtoOutputPort.findById(id))
+                    .thenReturn(Mono.error(new ProdutoNotFoundException(
+                            PRODUTO_NOT_FOUND.params(id.toString()).getMessage())));
+
+            Mono<ProdutoResponse> result = produtoService.atualizar(id, update);
+
+            StepVerifier.create(result)
+                    .expectErrorMatches(throwable -> throwable instanceof ProdutoNotFoundException &&
+                            throwable.getMessage().equals(PRODUTO_NOT_FOUND
+                                    .params(domainWithId.id().toString()).getMessage()))
+                    .verify();
+
+            verify(produtoOutputPort, times(1)).findById(id);
+            verifyNoMoreInteractions(produtoOutputPort);
         }
     }
 }
