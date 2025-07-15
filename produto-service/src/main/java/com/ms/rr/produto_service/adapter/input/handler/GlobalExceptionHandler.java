@@ -31,8 +31,8 @@ public class GlobalExceptionHandler implements WebExceptionHandler {
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
         return Mono.error(ex)
-                .onErrorResume(ProdutoNotFoundException.class, e -> productNotFoundHandler.handleException(exchange, e))
                 .onErrorResume(FornecedorNotFoundException.class, e -> fornecedorNotFoundHandler.handleException(exchange, e))
+                .onErrorResume(ProdutoNotFoundException.class, e -> productNotFoundHandler.handleException(exchange, e))
                 .onErrorResume(InvalidPaginationException.class, e -> invalidPaginationHandler.handleException(exchange, e))
                 .onErrorResume(Exception.class, e -> genericHanlder.handleException(exchange, e))
                 .then();

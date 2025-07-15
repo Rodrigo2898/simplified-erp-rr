@@ -6,7 +6,6 @@ import com.ms.rr.produto_service.domain.dto.out.ProdutoResponse;
 import com.ms.rr.produto_service.domain.model.ProdutoDomain;
 
 import java.math.BigDecimal;
-import java.util.Random;
 
 public class ProdutoFactory {
 

@@ -7,8 +7,8 @@ Este projeto é um **ERP Simplificado** para pequenas empresas, permitindo o ger
 - **Spring Boot** (para os microservices)
 - **Spring Cloud Gateway** (API Gateway)
 - **Keycloak** (Autenticação e Autorização)
-- **PostgreSQL** (Pessoas e Produtos)
-- **MongoDB** (Pedidos e Pagamentos)
+- **PostgreSQL** (Pessoas)
+- **MongoDB** (Produtos, Pedidos e Pagamentos)
 - **Kafka/RabbitMQ** (Mensageria para eventos)
 - **Grafana + Prometheus** (Observabilidade)
 - **Docker + Kubernetes** (Orquestração de containers)
@@ -18,7 +18,7 @@ Este projeto é um **ERP Simplificado** para pequenas empresas, permitindo o ger
 1. **API Gateway** → Entrada única para os serviços
 2. **Autenticação** → Keycloak para segurança JWT
 3. **Pessoas (Clientes e Fornecedores)** → PostgreSQL para armazenar dados estruturados
-4. **Produtos (Cadastro de produtos)** → PostgreSQL para cadastros
+4. **Produtos (Cadastro de produtos)** → MongoDB para cadastros
 5. **Estoque (Controle de estoque)** → PostgreSQL
 5. **Pedidos** → MongoDB para flexibilidade e escalabilidade
 6. **Pagamentos** → MongoDB para armazenar transações financeiras
