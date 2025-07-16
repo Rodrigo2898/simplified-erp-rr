@@ -17,9 +17,9 @@ public class FornecedorNotFoundHandler extends AbstractHandleException<Fornecedo
     @Override
     public Mono<Void> handleException(ServerWebExchange exchange, FornecedorNotFoundException ex) {
         return Mono.fromCallable(() -> {
-            preparedExchange(exchange, HttpStatus.BAD_REQUEST);
+            preparedExchange(exchange, HttpStatus.NOT_FOUND);
             return ex.getMessage();
-        }).map(message -> buildError(HttpStatus.BAD_REQUEST, message))
+        }).map(message -> buildError(HttpStatus.NOT_FOUND, message))
                 .doFirst(() -> log.error("==== FornecedorNotFoundException", ex))
                 .flatMap(apiError -> writeResponse(exchange, apiError));
     }

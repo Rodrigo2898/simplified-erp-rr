@@ -18,12 +18,12 @@ public class GlobalExceptionHandler implements WebExceptionHandler {
     private final InvalidPaginationHandler invalidPaginationHandler;
     private final GenericHanlder genericHanlder;
 
-    public GlobalExceptionHandler(ProductNotFoundHandler productNotFoundHandler,
-                                  FornecedorNotFoundHandler fornecedorNotFoundHandler,
+    public GlobalExceptionHandler(FornecedorNotFoundHandler fornecedorNotFoundHandler,
+                                  ProductNotFoundHandler productNotFoundHandler,
                                   InvalidPaginationHandler invalidPaginationHandler,
                                   GenericHanlder genericHanlder) {
-        this.productNotFoundHandler = productNotFoundHandler;
         this.fornecedorNotFoundHandler = fornecedorNotFoundHandler;
+        this.productNotFoundHandler = productNotFoundHandler;
         this.invalidPaginationHandler = invalidPaginationHandler;
         this.genericHanlder = genericHanlder;
     }
