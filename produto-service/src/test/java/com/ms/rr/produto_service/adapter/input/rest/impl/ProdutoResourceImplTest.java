@@ -1,32 +1,37 @@
 package com.ms.rr.produto_service.adapter.input.rest.impl;
 
+import com.ms.rr.produto_service.adapter.input.handler.*;
 import com.ms.rr.produto_service.domain.dto.in.CreateProduto;
+import com.ms.rr.produto_service.domain.dto.out.ProdutoResponse;
 import com.ms.rr.produto_service.domain.port.input.ProdutoUseCase;
 import com.ms.rr.produto_service.factory.ProdutoFactory;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static reactor.core.publisher.Mono.when;
+import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+
+@WebFluxTest(controllers = ProdutoResourceImpl.class)
+@Import({FornecedorNotFoundHandler.class,
+        ProductNotFoundHandler.class,
+        InvalidPaginationHandler.class,
+        GenericHanlder.class})
 class ProdutoResourceImplTest {
 
-    @Mock
-    private ProdutoUseCase produtoUseCase;
+    @Autowired
+    private WebTestClient webTestClient;
 
-    @InjectMocks
-    private ProdutoResourceImpl produtoResource;
+    @MockitoBean
+    private ProdutoUseCase produtoUseCase;
 
     @Nested
     class CreateProdutoResource {
@@ -34,21 +39,21 @@ class ProdutoResourceImplTest {
         @Test
         void shouldCreateProdutoSuccessfully() {
             // Arrange
-            var createProduto = ProdutoFactory.createProduto();
-            var produtoResponse = ProdutoFactory.buildProdutoResponse();
+            CreateProduto createProduto = ProdutoFactory.createProduto();
+            ProdutoResponse produtoResponse = ProdutoFactory.buildProdutoResponse();
 
-            when(produtoUseCase.salvar(any())).thenReturn(Mono.just(produtoResponse));
+            when(produtoUseCase.salvar(any(CreateProduto.class)))
+                    .thenReturn(Mono.just(produtoResponse));
 
-            // Act
-            var response = produtoResource.create(createProduto);
-
-            // Assert
-            StepVerifier.create(response)
-                    .expectNext(produtoResponse)
-                    .verifyComplete();
-
-            verify(produtoUseCase).salvar(createProduto);
+            webTestClient.post()
+                    .uri("/api/produto")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(createProduto)
+                    .exchange()
+                    .expectStatus().isCreated()
+                    .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                    .expectBody(ProdutoResponse.class)
+                    .isEqualTo(produtoResponse);
         }
     }
-
 }
