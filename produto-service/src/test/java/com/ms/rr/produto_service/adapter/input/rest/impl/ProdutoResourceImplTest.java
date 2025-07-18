@@ -3,6 +3,7 @@ package com.ms.rr.produto_service.adapter.input.rest.impl;
 import com.ms.rr.produto_service.adapter.input.handler.*;
 import com.ms.rr.produto_service.domain.dto.in.CreateProduto;
 import com.ms.rr.produto_service.domain.dto.out.ProdutoResponse;
+import com.ms.rr.produto_service.domain.exception.FornecedorNotFoundException;
 import com.ms.rr.produto_service.domain.port.input.ProdutoUseCase;
 import com.ms.rr.produto_service.factory.ProdutoFactory;
 import org.junit.jupiter.api.Nested;
@@ -15,6 +16,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
+import static com.ms.rr.produto_service.domain.exception.BaseErrorMessage.FORNECEDOR_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -38,7 +40,6 @@ class ProdutoResourceImplTest {
 
         @Test
         void shouldCreateProdutoSuccessfully() {
-            // Arrange
             CreateProduto createProduto = ProdutoFactory.createProduto();
             ProdutoResponse produtoResponse = ProdutoFactory.buildProdutoResponse();
 
@@ -54,6 +55,30 @@ class ProdutoResourceImplTest {
                     .expectHeader().contentType(MediaType.APPLICATION_JSON)
                     .expectBody(ProdutoResponse.class)
                     .isEqualTo(produtoResponse);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenFornecedorNotFound() {
+            CreateProduto createProduto = ProdutoFactory.createProduto();
+            Long fornecedorId = createProduto.fornecedorId();
+
+            FornecedorNotFoundException exception = new FornecedorNotFoundException(
+                    FORNECEDOR_NOT_FOUND.params(fornecedorId.toString()).getMessage()
+            );
+
+            when(produtoUseCase.salvar(any(CreateProduto.class)))
+                    .thenReturn(Mono.error(exception));
+
+
+            webTestClient.post()
+                    .uri("/api/produto")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(createProduto)
+                    .exchange()
+                    .expectStatus().isNotFound()
+                    .expectBody()
+                    .jsonPath("$.status").isEqualTo("404")
+                    .jsonPath("$.message").isEqualTo(FORNECEDOR_NOT_FOUND.params(fornecedorId.toString()).getMessage());
         }
     }
 }
