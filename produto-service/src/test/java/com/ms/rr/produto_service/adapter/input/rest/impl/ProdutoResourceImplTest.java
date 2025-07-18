@@ -4,6 +4,7 @@ import com.ms.rr.produto_service.adapter.input.handler.*;
 import com.ms.rr.produto_service.domain.dto.in.CreateProduto;
 import com.ms.rr.produto_service.domain.dto.out.ProdutoResponse;
 import com.ms.rr.produto_service.domain.exception.FornecedorNotFoundException;
+import com.ms.rr.produto_service.domain.exception.ProdutoNotFoundException;
 import com.ms.rr.produto_service.domain.port.input.ProdutoUseCase;
 import com.ms.rr.produto_service.factory.ProdutoFactory;
 import org.junit.jupiter.api.Nested;
@@ -17,8 +18,10 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 import static com.ms.rr.produto_service.domain.exception.BaseErrorMessage.FORNECEDOR_NOT_FOUND;
+import static com.ms.rr.produto_service.domain.exception.BaseErrorMessage.PRODUTO_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 
@@ -79,6 +82,45 @@ class ProdutoResourceImplTest {
                     .expectBody()
                     .jsonPath("$.status").isEqualTo("404")
                     .jsonPath("$.message").isEqualTo(FORNECEDOR_NOT_FOUND.params(fornecedorId.toString()).getMessage());
+        }
+    }
+
+
+    @Nested
+    class FindProdutoByIdResource {
+
+        @Test
+        void shouldFindProdutoByIdSuccessfully() {
+            Long id = 1L;
+            ProdutoResponse produtoResponse = ProdutoFactory.buildProdutoResponse();
+
+            when(produtoUseCase.buscarPorId(anyLong()))
+                    .thenReturn(Mono.just(produtoResponse));
+
+            webTestClient.get()
+                    .uri("/api/produto/{id}", id)
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                    .expectBody(ProdutoResponse.class);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenProdutoNotFound() {
+            Long id = 1L;
+            ProdutoNotFoundException exception = new ProdutoNotFoundException(PRODUTO_NOT_FOUND
+                    .params(id.toString()).getMessage());
+
+            when(produtoUseCase.buscarPorId(anyLong()))
+                    .thenReturn(Mono.error(exception));
+
+            webTestClient.get()
+                    .uri("/api/produto/{id}", id)
+                    .exchange()
+                    .expectStatus().isNotFound()
+                    .expectBody()
+                    .jsonPath("$.status").isEqualTo("404")
+                    .jsonPath("$.message").isEqualTo(PRODUTO_NOT_FOUND.params(id.toString()).getMessage());
         }
     }
 }

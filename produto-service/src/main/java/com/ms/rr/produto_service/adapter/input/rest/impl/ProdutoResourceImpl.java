@@ -38,28 +38,24 @@ public class ProdutoResourceImpl implements ProdutoResource {
 
     @Override
     public Flux<ProdutoResponse> findAll() {
-        log.info("Buscando produtos");
         return produtoUseCase.buscarTodosProdutos()
                 .doFirst(() -> log.info("Buscando produtos"));
     }
 
     @Override
     public Flux<ProdutoResponse> findAllByCategoria(String categoria) {
-        log.info("Buscando produtos com nome: {}", categoria);
         return produtoUseCase.buscarProdutosPorCategoria(categoria)
                 .doFirst(() -> log.info("Buscando produtos com nome: {}", categoria));
     }
 
     @Override
     public Mono<ProdutoResponse> update(Long id, UpdateProduto updateProduto) {
-        log.info("Atualizando produto id: {}", id);
         return produtoUseCase.atualizar(id, updateProduto)
                 .doFirst(() -> log.info("Atualizando produto id: {}", id));
     }
 
     @Override
     public Mono<Void> delete(Long id) {
-        log.info("Deletando produto id: {}", id);
         return produtoUseCase.excluir(id)
                 .doFirst(() -> log.info("Deletando produto id: {}", id));
     }
