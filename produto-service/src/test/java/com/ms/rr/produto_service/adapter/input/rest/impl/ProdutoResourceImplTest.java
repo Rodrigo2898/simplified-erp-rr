@@ -219,4 +219,40 @@ class ProdutoResourceImplTest {
                     .jsonPath("$.message").isEqualTo(PRODUTO_NOT_FOUND.params(Long.toString(id)).getMessage());
         }
     }
+
+    @Nested
+    class DeleteProdutoResource {
+
+        @Test
+        void shouldDeleteProdutoSuccessfully() {
+            var id = 1L;
+
+            when(produtoUseCase.excluir(anyLong()))
+                    .thenReturn(Mono.empty());
+
+            webTestClient.delete()
+                    .uri("/api/produto/{id}", id)
+                    .exchange()
+                    .expectStatus().isNoContent()
+                    .expectBody();
+        }
+
+        @Test
+        void shouldThrowExceptionWhenProdutoNotFound() {
+            var id = 1L;
+            ProdutoNotFoundException exception = new ProdutoNotFoundException(PRODUTO_NOT_FOUND
+                    .params(Long.toString(id)).getMessage());
+
+            when(produtoUseCase.excluir(anyLong()))
+                    .thenReturn(Mono.error(exception));
+
+            webTestClient.delete()
+                    .uri("/api/produto/{id}", id)
+                    .exchange()
+                    .expectStatus().isNotFound()
+                    .expectBody()
+                    .jsonPath("$.status").isEqualTo("404")
+                    .jsonPath("$.message").isEqualTo(PRODUTO_NOT_FOUND.params(Long.toString(id)).getMessage());
+        }
+    }
 }
