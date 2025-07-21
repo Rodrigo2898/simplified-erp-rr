@@ -6,6 +6,7 @@ import com.ms.rr.produto_service.domain.dto.out.ProdutoResponse;
 import com.ms.rr.produto_service.domain.model.ProdutoDomain;
 
 import java.math.BigDecimal;
+import java.util.Random;
 
 public class ProdutoFactory {
 
@@ -62,7 +63,7 @@ public class ProdutoFactory {
 
     public static ProdutoDomain buildProdutoWithCategoria(String categoria) {
         return new ProdutoDomain(
-                987456321L,
+                new Random().nextLong(),
                 "CAMISA Barcelona",
                 "Camisa Barcelona 24/25",
                 categoria,

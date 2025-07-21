@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static com.ms.rr.produto_service.domain.exception.BaseErrorMessage.FORNECEDOR_NOT_FOUND;
@@ -122,5 +123,54 @@ class ProdutoResourceImplTest {
                     .jsonPath("$.status").isEqualTo("404")
                     .jsonPath("$.message").isEqualTo(PRODUTO_NOT_FOUND.params(id.toString()).getMessage());
         }
+    }
+
+    @Nested
+    class FindAllProdutosResource {
+
+        @Test
+        void shouldFindAllProdutosSuccessfully() {
+            var produto1 = ProdutoFactory.buildProdutoWithId(1L);
+            var produto2 = ProdutoFactory.buildProdutoWithId(2L);
+
+            when(produtoUseCase.buscarTodosProdutos())
+                    .thenReturn(Flux.just(produto1, produto2)
+                            .map(ProdutoResponse::fromDomain));
+
+            webTestClient.get()
+                    .uri("/api/produto")
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                    .expectBodyList(ProdutoResponse.class);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenProdutoNotFound() {}
+    }
+
+    @Nested
+    class FindProdutosByCategoria {
+
+        @Test
+        void shouldFindProdutosByCategoriaSuccessfully() {
+            String categoria = "Roupas";
+            var produto1 = ProdutoFactory.buildProdutoWithCategoria(categoria);
+            var produto2 = ProdutoFactory.buildProdutoWithCategoria(categoria);
+
+            when(produtoUseCase.buscarProdutosPorCategoria(categoria))
+                    .thenReturn(Flux.just(produto1, produto2)
+                            .map(ProdutoResponse::fromDomain));
+
+            webTestClient.get()
+                    .uri("/api/produto/categoria-produto/{categoria}", categoria)
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                    .expectBodyList(ProdutoResponse.class);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenCategoriaNotFound() {}
     }
 }
