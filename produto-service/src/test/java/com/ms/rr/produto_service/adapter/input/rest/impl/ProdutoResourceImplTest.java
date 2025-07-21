@@ -2,6 +2,7 @@ package com.ms.rr.produto_service.adapter.input.rest.impl;
 
 import com.ms.rr.produto_service.adapter.input.handler.*;
 import com.ms.rr.produto_service.domain.dto.in.CreateProduto;
+import com.ms.rr.produto_service.domain.dto.in.UpdateProduto;
 import com.ms.rr.produto_service.domain.dto.out.ProdutoResponse;
 import com.ms.rr.produto_service.domain.exception.FornecedorNotFoundException;
 import com.ms.rr.produto_service.domain.exception.ProdutoNotFoundException;
@@ -172,5 +173,50 @@ class ProdutoResourceImplTest {
 
         @Test
         void shouldThrowExceptionWhenCategoriaNotFound() {}
+    }
+
+    @Nested
+    class UpdateProdutoResource {
+
+        @Test
+        void shouldUpdateProdutoSuccessfully() {
+            var id = 1L;
+            var update = ProdutoFactory.buildUpdateProduto();
+            var produtoWithId = ProdutoFactory.buildProdutoWithId(id);
+
+            when(produtoUseCase.atualizar(anyLong(), any(UpdateProduto.class)))
+                    .thenReturn(Mono.just(ProdutoResponse.fromDomain(produtoWithId)));
+
+            webTestClient.put()
+                    .uri("/api/produto/{id}", id)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(update)
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                    .expectBody(ProdutoResponse.class)
+                    .isEqualTo(ProdutoResponse.fromDomain(produtoWithId));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenProdutoNotFound() {
+            var id = 1L;
+            var update = ProdutoFactory.buildUpdateProduto();
+            ProdutoNotFoundException exception = new ProdutoNotFoundException(PRODUTO_NOT_FOUND
+                    .params(Long.toString(id)).getMessage());
+
+            when(produtoUseCase.atualizar(anyLong(), any(UpdateProduto.class)))
+                    .thenReturn(Mono.error(exception));
+
+            webTestClient.put()
+                    .uri("/api/produto/{id}", id)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(update)
+                    .exchange()
+                    .expectStatus().isNotFound()
+                    .expectBody()
+                    .jsonPath("$.status").isEqualTo("404")
+                    .jsonPath("$.message").isEqualTo(PRODUTO_NOT_FOUND.params(Long.toString(id)).getMessage());
+        }
     }
 }
