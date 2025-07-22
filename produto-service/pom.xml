@@ -93,6 +93,24 @@
 			<version>5.0.1</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.wiremock.integrations</groupId>
+			<artifactId>wiremock-spring-boot</artifactId>
+			<version>3.9.0</version>
+			<scope>test</scope>
+		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.wiremock</groupId>-->
+<!--			<artifactId>wiremock</artifactId>-->
+<!--			<version>3.12.1</version>-->
+<!--			<scope>test</scope>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>org.wiremock.integrations.testcontainers</groupId>
+			<artifactId>wiremock-testcontainers-module</artifactId>
+			<version>1.0-alpha-13</version>
+			<scope>test</scope>
+		</dependency>
 
 
 <!--		<dependency>-->
