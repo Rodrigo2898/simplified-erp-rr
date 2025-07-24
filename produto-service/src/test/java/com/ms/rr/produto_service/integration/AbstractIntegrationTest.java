@@ -1,5 +1,6 @@
 package com.ms.rr.produto_service.integration;
 
+import org.junit.jupiter.api.AfterAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,10 +29,6 @@ public abstract class AbstractIntegrationTest {
     @Container
     protected static final WireMockContainer wiremock = new WireMockContainer("wiremock/wiremock:3.4.2")
             .withExposedPorts(8080);
-
-    static {
-        mongoDBContainer.start();
-    }
 
     @DynamicPropertySource
     protected static void dynamicPropertiesProperties(DynamicPropertyRegistry registry) {
