@@ -1,8 +1,6 @@
 package com.ms.rr.produto_service.integration;
 
-import com.ms.rr.produto_service.adapter.output.persistence.document.Produto;
 import com.ms.rr.produto_service.domain.dto.out.ProdutoResponse;
-import com.ms.rr.produto_service.factory.ProdutoFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -160,5 +158,58 @@ public class ProdutoResourceIT extends AbstractIntegrationTest {
                     .jsonPath("$.status").isEqualTo("404")
                     .jsonPath("$.message").isEqualTo(PRODUTO_NOT_FOUND.params(id.toString()).getMessage());
         }
+    }
+
+    @Nested
+    class BuscandoTodosProdutosIT {
+
+        @Test
+        void findAllProducts() {
+            createTestProduto("Camisa Barcelona", "II Home KIT");
+            createTestProduto("Camisa Chelsea", "II AWAY KIT");
+
+            webTestClient.get()
+                    .uri("/api/produto")
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                    .expectBodyList(ProdutoResponse.class);
+        }
+    }
+
+    @Nested
+    class BuscandoProdutosPorCategoriaIT {
+
+        @Test
+        void findAllProductsByCategoria() {
+            createTestProduto("Camisa Barcelona", "II Home KIT");
+            createTestProduto("Camisa Chelsea", "II AWAY KIT");
+
+            webTestClient.get()
+                    .uri("/api/produto/categoria-produto/{categoria}", "Roupas")
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                    .expectBodyList(ProdutoResponse.class);
+        }
+    }
+
+    private void createTestProduto(String nome, String descricao) {
+        String json = String.format("""
+                            {
+                                "nome":"%s",
+                                "descricao":"%s",
+                                "categoria":"Roupas",
+                                "preco":"280.90",
+                                "fornecedorId":672978073
+                            }
+                        """, nome, descricao);
+
+        webTestClient.post()
+                .uri("/api/produto")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(json)
+                .exchange()
+                .expectStatus().isCreated();
     }
 }
