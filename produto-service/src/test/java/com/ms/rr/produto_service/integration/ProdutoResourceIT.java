@@ -194,6 +194,91 @@ public class ProdutoResourceIT extends AbstractIntegrationTest {
         }
     }
 
+    @Nested
+    class AtualizandoProdutoIT {
+
+        @Test
+        void updateProduto() {
+            String json = """
+                {
+                    "nome":"Camisa Chelsea",
+                    "descricao":"II Chelsea 24/25",
+                    "categoria":"Roupas",
+                    "preco":"280.90",
+                    "fornecedorId":672978073
+                }
+                """;
+
+            ProdutoResponse produtoResponse = webTestClient.post()
+                    .uri("/api/produto")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(json)
+                    .exchange()
+                    .expectStatus().isCreated()
+                    .expectBody(ProdutoResponse.class)
+                    .returnResult()
+                    .getResponseBody();
+
+            assert produtoResponse != null;
+            var id = produtoResponse.id();
+
+            String jsonUpdateProduto = """
+                {
+                    "nome":"Camisa Chelsea",
+                    "descricao":"II Chelsea 24/25",
+                    "categoria":"Roupas",
+                    "preco":"250.90",
+                    "fornecedorId":672978073
+                }
+                """;
+
+            webTestClient.put()
+                    .uri("/api/produto/{id}", id)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(jsonUpdateProduto)
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                    .expectBody(ProdutoResponse.class);
+        }
+    }
+
+    @Nested
+    class DeletandoProdutoIT {
+
+        @Test
+        void deleteProduto() {
+            String json = """
+                {
+                    "nome":"Camisa Chelsea",
+                    "descricao":"II Chelsea 24/25",
+                    "categoria":"Roupas",
+                    "preco":"280.90",
+                    "fornecedorId":672978073
+                }
+                """;
+
+            ProdutoResponse produtoResponse = webTestClient.post()
+                    .uri("/api/produto")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(json)
+                    .exchange()
+                    .expectStatus().isCreated()
+                    .expectBody(ProdutoResponse.class)
+                    .returnResult()
+                    .getResponseBody();
+
+            assert produtoResponse != null;
+            var id = produtoResponse.id();
+
+            webTestClient.delete()
+                    .uri("/api/produto/{id}", id)
+                    .exchange()
+                    .expectStatus().isNoContent()
+                    .expectBody();
+        }
+    }
+
     private void createTestProduto(String nome, String descricao) {
         String json = String.format("""
                             {
