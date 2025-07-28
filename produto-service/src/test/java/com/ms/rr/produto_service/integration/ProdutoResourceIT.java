@@ -241,6 +241,30 @@ public class ProdutoResourceIT extends AbstractIntegrationTest {
                     .expectHeader().contentType(MediaType.APPLICATION_JSON)
                     .expectBody(ProdutoResponse.class);
         }
+
+        @Test
+        void errorProdutoNotFound() {
+            Long id = 12345L;
+            String jsonUpdateProduto = """
+                {
+                    "nome":"Camisa Chelsea",
+                    "descricao":"II Chelsea 24/25",
+                    "categoria":"Roupas",
+                    "preco":"250.90",
+                    "fornecedorId":672978073
+                }
+                """;
+
+            webTestClient.put()
+                    .uri("/api/produto/{id}", id)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(jsonUpdateProduto)
+                    .exchange()
+                    .expectStatus().isNotFound()
+                    .expectBody()
+                    .jsonPath("$.status").isEqualTo("404")
+                    .jsonPath("$.message").isEqualTo(PRODUTO_NOT_FOUND.params(Long.toString(id)).getMessage());
+        }
     }
 
     @Nested
@@ -276,6 +300,18 @@ public class ProdutoResourceIT extends AbstractIntegrationTest {
                     .exchange()
                     .expectStatus().isNoContent()
                     .expectBody();
+        }
+
+        @Test
+        void errorProdutoNotFound() {
+            var id = 12345L;
+            webTestClient.delete()
+                    .uri("/api/produto/{id}", id)
+                    .exchange()
+                    .expectStatus().isNotFound()
+                    .expectBody()
+                    .jsonPath("$.status").isEqualTo("404")
+                    .jsonPath("$.message").isEqualTo(PRODUTO_NOT_FOUND.params(Long.toString(id)).getMessage());
         }
     }
 
