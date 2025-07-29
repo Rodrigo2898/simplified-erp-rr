@@ -70,4 +70,28 @@ public class ProdutoFactory {
                 new BigDecimal("123.45"),
                 123456789L);
     }
+
+    public static String buildProdutoJson(String nome, String descricao, String preco, Long fornecedorId) {
+        return String.format("""
+            {
+                "nome":"%s",
+                "descricao":"%s",
+                "categoria":"Roupas",
+                "preco":"%s",
+                "fornecedorId":%d
+            }
+        """, nome, descricao, preco, fornecedorId);
+    }
+
+    public static String buildProdutoWithNomeAndDescricao(String nome, String descricao) {
+        return String.format("""
+                    {
+                        "nome":"%s",
+                        "descricao":"%s",
+                        "categoria":"Roupas",
+                        "preco":"280.90",
+                        "fornecedorId":672978073
+                    }
+                """, nome, descricao);
+    }
 }

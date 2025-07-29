@@ -1,6 +1,8 @@
 package com.ms.rr.produto_service.integration;
 
 import com.ms.rr.produto_service.domain.dto.out.ProdutoResponse;
+import com.ms.rr.produto_service.factory.ProdutoFactory;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,8 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ProdutoResourceIT extends AbstractIntegrationTest {
 
-    @BeforeEach
-    void setupFornecedorStub() {
+    @BeforeAll
+    static void setupFornecedorStub() {
         configureFor(wiremock.getHost(), wiremock.getMappedPort(8080));
 
         stubFor(get(urlPathMatching("/api/fornecedor/672978073"))
@@ -33,21 +35,23 @@ public class ProdutoResourceIT extends AbstractIntegrationTest {
                 """)));
     }
 
+    @BeforeEach
+    void setUp() {
+        createTestProdutoWithNomeAndDescricao("Camisa VASCO", "II Home KIT");
+        createTestProdutoWithNomeAndDescricao("Camisa Barcelona", "II AWAY KIT");
+    }
+
 
     @Nested
     class CriarProdutoIT {
         @Test
         void createProduto() {
 
-            String requestBody = """
-                {
-                    "nome":"Camisa Chelsea",
-                    "descricao":"II Chelsea 24/25",
-                    "categoria":"Roupas",
-                    "preco":"280.90",
-                    "fornecedorId":672978073
-                }
-                """;
+            String requestBody = ProdutoFactory.buildProdutoJson(
+                            "Camisa Chelsea",
+                            "II Chelsea 24/25",
+                            "280.90",
+                            672978073L);
 
             webTestClient.post()
                     .uri("/api/produto")
@@ -108,27 +112,9 @@ public class ProdutoResourceIT extends AbstractIntegrationTest {
 
         @Test
         void findProduto() {
-            String json = """
-                {
-                    "nome":"Camisa Chelsea",
-                    "descricao":"II Chelsea 24/25",
-                    "categoria":"Roupas",
-                    "preco":"280.90",
-                    "fornecedorId":672978073
-                }
-                """;
+            ProdutoResponse produtoResponse = createProdutoReturn();
 
-            ProdutoResponse produtoResponse = webTestClient.post()
-                    .uri("/api/produto")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(json)
-                    .exchange()
-                    .expectStatus().isCreated()
-                    .expectBody(ProdutoResponse.class)
-                    .returnResult()
-                    .getResponseBody();
-
-            assert produtoResponse != null;
+            assertNotNull(produtoResponse);
             var id = produtoResponse.id();
 
             webTestClient.get()
@@ -165,9 +151,6 @@ public class ProdutoResourceIT extends AbstractIntegrationTest {
 
         @Test
         void findAllProducts() {
-            createTestProduto("Camisa Barcelona", "II Home KIT");
-            createTestProduto("Camisa Chelsea", "II AWAY KIT");
-
             webTestClient.get()
                     .uri("/api/produto")
                     .exchange()
@@ -182,9 +165,6 @@ public class ProdutoResourceIT extends AbstractIntegrationTest {
 
         @Test
         void findAllProductsByCategoria() {
-            createTestProduto("Camisa Barcelona", "II Home KIT");
-            createTestProduto("Camisa Chelsea", "II AWAY KIT");
-
             webTestClient.get()
                     .uri("/api/produto/categoria-produto/{categoria}", "Roupas")
                     .exchange()
@@ -199,25 +179,7 @@ public class ProdutoResourceIT extends AbstractIntegrationTest {
 
         @Test
         void updateProduto() {
-            String json = """
-                {
-                    "nome":"Camisa Chelsea",
-                    "descricao":"II Chelsea 24/25",
-                    "categoria":"Roupas",
-                    "preco":"280.90",
-                    "fornecedorId":672978073
-                }
-                """;
-
-            ProdutoResponse produtoResponse = webTestClient.post()
-                    .uri("/api/produto")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(json)
-                    .exchange()
-                    .expectStatus().isCreated()
-                    .expectBody(ProdutoResponse.class)
-                    .returnResult()
-                    .getResponseBody();
+            ProdutoResponse produtoResponse = createProdutoReturn();
 
             assert produtoResponse != null;
             var id = produtoResponse.id();
@@ -244,7 +206,7 @@ public class ProdutoResourceIT extends AbstractIntegrationTest {
 
         @Test
         void errorProdutoNotFound() {
-            Long id = 12345L;
+            var id = 12345L;
             String jsonUpdateProduto = """
                 {
                     "nome":"Camisa Chelsea",
@@ -272,25 +234,7 @@ public class ProdutoResourceIT extends AbstractIntegrationTest {
 
         @Test
         void deleteProduto() {
-            String json = """
-                {
-                    "nome":"Camisa Chelsea",
-                    "descricao":"II Chelsea 24/25",
-                    "categoria":"Roupas",
-                    "preco":"280.90",
-                    "fornecedorId":672978073
-                }
-                """;
-
-            ProdutoResponse produtoResponse = webTestClient.post()
-                    .uri("/api/produto")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(json)
-                    .exchange()
-                    .expectStatus().isCreated()
-                    .expectBody(ProdutoResponse.class)
-                    .returnResult()
-                    .getResponseBody();
+            ProdutoResponse produtoResponse = createProdutoReturn();
 
             assert produtoResponse != null;
             var id = produtoResponse.id();
@@ -315,17 +259,26 @@ public class ProdutoResourceIT extends AbstractIntegrationTest {
         }
     }
 
-    private void createTestProduto(String nome, String descricao) {
-        String json = String.format("""
-                            {
-                                "nome":"%s",
-                                "descricao":"%s",
-                                "categoria":"Roupas",
-                                "preco":"280.90",
-                                "fornecedorId":672978073
-                            }
-                        """, nome, descricao);
+    private ProdutoResponse createProdutoReturn() {
+        String json = ProdutoFactory.buildProdutoJson(
+                "Camisa Chelsea",
+                "II Chelsea 24/25",
+                "280.90",
+                672978073L);
 
+        return webTestClient.post()
+                .uri("/api/produto")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(json)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(ProdutoResponse.class)
+                .returnResult()
+                .getResponseBody();
+    }
+
+    private void createTestProdutoWithNomeAndDescricao(String nome, String descricao) {
+        String json = ProdutoFactory.buildProdutoWithNomeAndDescricao(nome, descricao);
         webTestClient.post()
                 .uri("/api/produto")
                 .contentType(MediaType.APPLICATION_JSON)
