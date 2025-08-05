@@ -1,0 +1,16 @@
+version: '4'
+services:
+  mongo_estoque:
+    image: mongo:latest
+    container_name: mongo_estoque
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: estoque
+      MONGO_INITDB_ROOT_PASSWORD: estoque
+      MONGO_INITDB_DATABASE: estoquedb
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
