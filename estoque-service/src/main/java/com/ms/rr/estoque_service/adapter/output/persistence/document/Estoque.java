@@ -1,5 +1,6 @@
 package com.ms.rr.estoque_service.adapter.output.persistence.document;
 
+import com.ms.rr.estoque_service.domain.model.EstoqueDomain;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -75,5 +76,27 @@ public class Estoque {
 
     public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
         this.dataAtualizacao = dataAtualizacao;
+    }
+
+    public static Estoque fromDomain(EstoqueDomain domain) {
+        Estoque entity = new Estoque();
+        entity.setId(domain.id());
+        entity.setSkuCode(domain.skuCode());
+        entity.setProdutoId(domain.produtoId());
+        entity.setQuantidade(domain.quantidade());
+        entity.setTipoProduto(domain.tipoProduto());
+        entity.setDataAtualizacao(domain.dataAtualizacao());
+        return entity;
+    }
+
+    public EstoqueDomain toDomain() {
+        return new EstoqueDomain(
+                getId(),
+                getProdutoId(),
+                getSkuCode(),
+                getQuantidade(),
+                getTipoProduto(),
+                getDataAtualizacao()
+        );
     }
 }
