@@ -2,13 +2,16 @@ package com.ms.rr.produto_service.adapter.output.producer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ms.rr.produto_service.domain.model.ProdutoCriadoEvent;
 import com.ms.rr.produto_service.domain.model.ProdutoDomain;
+import com.ms.rr.produto_service.domain.port.output.ProdutoCriadoOutputPort;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 @Component
-public class ProdutoCadastradoProducer {
+public class ProdutoCadastradoProducer implements ProdutoCriadoOutputPort {
 
     @Value("${topicos.produto-cadastrado.request.topic}")
     private String topicoProdutoCadastrado;
@@ -22,9 +25,14 @@ public class ProdutoCadastradoProducer {
         this.objectMapper = objectMapper;
     }
 
-    public String sendMessage(ProdutoDomain produtoDomain) throws JsonProcessingException {
-        String orderAsMessage = objectMapper.writeValueAsString(produtoDomain);
-        kafkaTemplate.send(topicoProdutoCadastrado, orderAsMessage);
-        return orderAsMessage;
+    @Override
+    public Mono<String> sendMessage(ProdutoCriadoEvent event) {
+        try {
+            String message = objectMapper.writeValueAsString(event);
+            return Mono.fromFuture(() -> kafkaTemplate.send(topicoProdutoCadastrado, event.id().toString(), message))
+                    .then(Mono.just(message));
+        } catch (JsonProcessingException e) {
+            return Mono.error(new RuntimeException("Erro ao serializar evento", e));
+        }
     }
 }

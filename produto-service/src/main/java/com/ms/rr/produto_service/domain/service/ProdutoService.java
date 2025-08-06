@@ -1,10 +1,13 @@
 package com.ms.rr.produto_service.domain.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ms.rr.produto_service.domain.dto.in.CreateProduto;
 import com.ms.rr.produto_service.domain.dto.in.UpdateProduto;
 import com.ms.rr.produto_service.domain.dto.out.ProdutoResponse;
+import com.ms.rr.produto_service.domain.model.ProdutoCriadoEvent;
 import com.ms.rr.produto_service.domain.port.input.ProdutoUseCase;
 import com.ms.rr.produto_service.domain.port.output.FornecedorOutputPort;
+import com.ms.rr.produto_service.domain.port.output.ProdutoCriadoOutputPort;
 import com.ms.rr.produto_service.domain.port.output.ProdutoOutputPort;
 import com.ms.rr.produto_service.domain.exception.FornecedorNotFoundException;
 import com.ms.rr.produto_service.domain.exception.ProdutoNotFoundException;
@@ -22,10 +25,13 @@ public class ProdutoService implements ProdutoUseCase {
     private final Logger log = LoggerFactory.getLogger(ProdutoService.class);
     private final ProdutoOutputPort produtoOutputPort;
     private final FornecedorOutputPort fornecedorOutputPort;
+    private final ProdutoCriadoOutputPort produtoCriadoOutputPort;
 
-    public ProdutoService(ProdutoOutputPort produtoOutputPort, FornecedorOutputPort fornecedorOutputPort) {
+    public ProdutoService(ProdutoOutputPort produtoOutputPort, FornecedorOutputPort fornecedorOutputPort,
+                          ProdutoCriadoOutputPort produtoCriadoOutputPort) {
         this.produtoOutputPort = produtoOutputPort;
         this.fornecedorOutputPort = fornecedorOutputPort;
+        this.produtoCriadoOutputPort = produtoCriadoOutputPort;
     }
 
     @Override
@@ -33,7 +39,11 @@ public class ProdutoService implements ProdutoUseCase {
         return fornecedorOutputPort.findFornecedorById(createProduto.fornecedorId())
                 .switchIfEmpty(Mono.error(new FornecedorNotFoundException(
                         FORNECEDOR_NOT_FOUND.params(createProduto.fornecedorId().toString()).getMessage())))
-                .flatMap(fornecedorDTO -> produtoOutputPort.save(createProduto.toDomain()))
+                .flatMap(fornecedorDTO ->
+                        produtoOutputPort.save(createProduto.toDomain())
+                                .flatMap(saved -> produtoCriadoOutputPort.sendMessage(ProdutoCriadoEvent.fromDomain(saved))
+                                        .thenReturn(saved))
+                )
                 .map(ProdutoResponse::fromDomain)
                 .doOnSuccess(produto -> log.info("Produto Salvo com sucesso"))
                 .doOnError(e -> log.error("Erro ao salvar produto", e));
