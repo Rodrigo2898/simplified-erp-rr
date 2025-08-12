@@ -1,5 +1,7 @@
 package com.ms.rr.estoque_service.adapter.input.consumer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ms.rr.estoque_service.domain.dto.in.CreateEstoque;
 import com.ms.rr.estoque_service.domain.model.ProdutoCriadoEvent;
 import com.ms.rr.estoque_service.domain.port.input.EstoqueUseCase;
@@ -16,7 +18,7 @@ import java.util.Random;
 public class ProdutoCadastradoConsumer {
 
     private static final Logger log = LoggerFactory.getLogger(ProdutoCadastradoConsumer.class);
-
+    private static final ObjectMapper objectMapper = new ObjectMapper();
     private final EstoqueUseCase estoqueUseCase;
 
     public ProdutoCadastradoConsumer(EstoqueUseCase estoqueUseCase) {
@@ -24,19 +26,20 @@ public class ProdutoCadastradoConsumer {
     }
 
 
-    @KafkaListener(topics = "${topicos.produto-cadastrado.cosumer.topic}",
-            groupId = "${spring.kafka.consumer.group-id}")
-    public void listen(@Payload List<ProdutoCriadoEvent> events) {
-        log.info("Produto recebido: {}", events.toString());
-        events.forEach(event -> {
-            CreateEstoque createEstoque = new CreateEstoque(
-                    event.getProdutoId(),
-                    event.getNomeProduto(),
-                    "SKU"+new Random().toString(),
-                    1,
-                    event.getTipoProduto()
-            );
-            estoqueUseCase.salvar(createEstoque);
-        });
+    @KafkaListener(
+            topics = "${topicos.produto-cadastrado.cosumer.topic}",
+            groupId = "${spring.kafka.consumer.group-id}",
+            containerFactory = "kafkaListenerContainerFactory")
+    public void listen(@Payload String jsonEvent) throws JsonProcessingException {
+        log.info("Produto recebido: {}", jsonEvent);
+        ProdutoCriadoEvent event = objectMapper.readValue(jsonEvent, ProdutoCriadoEvent.class);
+        CreateEstoque createEstoque = new CreateEstoque(
+                event.getProdutoId(),
+                event.getNomeProduto(),
+                "SKU"+new Random().nextInt(100),
+                1,
+                event.getTipoProduto()
+        );
+        estoqueUseCase.salvar(createEstoque);
     }
 }
