@@ -11,7 +11,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Random;
 
 @Component
@@ -34,7 +33,6 @@ public class ProdutoCadastradoConsumer {
         log.info("Produto recebido: {}", jsonEvent);
         ProdutoCriadoEvent event = objectMapper.readValue(jsonEvent, ProdutoCriadoEvent.class);
         CreateEstoque createEstoque = new CreateEstoque(
-                event.getProdutoId(),
                 event.getNomeProduto(),
                 "SKU"+new Random().nextInt(100),
                 1,

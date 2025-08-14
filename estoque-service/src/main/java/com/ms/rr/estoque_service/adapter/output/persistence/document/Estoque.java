@@ -4,27 +4,23 @@ import com.ms.rr.estoque_service.domain.model.EstoqueDomain;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
-
 @Document(collection = "estoque")
 public class Estoque {
 
     @Id
     private String id;
-    private Long produtoId;
     private String nomeProduto;
     private String skuCode;
     private Integer quantidade;
     private String tipoProduto;
-    private LocalDateTime dataAtualizacao;
+    private String dataAtualizacao;
 
     public Estoque() {
     }
 
-    public Estoque(String id, Long produtoId, String nomeProduto, String skuCode,
-                   Integer quantidade, String tipoProduto, LocalDateTime dataAtualizacao) {
+    public Estoque(String id, String nomeProduto, String skuCode,
+                   Integer quantidade, String tipoProduto, String dataAtualizacao) {
         this.id = id;
-        this.produtoId = produtoId;
         this.nomeProduto = nomeProduto;
         this.skuCode = skuCode;
         this.quantidade = quantidade;
@@ -38,14 +34,6 @@ public class Estoque {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Long getProdutoId() {
-        return produtoId;
-    }
-
-    public void setProdutoId(Long produtoId) {
-        this.produtoId = produtoId;
     }
 
     public String getNomeProduto() {
@@ -80,18 +68,17 @@ public class Estoque {
         this.tipoProduto = tipoProduto;
     }
 
-    public LocalDateTime getDataAtualizacao() {
+    public String getDataAtualizacao() {
         return dataAtualizacao;
     }
 
-    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+    public void setDataAtualizacao(String dataAtualizacao) {
         this.dataAtualizacao = dataAtualizacao;
     }
 
     public static Estoque fromDomain(EstoqueDomain domain) {
         Estoque entity = new Estoque();
         entity.setId(domain.id());
-        entity.setProdutoId(domain.produtoId());
         entity.setNomeProduto(domain.nomeProduto());
         entity.setSkuCode(domain.skuCode());
         entity.setQuantidade(domain.quantidade());
@@ -103,7 +90,6 @@ public class Estoque {
     public EstoqueDomain toDomain() {
         return new EstoqueDomain(
                 getId(),
-                getProdutoId(),
                 getNomeProduto(),
                 getSkuCode(),
                 getQuantidade(),

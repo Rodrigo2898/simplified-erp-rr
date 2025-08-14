@@ -19,7 +19,8 @@ public class EstoqueService implements EstoqueUseCase {
     public void salvar(CreateEstoque estoque) {
         estoqueOutputPort.findByNomeProduto(estoque.nomeProduto())
                 .ifPresentOrElse(produtoExistente -> {
-                    EstoqueDomain updateProduto = produtoExistente.addQuantidade(estoque.quantidade());
+                    EstoqueDomain updateProduto = produtoExistente
+                            .addQuantidadeAndUpdateDataAtualizacao(estoque.quantidade());
                     estoqueOutputPort.save(updateProduto);
                 }, () -> {
                     EstoqueDomain newProduto = estoque.toDomain();
