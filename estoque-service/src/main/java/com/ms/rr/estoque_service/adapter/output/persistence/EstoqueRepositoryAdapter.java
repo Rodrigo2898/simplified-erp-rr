@@ -4,6 +4,9 @@ import com.ms.rr.estoque_service.adapter.output.persistence.document.Estoque;
 import com.ms.rr.estoque_service.adapter.output.persistence.repository.EstoqueRepository;
 import com.ms.rr.estoque_service.domain.model.EstoqueDomain;
 import com.ms.rr.estoque_service.domain.port.output.EstoqueOutputPort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -25,6 +28,12 @@ public class EstoqueRepositoryAdapter implements EstoqueOutputPort {
     @Override
     public Optional<EstoqueDomain> findByNomeProduto(String nomeProduto) {
         return estoqueRepository.findByNomeProduto(nomeProduto)
+                .map(Estoque::toDomain);
+    }
+
+    @Override
+    public Page<EstoqueDomain> findAllByTipo(String tipoProduto, PageRequest pageRequest) {
+        return estoqueRepository.findAllByTipoProduto(tipoProduto, pageRequest)
                 .map(Estoque::toDomain);
     }
 }
