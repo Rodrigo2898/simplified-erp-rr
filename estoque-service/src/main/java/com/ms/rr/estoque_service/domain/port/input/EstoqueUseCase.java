@@ -5,8 +5,12 @@ import com.ms.rr.estoque_service.domain.dto.out.EstoqueResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.math.BigDecimal;
+
 public interface EstoqueUseCase {
     void salvar(CreateEstoque estoque);
 
     Page<EstoqueResponse> buscandoPorTipoProduto(String tipoProduto, PageRequest pageRequest);
+
+    BigDecimal buscaTotalPorTipoProduto(String tipoProduto);
 }
