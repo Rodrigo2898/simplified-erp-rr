@@ -27,6 +27,12 @@ public class EstoqueResourceImpl implements EstoqueResource {
     }
 
     @Override
+    public ResponseEntity<EstoqueResponse> findByNome(String nomeProduto) {
+        log.info("Buscando no estoque produto: {}", nomeProduto);
+        return ResponseEntity.ok(estoqueUseCase.buscarPorNome(nomeProduto));
+    }
+
+    @Override
     public ResponseEntity<ApiResponse<EstoqueResponse>> findAll(Integer page, Integer pageSize) {
         var pageResponse = estoqueUseCase.buscarTodos(PageRequest.of(page, pageSize));
         var totalOnEstoque = pageResponse.getTotalElements();

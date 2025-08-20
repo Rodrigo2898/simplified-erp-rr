@@ -42,6 +42,12 @@ public class EstoqueService implements EstoqueUseCase {
     }
 
     @Override
+    public EstoqueResponse buscarPorNome(String nome) {
+        return estoqueOutputPort.findByNomeProduto(nome)
+                .map(EstoqueResponse::fromDomain).orElseThrow();
+    }
+
+    @Override
     public Page<EstoqueResponse> buscarTodos(PageRequest pageRequest) {
         return estoqueOutputPort.findAll(pageRequest)
                 .map(EstoqueResponse::fromDomain);
