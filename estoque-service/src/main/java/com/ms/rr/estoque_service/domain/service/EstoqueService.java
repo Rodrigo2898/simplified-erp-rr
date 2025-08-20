@@ -42,7 +42,13 @@ public class EstoqueService implements EstoqueUseCase {
     }
 
     @Override
-    public Page<EstoqueResponse> buscandoPorTipoProduto(String tipoProduto, PageRequest pageRequest) {
+    public Page<EstoqueResponse> buscarTodos(PageRequest pageRequest) {
+        return estoqueOutputPort.findAll(pageRequest)
+                .map(EstoqueResponse::fromDomain);
+    }
+
+    @Override
+    public Page<EstoqueResponse> buscarPorTipoProduto(String tipoProduto, PageRequest pageRequest) {
         return estoqueOutputPort.findAllByTipo(tipoProduto, pageRequest)
                 .map(EstoqueResponse::fromDomain);
     }

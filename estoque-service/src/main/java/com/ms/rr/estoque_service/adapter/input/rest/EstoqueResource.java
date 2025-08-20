@@ -10,11 +10,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 public interface EstoqueResource {
 
+    @GetMapping
+    ResponseEntity<ApiResponse<EstoqueResponse>> findAll(@RequestParam(name = "page", defaultValue = "0")
+                                                         Integer page,
+                                                         @RequestParam(name = "pageSize", defaultValue = "10")
+                                                         Integer pageSize);
+
     @GetMapping("/tipo-produto/{name}")
     ResponseEntity<ApiResponse<EstoqueResponse>> findAllByTipo(@PathVariable("name")
-                                                                  String tipo,
+                                                               String tipo,
                                                                @RequestParam(name = "page", defaultValue = "0")
-                                                                  Integer page,
+                                                               Integer page,
                                                                @RequestParam(name = "pageSize", defaultValue = "10")
-                                                                  Integer pageSize);
+                                                               Integer pageSize);
 }

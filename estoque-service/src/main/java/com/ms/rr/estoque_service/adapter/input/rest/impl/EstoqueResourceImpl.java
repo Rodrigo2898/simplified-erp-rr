@@ -26,10 +26,21 @@ public class EstoqueResourceImpl implements EstoqueResource {
         this.estoqueUseCase = estoqueUseCase;
     }
 
+    @Override
+    public ResponseEntity<ApiResponse<EstoqueResponse>> findAll(Integer page, Integer pageSize) {
+        var pageResponse = estoqueUseCase.buscarTodos(PageRequest.of(page, pageSize));
+        var totalOnEstoque = pageResponse.getTotalElements();
+        log.info("Consultando estoque");
+        return ResponseEntity.ok(new ApiResponse<>(
+                Map.of("totalOnEstoque", totalOnEstoque),
+                pageResponse.getContent(),
+                PaginationResponse.fromPage(pageResponse)
+        ));
+    }
 
     @Override
     public ResponseEntity<ApiResponse<EstoqueResponse>> findAllByTipo(String tipo, Integer page, Integer pageSize) {
-        var pageResponse = estoqueUseCase.buscandoPorTipoProduto(tipo, PageRequest.of(page, pageSize));
+        var pageResponse = estoqueUseCase.buscarPorTipoProduto(tipo, PageRequest.of(page, pageSize));
         var totalOnTipo = estoqueUseCase.buscaTotalPorTipoProduto(tipo);
         log.info("Consultando estoque por tipo: {}", tipo);
         return ResponseEntity.ok(new ApiResponse<>(

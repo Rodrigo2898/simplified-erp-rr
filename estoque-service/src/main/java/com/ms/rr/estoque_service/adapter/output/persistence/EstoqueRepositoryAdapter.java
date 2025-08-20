@@ -31,6 +31,12 @@ public class EstoqueRepositoryAdapter implements EstoqueOutputPort {
     }
 
     @Override
+    public Page<EstoqueDomain> findAll(PageRequest pageRequest) {
+        return estoqueRepository.findAll(pageRequest)
+                .map(Estoque::toDomain);
+    }
+
+    @Override
     public Page<EstoqueDomain> findAllByTipo(String tipoProduto, PageRequest pageRequest) {
         return estoqueRepository.findAllByTipoProduto(tipoProduto, pageRequest)
                 .map(Estoque::toDomain);

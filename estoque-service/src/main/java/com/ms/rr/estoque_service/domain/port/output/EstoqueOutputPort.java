@@ -13,5 +13,7 @@ public interface EstoqueOutputPort {
 
     Optional<EstoqueDomain> findByNomeProduto(String nomeProduto);
 
+    Page<EstoqueDomain> findAll(PageRequest pageRequest);
+
     Page<EstoqueDomain> findAllByTipo(String tipoProduto, PageRequest pageRequest);
 }

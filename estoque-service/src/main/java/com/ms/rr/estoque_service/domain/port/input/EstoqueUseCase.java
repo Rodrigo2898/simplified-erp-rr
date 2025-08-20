@@ -10,7 +10,9 @@ import java.math.BigDecimal;
 public interface EstoqueUseCase {
     void salvar(CreateEstoque estoque);
 
-    Page<EstoqueResponse> buscandoPorTipoProduto(String tipoProduto, PageRequest pageRequest);
+    Page<EstoqueResponse> buscarTodos(PageRequest pageRequest);
+
+    Page<EstoqueResponse> buscarPorTipoProduto(String tipoProduto, PageRequest pageRequest);
 
     BigDecimal buscaTotalPorTipoProduto(String tipoProduto);
 }
