@@ -1,5 +1,6 @@
 package com.ms.rr.estoque_service.domain.service;
 
+import com.ms.rr.estoque_service.adapter.output.persistence.document.Estoque;
 import com.ms.rr.estoque_service.domain.dto.in.CreateEstoque;
 import com.ms.rr.estoque_service.domain.dto.out.EstoqueResponse;
 import com.ms.rr.estoque_service.domain.model.EstoqueDomain;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -68,5 +71,19 @@ public class EstoqueService implements EstoqueUseCase {
 
         var response = mongoTemplate.aggregate(aggregations, "estoque", Document.class);
         return new BigDecimal(Objects.requireNonNull(response.getUniqueMappedResult()).get("quantidade").toString());
+    }
+
+    @Override
+    public void decrementaPorNome(String nome, Integer quantidade) {
+        var produtoExistente = estoqueOutputPort.findByNomeProduto(nome);
+        if (produtoExistente.isEmpty()) {
+            throw new RuntimeException("Produto não encontrado");
+        }
+        if (produtoExistente.get().quantidade() <= 0 || produtoExistente.get().quantidade() < quantidade) {
+            throw new RuntimeException("Produto em falta no estoque");
+        }
+        Query query = new Query(Criteria.where("nomeProduto").is(nome));
+        Update update = new Update().inc("quantidade",  -quantidade);
+        mongoTemplate.updateFirst(query, update, Estoque.class);
     }
 }

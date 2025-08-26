@@ -55,4 +55,11 @@ public class EstoqueResourceImpl implements EstoqueResource {
                 PaginationResponse.fromPage(pageResponse)
         ));
     }
+
+    @Override
+    public ResponseEntity<String> deleteByName(String nomeProduto, Integer quantidade) {
+        log.info("Removendo produto do estoque: {}", nomeProduto);
+        estoqueUseCase.decrementaPorNome(nomeProduto, quantidade);
+        return ResponseEntity.ok("Produto removido do Estoque");
+    }
 }

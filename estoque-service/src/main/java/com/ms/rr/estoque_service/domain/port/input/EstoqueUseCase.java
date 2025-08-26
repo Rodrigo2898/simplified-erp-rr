@@ -17,4 +17,6 @@ public interface EstoqueUseCase {
     Page<EstoqueResponse> buscarPorTipoProduto(String tipoProduto, PageRequest pageRequest);
 
     BigDecimal buscaTotalPorTipoProduto(String tipoProduto);
+
+    void decrementaPorNome(String nome, Integer quantidade);
 }
