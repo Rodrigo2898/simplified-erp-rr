@@ -8,6 +8,7 @@ import com.ms.rr.estoque_service.domain.port.input.EstoqueUseCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,5 +62,11 @@ public class EstoqueResourceImpl implements EstoqueResource {
         log.info("Removendo produto do estoque: {}", nomeProduto);
         estoqueUseCase.decrementaPorNome(nomeProduto, quantidade);
         return ResponseEntity.ok("Produto removido do Estoque");
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteById(String id) {
+        estoqueUseCase.deletaPorId(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

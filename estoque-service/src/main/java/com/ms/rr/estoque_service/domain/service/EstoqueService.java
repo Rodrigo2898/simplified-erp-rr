@@ -86,4 +86,9 @@ public class EstoqueService implements EstoqueUseCase {
         Update update = new Update().inc("quantidade",  -quantidade);
         mongoTemplate.updateFirst(query, update, Estoque.class);
     }
+
+    @Override
+    public void deletaPorId(String id) {
+        estoqueOutputPort.deleteById(id);
+    }
 }

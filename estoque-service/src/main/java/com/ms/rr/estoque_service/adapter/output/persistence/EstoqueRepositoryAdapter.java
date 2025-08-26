@@ -41,4 +41,9 @@ public class EstoqueRepositoryAdapter implements EstoqueOutputPort {
         return estoqueRepository.findAllByTipoProduto(tipoProduto, pageRequest)
                 .map(Estoque::toDomain);
     }
+
+    @Override
+    public void deleteById(String id) {
+        estoqueRepository.deleteById(id);
+    }
 }

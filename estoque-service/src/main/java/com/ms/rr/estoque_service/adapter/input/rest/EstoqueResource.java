@@ -33,4 +33,8 @@ public interface EstoqueResource {
                                         String nomeProduto,
                                         @RequestParam(name = "quantidade", defaultValue = "1")
                                         Integer quantidade);
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<Void> deleteById(@PathVariable("id")
+                                        String id);
 }

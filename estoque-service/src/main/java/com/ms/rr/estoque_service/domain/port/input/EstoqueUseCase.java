@@ -19,4 +19,6 @@ public interface EstoqueUseCase {
     BigDecimal buscaTotalPorTipoProduto(String tipoProduto);
 
     void decrementaPorNome(String nome, Integer quantidade);
+
+    void deletaPorId(String id);
 }
