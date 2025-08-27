@@ -17,6 +17,34 @@ import static com.ms.rr.estoque_service.domain.exception.BaseErrorMessage.PRODUT
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(ProdutoNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ApiError> produtoNotFoundException(
+            ProdutoNotFoundException exception, WebRequest request) {
+
+        var error = ApiError.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message(exception.getMessage())
+                .description(PRODUTO_NOT_FOUND.getMessage())
+                .timestamp(LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error.build());
+    }
+
+    @ExceptionHandler(ProdutoNotFoundInEstoqueException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ApiError> produtoNotFoundInEstoqueException(
+            ProdutoNotFoundInEstoqueException exception, WebRequest request) {
+
+        var error = ApiError.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message(exception.getMessage())
+                .description(PRODUTO_NOT_FOUND_IN_ESTOQUE.getMessage())
+                .timestamp(LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error.build());
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ApiError> handleException(final Exception exception,
@@ -27,34 +55,6 @@ public class GlobalExceptionHandler {
                 .message(exception.getMessage())
                 .description(request.getDescription(false))
                 .timestamp(LocalDateTime.now());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error.build());
-    }
-
-    @ExceptionHandler(ProdutoNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ApiError> handleConsentNotFoundException(
-            ProdutoNotFoundException exception, WebRequest request) {
-
-        var error = ApiError.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message(exception.getMessage())
-                .description(PRODUTO_NOT_FOUND.getMessage())
-                .timestamp(LocalDateTime.now());
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error.build());
-    }
-
-    @ExceptionHandler(ProdutoNotFoundInEstoqueException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ApiError> handleConsentNotFoundException(
-            ProdutoNotFoundInEstoqueException exception, WebRequest request) {
-
-        var error = ApiError.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message(exception.getMessage())
-                .description(PRODUTO_NOT_FOUND_IN_ESTOQUE.getMessage())
-                .timestamp(LocalDateTime.now());
-
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error.build());
     }
 }
