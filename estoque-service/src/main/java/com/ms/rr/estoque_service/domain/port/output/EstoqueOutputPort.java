@@ -10,11 +10,13 @@ public interface EstoqueOutputPort {
 
     void save(EstoqueDomain estoqueDomain);
 
+    Optional<EstoqueDomain> findById(String id);
+
     Optional<EstoqueDomain> findByNomeProduto(String nomeProduto);
 
     Page<EstoqueDomain> findAll(PageRequest pageRequest);
 
     Page<EstoqueDomain> findAllByTipo(String tipoProduto, PageRequest pageRequest);
 
-    void deleteById(String id);
+    void delete(EstoqueDomain estoque);
 }

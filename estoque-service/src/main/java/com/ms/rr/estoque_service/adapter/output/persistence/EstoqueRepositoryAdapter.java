@@ -25,6 +25,12 @@ public class EstoqueRepositoryAdapter implements EstoqueOutputPort {
     }
 
     @Override
+    public Optional<EstoqueDomain> findById(String id) {
+        return estoqueRepository.findById(id)
+                .map(Estoque::toDomain);
+    }
+
+    @Override
     public Optional<EstoqueDomain> findByNomeProduto(String nomeProduto) {
         return estoqueRepository.findByNomeProduto(nomeProduto)
                 .map(Estoque::toDomain);
@@ -43,7 +49,7 @@ public class EstoqueRepositoryAdapter implements EstoqueOutputPort {
     }
 
     @Override
-    public void deleteById(String id) {
-        estoqueRepository.deleteById(id);
+    public void delete(EstoqueDomain estoque) {
+        estoqueRepository.delete(Estoque.fromDomain(estoque));
     }
 }

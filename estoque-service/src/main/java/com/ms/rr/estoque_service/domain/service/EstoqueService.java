@@ -3,9 +3,12 @@ package com.ms.rr.estoque_service.domain.service;
 import com.ms.rr.estoque_service.adapter.output.persistence.document.Estoque;
 import com.ms.rr.estoque_service.domain.dto.in.CreateEstoque;
 import com.ms.rr.estoque_service.domain.dto.out.EstoqueResponse;
+import com.ms.rr.estoque_service.domain.exception.ProdutoNotFoundException;
+import com.ms.rr.estoque_service.domain.exception.ProdutoNotFoundInEstoqueException;
 import com.ms.rr.estoque_service.domain.model.EstoqueDomain;
 import com.ms.rr.estoque_service.domain.port.input.EstoqueUseCase;
 import com.ms.rr.estoque_service.domain.port.output.EstoqueOutputPort;
+import com.ms.rr.estoque_service.domain.utils.DateFormatterUtil;
 import org.bson.Document;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,8 +19,10 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
+import static com.ms.rr.estoque_service.domain.exception.BaseErrorMessage.*;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @Service
@@ -47,7 +52,8 @@ public class EstoqueService implements EstoqueUseCase {
     @Override
     public EstoqueResponse buscarPorNome(String nome) {
         return estoqueOutputPort.findByNomeProduto(nome)
-                .map(EstoqueResponse::fromDomain).orElseThrow();
+                .map(EstoqueResponse::fromDomain)
+                .orElseThrow(() -> new ProdutoNotFoundException(PRODUTO_NOT_FOUND.params(nome).getMessage()));
     }
 
     @Override
@@ -77,18 +83,23 @@ public class EstoqueService implements EstoqueUseCase {
     public void decrementaPorNome(String nome, Integer quantidade) {
         var produtoExistente = estoqueOutputPort.findByNomeProduto(nome);
         if (produtoExistente.isEmpty()) {
-            throw new RuntimeException("Produto não encontrado");
+            throw new ProdutoNotFoundException(PRODUTO_NOT_FOUND.params(nome).getMessage());
         }
         if (produtoExistente.get().quantidade() <= 0 || produtoExistente.get().quantidade() < quantidade) {
-            throw new RuntimeException("Produto em falta no estoque");
+            throw new ProdutoNotFoundInEstoqueException(PRODUTO_NOT_FOUND_IN_ESTOQUE.params(nome).getMessage());
         }
         Query query = new Query(Criteria.where("nomeProduto").is(nome));
-        Update update = new Update().inc("quantidade",  -quantidade);
+        Update update = new Update()
+                .inc("quantidade",  -quantidade)
+                .set("dataAtualizacao", LocalDateTime.now().format(DateFormatterUtil.customFormatter()));
         mongoTemplate.updateFirst(query, update, Estoque.class);
     }
 
     @Override
     public void deletaPorId(String id) {
-        estoqueOutputPort.deleteById(id);
+        estoqueOutputPort.findById(id)
+                .ifPresentOrElse(estoqueOutputPort::delete, () -> {
+                    throw new ProdutoNotFoundException(PRODUTO_NOT_FOUND.params(id).getMessage());
+                });
     }
 }
