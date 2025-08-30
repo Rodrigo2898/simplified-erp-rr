@@ -2,9 +2,12 @@ package com.ms.rr.estoque_service.factory;
 
 import com.ms.rr.estoque_service.domain.dto.in.CreateEstoque;
 import com.ms.rr.estoque_service.domain.model.EstoqueDomain;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
 
 public class EstoqueFactory {
@@ -32,5 +35,9 @@ public class EstoqueFactory {
     private static String dataAtualizacao() {
         DateTimeFormatter customFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         return LocalDateTime.now().format(customFormatter);
+    }
+
+    public static Page<EstoqueDomain> createWithPage() {
+        return new PageImpl<>(List.of(estoqueDomain()));
     }
 }

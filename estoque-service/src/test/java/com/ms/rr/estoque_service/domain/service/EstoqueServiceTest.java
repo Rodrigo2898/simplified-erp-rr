@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.Optional;
@@ -118,6 +119,66 @@ class EstoqueServiceTest {
 
             // Assert
             assertThrows(ProdutoNotFoundException.class, () -> estoqueService.buscarPorNome(nomeProduto));
+        }
+    }
+
+    @Nested
+    class BuscandoTodosProdutoNoEstoque {
+
+        @Test
+        void shouldFindAllProdutosInEstoqueSuccessfully() {
+            // Arrange
+            var pageRequest = PageRequest.of(0, 10);
+            var page = EstoqueFactory.createWithPage();
+            when(estoqueOutputPort.findAll(eq(pageRequest)))
+                    .thenReturn(page);
+
+            // Act
+            var response = estoqueService.buscarTodos(pageRequest);
+
+            // Assert
+            assertNotNull(response);
+            assertEquals(page.getTotalPages(), response.getTotalPages());
+            assertEquals(page.getTotalElements(), response.getTotalElements());
+            assertEquals(page.getSize(), response.getSize());
+            assertEquals(page.getNumber(), response.getNumber());
+
+            assertEquals(page.getContent().getFirst().nomeProduto(), response.getContent().getFirst().nomeProduto());
+            assertEquals(page.getContent().getFirst().skuCode(), response.getContent().getFirst().skuCode());
+
+            verify(estoqueOutputPort, times(1)).findAll(pageRequest);
+        }
+    }
+
+    @Nested
+    class BuscandoTodosPorTipoProdutoNoEstoque {
+
+        @Test
+        void shouldFindAllProdutosInEstoqueByTipoSuccessfully() {
+            // Arrange
+            var tipoProduto = "Roupas";
+            var pageRequest = PageRequest.of(0, 10);
+            var page = EstoqueFactory.createWithPage();
+
+            when(estoqueOutputPort.findAllByTipo(eq(tipoProduto), eq(pageRequest)))
+                .thenReturn(page);
+
+            // Act
+            var response = estoqueService.buscarPorTipoProduto(tipoProduto, pageRequest);
+            
+            // Assert
+            assertNotNull(response);
+            assertNotNull(response);
+            assertEquals(page.getTotalPages(), response.getTotalPages());
+            assertEquals(page.getTotalElements(), response.getTotalElements());
+            assertEquals(page.getSize(), response.getSize());
+            assertEquals(page.getNumber(), response.getNumber());
+
+            assertEquals(page.getContent().getFirst().nomeProduto(), response.getContent().getFirst().nomeProduto());
+            assertEquals(page.getContent().getFirst().tipoProduto(), response.getContent().getFirst().tipoProduto());
+            assertEquals(page.getContent().getFirst().skuCode(), response.getContent().getFirst().skuCode());
+
+            verify(estoqueOutputPort, times(1)).findAllByTipo(tipoProduto, pageRequest);
         }
     }
 }
