@@ -5,23 +5,27 @@ import com.ms.rr.estoque_service.domain.exception.ProdutoNotFoundException;
 import com.ms.rr.estoque_service.domain.model.EstoqueDomain;
 import com.ms.rr.estoque_service.domain.port.output.EstoqueOutputPort;
 import com.ms.rr.estoque_service.factory.EstoqueFactory;
+import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static com.ms.rr.estoque_service.domain.exception.BaseErrorMessage.PRODUTO_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @ExtendWith(MockitoExtension.class)
 class EstoqueServiceTest {
@@ -34,6 +38,9 @@ class EstoqueServiceTest {
 
     @InjectMocks
     private EstoqueService estoqueService;
+
+    @Captor
+    ArgumentCaptor<Aggregation> aggregationCaptor;
 
     private EstoqueDomain estoqueDomain;
     private CreateEstoque createEstoque;
@@ -165,7 +172,7 @@ class EstoqueServiceTest {
 
             // Act
             var response = estoqueService.buscarPorTipoProduto(tipoProduto, pageRequest);
-            
+
             // Assert
             assertNotNull(response);
             assertNotNull(response);
@@ -179,6 +186,37 @@ class EstoqueServiceTest {
             assertEquals(page.getContent().getFirst().skuCode(), response.getContent().getFirst().skuCode());
 
             verify(estoqueOutputPort, times(1)).findAllByTipo(tipoProduto, pageRequest);
+        }
+    }
+
+    @Nested
+    class BuscandoTotalPorTipoProdutoNoEstoque {
+
+        @Test
+        void shouldFindTotalProdutosByTipoInEstoqueSuccessfully() {
+            // Arrange
+            var tipoProduto = "Roupas";
+            var totalEsperado = BigDecimal.valueOf(1);
+            var resultadoAgregado = Mockito.mock(AggregationResults.class);
+
+            when(resultadoAgregado.getUniqueMappedResult())
+                    .thenReturn(new Document("quantidade", totalEsperado));
+
+            when(mongoTemplate.aggregate(aggregationCaptor.capture(), anyString(), eq(Document.class)))
+                .thenReturn(resultadoAgregado);
+
+
+            // Act
+            estoqueService.buscaTotalPorTipoProduto(tipoProduto);
+
+            // Assert
+            var aggregation = aggregationCaptor.getValue();
+            var aggregationExpected = newAggregation(
+                    match(Criteria.where("tipoProduto").is(tipoProduto)),
+                    group().sum("quantidade").as("quantidade")
+            );
+
+            assertEquals(aggregationExpected.toString(), aggregation.toString());
         }
     }
 }
