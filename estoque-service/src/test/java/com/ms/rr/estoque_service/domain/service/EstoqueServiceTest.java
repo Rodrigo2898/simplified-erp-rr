@@ -27,6 +27,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.ms.rr.estoque_service.domain.exception.BaseErrorMessage.PRODUTO_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.*;
@@ -293,6 +294,38 @@ class EstoqueServiceTest {
             // Act Assert
             assertThrows(ProdutoNotFoundInEstoqueException.class, () ->
                     estoqueService.decrementaPorNome(nomeProduto, quantidade));
+        }
+    }
+
+    @Nested
+    class DeletandoProdutoDoEstoquePorId {
+
+        @Test
+        void shouldDeleteProdutoDoEstoquePorIdSuccessfully() {
+            // Arrange
+            var id = UUID.randomUUID().toString();
+            when(estoqueOutputPort.findById(id))
+                    .thenReturn(Optional.of(estoqueDomain));
+
+            // Act
+            estoqueService.deletaPorId(id);
+
+            // Assert
+            verify(estoqueOutputPort, times(1)).findById(id);
+        }
+
+        @Test
+        void shouldThrowAnExceptionWhenProdutoNotFound() {
+            // Arrange
+            var id = UUID.randomUUID().toString();
+
+            when(estoqueOutputPort.findById(id))
+                    .thenThrow(new ProdutoNotFoundException(PRODUTO_NOT_FOUND
+                            .params(id).getMessage()));
+
+            // Act Assert
+            assertThrows(ProdutoNotFoundException.class, () ->
+                    estoqueService.deletaPorId(id));
         }
     }
 }
