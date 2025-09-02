@@ -1,9 +1,13 @@
 package com.ms.rr.estoque_service.domain.service;
 
+import com.mongodb.client.result.UpdateResult;
+import com.ms.rr.estoque_service.adapter.output.persistence.document.Estoque;
 import com.ms.rr.estoque_service.domain.dto.in.CreateEstoque;
 import com.ms.rr.estoque_service.domain.exception.ProdutoNotFoundException;
+import com.ms.rr.estoque_service.domain.exception.ProdutoNotFoundInEstoqueException;
 import com.ms.rr.estoque_service.domain.model.EstoqueDomain;
 import com.ms.rr.estoque_service.domain.port.output.EstoqueOutputPort;
+import com.ms.rr.estoque_service.domain.utils.DateFormatterUtil;
 import com.ms.rr.estoque_service.factory.EstoqueFactory;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,8 +21,11 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.ms.rr.estoque_service.domain.exception.BaseErrorMessage.PRODUTO_NOT_FOUND;
@@ -41,6 +48,12 @@ class EstoqueServiceTest {
 
     @Captor
     ArgumentCaptor<Aggregation> aggregationCaptor;
+
+    @Captor
+    ArgumentCaptor<Query> queryArgumentCaptor;
+
+    @Captor
+    ArgumentCaptor<Update> updateArgumentCaptor;
 
     private EstoqueDomain estoqueDomain;
     private CreateEstoque createEstoque;
@@ -217,6 +230,69 @@ class EstoqueServiceTest {
             );
 
             assertEquals(aggregationExpected.toString(), aggregation.toString());
+        }
+    }
+
+    @Nested
+    class DecrementandoQuantidadeAposDeletarPorNome {
+
+        @Test
+        void shouldDecrementaQuantidadeAposDeletarPorNomeSuccessfully() {
+            // Arrange
+            var nomeProduto = "Camisa Chelsea";
+            var quantidade = 2;
+            var estoqueClass = Estoque.class;
+            var updateResult = Mockito.mock(UpdateResult.class);
+
+            when(estoqueOutputPort.findByNomeProduto(nomeProduto))
+                    .thenReturn(Optional.of(estoqueDomain));
+
+            when(mongoTemplate.updateFirst(queryArgumentCaptor.capture(), updateArgumentCaptor.capture(), eq(estoqueClass)))
+                    .thenReturn(updateResult);
+
+            // Act
+            estoqueService.decrementaPorNome(nomeProduto, quantidade);
+
+            // Assert
+            var query = queryArgumentCaptor.getValue();
+            var queryExpected = new Query(Criteria.where("nomeProduto").is(nomeProduto));
+            var update = updateArgumentCaptor.getValue();
+            var updatedExpected = new Update()
+                    .inc("quantidade",  -quantidade)
+                    .set("dataAtualizacao", LocalDateTime.now().format(DateFormatterUtil.customFormatter()));
+
+            assertEquals(queryExpected.toString(), query.toString());
+            assertEquals(updatedExpected.toString(), update.toString());
+        }
+
+        @Test
+        void shouldThrowAnExceptionWhenProdutoNotFound() {
+            // Arrange
+            var nomeProduto = "Camisa Chelsea";
+            var quantidade = 2;
+
+            when(estoqueOutputPort.findByNomeProduto(nomeProduto))
+                    .thenThrow(new ProdutoNotFoundException(PRODUTO_NOT_FOUND
+                            .params(nomeProduto).getMessage()));
+
+            // Act Assert
+            assertThrows(ProdutoNotFoundException.class, () ->
+                    estoqueService.decrementaPorNome(nomeProduto, quantidade));
+        }
+
+        @Test
+        void shouldThrowAnExceptionWhenProdutoNotFoundInEstoque() {
+            // Arrange
+            var nomeProduto = "Camisa Chelsea";
+            var quantidade = 2;
+
+            when(estoqueOutputPort.findByNomeProduto(nomeProduto))
+                    .thenThrow(new ProdutoNotFoundInEstoqueException(PRODUTO_NOT_FOUND
+                            .params(nomeProduto).getMessage()));
+
+            // Act Assert
+            assertThrows(ProdutoNotFoundInEstoqueException.class, () ->
+                    estoqueService.decrementaPorNome(nomeProduto, quantidade));
         }
     }
 }
