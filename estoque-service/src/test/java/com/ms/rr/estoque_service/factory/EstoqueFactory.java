@@ -1,6 +1,7 @@
 package com.ms.rr.estoque_service.factory;
 
 import com.ms.rr.estoque_service.domain.dto.in.CreateEstoque;
+import com.ms.rr.estoque_service.domain.dto.out.EstoqueResponse;
 import com.ms.rr.estoque_service.domain.model.EstoqueDomain;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -39,5 +40,9 @@ public class EstoqueFactory {
 
     public static Page<EstoqueDomain> createWithPage() {
         return new PageImpl<>(List.of(estoqueDomain()));
+    }
+
+    public static EstoqueResponse createEstoqueResponse(EstoqueDomain estoqueDomain) {
+        return EstoqueResponse.fromDomain(estoqueDomain);
     }
 }
