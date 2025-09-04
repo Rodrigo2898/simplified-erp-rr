@@ -1,6 +1,7 @@
 package com.ms.rr.estoque_service.adapter.input.rest.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ms.rr.estoque_service.domain.dto.out.ApiResponse;
 import com.ms.rr.estoque_service.domain.dto.out.EstoqueResponse;
 import com.ms.rr.estoque_service.domain.exception.ProdutoNotFoundException;
 import com.ms.rr.estoque_service.domain.model.EstoqueDomain;
@@ -13,10 +14,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.math.BigDecimal;
 
 import static com.ms.rr.estoque_service.domain.exception.BaseErrorMessage.PRODUTO_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,6 +40,12 @@ class EstoqueResourceTest {
 
     @Captor
     ArgumentCaptor<String> nomeProdutoCaptor;
+
+    @Captor
+    ArgumentCaptor<PageRequest> pageRequestCaptor;
+
+    @Captor
+    ArgumentCaptor<String> tipoProdutoCaptor;
 
     private EstoqueDomain estoqueDomain;
     private ObjectMapper objectMapper;
@@ -78,18 +88,93 @@ class EstoqueResourceTest {
 
         @Test
         void shouldThrowExceptionWhenFindProdutoInEstoqueByNomeNotFound() throws Exception {
+            // Arrange
             var nomeProduto = "Camisa Chelsea";
 
             when(estoqueUseCase.buscarPorNome(nomeProduto))
                     .thenThrow(new ProdutoNotFoundException(PRODUTO_NOT_FOUND
                             .params(nomeProduto).getMessage()));
 
+            // Act & Assert
             mockMvc.perform(MockMvcRequestBuilders.get("/api/estoque/{nomeProduto}", nomeProduto)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound())
                     .andExpect(result -> assertTrue(result.getResolvedException() instanceof ProdutoNotFoundException))
                     .andExpect(result -> assertEquals(PRODUTO_NOT_FOUND
                             .params(nomeProduto).getMessage(), result.getResolvedException().getMessage()));
+
+            assertThrows(ProdutoNotFoundException.class, () -> estoqueUseCase.buscarPorNome(nomeProduto));
+        }
+    }
+
+    @Nested
+    class FindAllProductsInEstoque {
+
+        @Test
+        void shouldFindAllProductsInEstoqueSuccessfully() throws Exception {
+            // Arrange
+            int page = 0;
+            int pageSize = 3;
+            var estoqueResponsePagination = EstoqueFactory.createWithPageEstoqueResponse();
+
+            when(estoqueUseCase.buscarTodos(pageRequestCaptor.capture()))
+                    .thenReturn(estoqueResponsePagination);
+
+            // Act & Assert
+            var mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/estoque")
+                            .param("page", Integer.toString(page))
+                            .param("pageSize", Integer.toString(pageSize))
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.summary.totalOnEstoque").value(3))
+                    .andExpect(jsonPath("$.data").isArray())
+                    .andExpect(jsonPath("$.pagination.page").value(0))
+                    .andExpect(jsonPath("$.pagination.pageSize").value(3))
+                    .andReturn();
+
+            String responseBody = mvcResult.getResponse().getContentAsString();
+            var response = objectMapper.readValue(responseBody, ApiResponse.class);
+
+            assertEquals(response.data().size(), estoqueResponsePagination.getContent().size());
+        }
+    }
+
+    @Nested
+    class FindAllProductsInEstoqueByTipo {
+
+        @Test
+        void shouldFindAllProductsInEstoqueByTipoSuccessfully() throws Exception {
+            // Arrange
+            int page = 0;
+            int pageSize = 3;
+            var tipoProduto = "Roupas";
+            var estoqueResponsePagination = EstoqueFactory.createWithPageEstoqueResponse();
+            var totalEsperado = BigDecimal.valueOf(3);
+
+            when(estoqueUseCase.buscarPorTipoProduto(tipoProdutoCaptor.capture(), pageRequestCaptor.capture()))
+                    .thenReturn(estoqueResponsePagination);
+
+            when(estoqueUseCase.buscaTotalPorTipoProduto(tipoProdutoCaptor.capture()))
+                    .thenReturn(totalEsperado);
+
+            // Act & Assert
+            var mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/estoque/tipo-produto/{tipoProduto}", tipoProduto)
+                            .param("page", Integer.toString(page))
+                            .param("pageSize", Integer.toString(pageSize))
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.summary.totalOnEstoque").value(totalEsperado))
+                    .andExpect(jsonPath("$.data").isArray())
+                    .andExpect(jsonPath("$.pagination.page").value(0))
+                    .andExpect(jsonPath("$.pagination.pageSize").value(3))
+                    .andReturn();
+
+
+            String responseBody = mvcResult.getResponse().getContentAsString();
+            var response = objectMapper.readValue(responseBody, ApiResponse.class);
+
+            assertEquals(response.data().size(), estoqueResponsePagination.getContent().size());
+            assertEquals(response.summary().get("totalOnEstoque"), totalEsperado.intValueExact());
         }
     }
 }

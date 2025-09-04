@@ -45,4 +45,11 @@ public class EstoqueFactory {
     public static EstoqueResponse createEstoqueResponse(EstoqueDomain estoqueDomain) {
         return EstoqueResponse.fromDomain(estoqueDomain);
     }
+
+    public static Page<EstoqueResponse> createWithPageEstoqueResponse() {
+        var response1 = createEstoqueResponse(estoqueDomain());
+        var response2 = createEstoqueResponse(estoqueDomain());
+        var response3 = createEstoqueResponse(estoqueDomain());
+        return new PageImpl<>(List.of(response1, response2, response3));
+    }
 }
