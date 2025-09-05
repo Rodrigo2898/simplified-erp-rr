@@ -47,6 +47,9 @@ class EstoqueResourceTest {
     @Captor
     ArgumentCaptor<String> tipoProdutoCaptor;
 
+    @Captor
+    ArgumentCaptor<Integer> quantidadeCaptor;
+
     private EstoqueDomain estoqueDomain;
     private ObjectMapper objectMapper;
 
@@ -69,7 +72,8 @@ class EstoqueResourceTest {
                     .thenReturn(estoqueResponse);
 
             // Act
-            var mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/estoque/{nomeProduto}", nomeProduto)
+            var mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(
+                    "/api/estoque/{nomeProduto}", nomeProduto)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andReturn();
@@ -158,7 +162,8 @@ class EstoqueResourceTest {
                     .thenReturn(totalEsperado);
 
             // Act & Assert
-            var mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/estoque/tipo-produto/{tipoProduto}", tipoProduto)
+            var mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(
+                    "/api/estoque/tipo-produto/{tipoProduto}", tipoProduto)
                             .param("page", Integer.toString(page))
                             .param("pageSize", Integer.toString(pageSize))
                     .contentType(MediaType.APPLICATION_JSON))
@@ -175,6 +180,51 @@ class EstoqueResourceTest {
 
             assertEquals(response.data().size(), estoqueResponsePagination.getContent().size());
             assertEquals(response.summary().get("totalOnEstoque"), totalEsperado.intValueExact());
+        }
+    }
+
+    @Nested
+    class DeleteProdutoFromEstoqueAndUpdateQuantidade {
+
+        @Test
+        void shouldDeleteProdutoFromEstoqueAndUpdateQuantidadeSuccessfully() throws Exception {
+            // Arrange
+            var nomeProduto = "Camisa Chelsea";
+            var quantidade = 2;
+
+            doNothing().when(estoqueUseCase).decrementaPorNome(nomeProdutoCaptor.capture(), quantidadeCaptor.capture());
+
+            // Act & Assert
+            var mockResult = mockMvc.perform(MockMvcRequestBuilders.delete(
+                    "/api/estoque/nome-produto/{nomeProduto}", nomeProduto)
+                    .param("quantidade", String.valueOf(quantidade))
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            String responseBody = mockResult.getResponse().getContentAsString();
+            assertEquals(responseBody, "Produto removido do Estoque");
+        }
+
+        @Test
+        void shouldThrowExceptionWhenProdutoNotFound() throws Exception {
+            // Arrange
+            var nomeProduto = "Camisa Chelsea";
+            var quantidade = 2;
+
+            doThrow(new ProdutoNotFoundException(PRODUTO_NOT_FOUND.params(nomeProduto).getMessage()))
+                    .when(estoqueUseCase).decrementaPorNome(nomeProdutoCaptor.capture(), quantidadeCaptor.capture());
+
+            // Act & Assert
+            mockMvc.perform(MockMvcRequestBuilders.delete("/api/estoque/nome-produto/{nomeProduto}", nomeProduto)
+                            .param("quantidade", String.valueOf(quantidade))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNotFound())
+                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ProdutoNotFoundException))
+                    .andExpect(result -> assertEquals(PRODUTO_NOT_FOUND
+                            .params(nomeProduto).getMessage(), result.getResolvedException().getMessage()));
+
+            assertThrows(ProdutoNotFoundException.class, () -> estoqueUseCase.decrementaPorNome(nomeProduto, quantidade));
         }
     }
 }
