@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ms.rr.estoque_service.domain.dto.out.ApiResponse;
 import com.ms.rr.estoque_service.domain.dto.out.EstoqueResponse;
 import com.ms.rr.estoque_service.domain.exception.ProdutoNotFoundException;
+import com.ms.rr.estoque_service.domain.exception.ProdutoNotFoundInEstoqueException;
 import com.ms.rr.estoque_service.domain.model.EstoqueDomain;
 import com.ms.rr.estoque_service.domain.port.input.EstoqueUseCase;
 import com.ms.rr.estoque_service.factory.EstoqueFactory;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import static com.ms.rr.estoque_service.domain.exception.BaseErrorMessage.PRODUTO_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,6 +51,9 @@ class EstoqueResourceTest {
 
     @Captor
     ArgumentCaptor<Integer> quantidadeCaptor;
+
+    @Captor
+    ArgumentCaptor<String> produtoIdCaptor;
 
     private EstoqueDomain estoqueDomain;
     private ObjectMapper objectMapper;
@@ -225,6 +230,63 @@ class EstoqueResourceTest {
                             .params(nomeProduto).getMessage(), result.getResolvedException().getMessage()));
 
             assertThrows(ProdutoNotFoundException.class, () -> estoqueUseCase.decrementaPorNome(nomeProduto, quantidade));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenProdutoNotFoundInEstoque() throws Exception {
+            // Arrange
+            var nomeProduto = "Camisa Chelsea";
+            var quantidade = 2;
+
+            doThrow(new ProdutoNotFoundInEstoqueException(PRODUTO_NOT_FOUND.params(nomeProduto).getMessage()))
+                    .when(estoqueUseCase).decrementaPorNome(nomeProdutoCaptor.capture(), quantidadeCaptor.capture());
+
+            // Act & Assert
+            mockMvc.perform(MockMvcRequestBuilders.delete("/api/estoque/nome-produto/{nomeProduto}", nomeProduto)
+                            .param("quantidade", String.valueOf(quantidade))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNotFound())
+                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ProdutoNotFoundInEstoqueException))
+                    .andExpect(result -> assertEquals(PRODUTO_NOT_FOUND
+                            .params(nomeProduto).getMessage(), result.getResolvedException().getMessage()));
+
+            assertThrows(ProdutoNotFoundInEstoqueException.class, () -> estoqueUseCase.decrementaPorNome(nomeProduto, quantidade));
+        }
+    }
+
+    @Nested
+    class DeleteProdutoInEstoqueById {
+
+        @Test
+        void shouldDeleteProdutoInEstoqueByIdSuccessfully() throws Exception {
+            // Arrange
+            var id = UUID.randomUUID().toString();
+
+            doNothing().when(estoqueUseCase).deletaPorId(produtoIdCaptor.capture());
+
+            // Act & Assert
+            mockMvc.perform(MockMvcRequestBuilders.delete("/api/estoque/{id}", id)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNoContent());
+        }
+
+        @Test
+        void shouldThrowExceptionWhenProdutoNotFound() throws Exception {
+            // Arrange
+            var id = UUID.randomUUID().toString();
+
+            doThrow(new ProdutoNotFoundException(PRODUTO_NOT_FOUND.params(id).getMessage()))
+                    .when(estoqueUseCase).deletaPorId(produtoIdCaptor.capture());
+
+            // Act & Assert
+            mockMvc.perform(MockMvcRequestBuilders.delete("/api/estoque/{id}", id)
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNotFound())
+                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ProdutoNotFoundException))
+                    .andExpect(result -> assertEquals(PRODUTO_NOT_FOUND
+                            .params(id).getMessage(), result.getResolvedException().getMessage()));
+
+            assertThrows(ProdutoNotFoundException.class, () -> estoqueUseCase.deletaPorId(id));
         }
     }
 }
