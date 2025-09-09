@@ -12,6 +12,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
 @Component
 public class ProdutoCadastradoConsumer {
@@ -19,6 +20,9 @@ public class ProdutoCadastradoConsumer {
     private static final Logger log = LoggerFactory.getLogger(ProdutoCadastradoConsumer.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private final EstoqueUseCase estoqueUseCase;
+
+    private CountDownLatch latch = new CountDownLatch(1);
+    private String payload;
 
     public ProdutoCadastradoConsumer(EstoqueUseCase estoqueUseCase) {
         this.estoqueUseCase = estoqueUseCase;
@@ -31,6 +35,7 @@ public class ProdutoCadastradoConsumer {
             containerFactory = "kafkaListenerContainerFactory")
     public void listen(@Payload String jsonEvent) throws JsonProcessingException {
         log.info("Produto recebido: {}", jsonEvent);
+        payload = jsonEvent;
         ProdutoCriadoEvent event = objectMapper.readValue(jsonEvent, ProdutoCriadoEvent.class);
         CreateEstoque createEstoque = new CreateEstoque(
                 event.getNomeProduto(),
@@ -39,5 +44,17 @@ public class ProdutoCadastradoConsumer {
                 event.getTipoProduto()
         );
         estoqueUseCase.salvar(createEstoque);
+    }
+
+    public CountDownLatch getLatch() {
+        return latch;
+    }
+
+    public void resetLatch() {
+        latch = new CountDownLatch(1);
+    }
+
+    public String getPayload() {
+        return payload;
     }
 }
