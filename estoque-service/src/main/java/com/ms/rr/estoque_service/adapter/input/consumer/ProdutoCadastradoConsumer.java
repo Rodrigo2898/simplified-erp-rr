@@ -43,6 +43,7 @@ public class ProdutoCadastradoConsumer {
                 1,
                 event.getTipoProduto()
         );
+        latch.countDown();
         estoqueUseCase.salvar(createEstoque);
     }
 
