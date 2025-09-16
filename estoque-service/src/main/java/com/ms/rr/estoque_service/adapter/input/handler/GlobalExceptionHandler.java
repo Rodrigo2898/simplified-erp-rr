@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
             ProdutoNotFoundException exception, WebRequest request) {
 
         var error = ApiError.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .status(HttpStatus.NOT_FOUND.value())
                 .message(exception.getMessage())
                 .description(PRODUTO_NOT_FOUND.getMessage())
                 .timestamp(LocalDateTime.now());
@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
             ProdutoNotFoundInEstoqueException exception, WebRequest request) {
 
         var error = ApiError.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .status(HttpStatus.NOT_FOUND.value())
                 .message(exception.getMessage())
                 .description(PRODUTO_NOT_FOUND_IN_ESTOQUE.getMessage())
                 .timestamp(LocalDateTime.now());

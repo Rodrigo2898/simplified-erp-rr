@@ -18,7 +18,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.kafka.KafkaContainer;
 
 import java.util.concurrent.TimeUnit;
 
@@ -30,7 +36,19 @@ import static org.junit.jupiter.api.Assertions.*;
 @Import(KafkaTestConfiguration.class)
 @SpringBootTest(classes = EstoqueServiceApplication.class)
 @DirtiesContext
-public class ProdutoCadastradoConsumerIT extends AbstractIntegrationTest {
+@Testcontainers
+@ActiveProfiles("test")
+public class ProdutoCadastradoConsumerIT {
+
+    @Container
+    protected final static KafkaContainer kafkaContainer = new KafkaContainer("apache/kafka-native:latest");
+
+
+    @DynamicPropertySource
+    protected static void dynamicPropertiesProperties(DynamicPropertyRegistry registry) {
+
+        registry.add("spring.kafka.bootstrap-servers", kafkaContainer::getBootstrapServers);
+    }
 
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
