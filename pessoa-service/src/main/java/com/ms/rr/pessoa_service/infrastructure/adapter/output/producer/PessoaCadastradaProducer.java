@@ -29,6 +29,7 @@ public class PessoaCadastradaProducer implements PessoaCriadaOutpuPort {
 
     @Override
     public void sendMessage(PessoaCriadaEvent event) {
+        log.info("Enviando para tópico: {}", topicoProdutoCadastrado);
         kafkaTemplate.send(topicoProdutoCadastrado, event.id().toString(), event);
     }
 }
