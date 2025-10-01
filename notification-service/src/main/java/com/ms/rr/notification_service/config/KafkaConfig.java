@@ -1,6 +1,6 @@
-package com.ms.rr.estoque_service.config;
+package com.ms.rr.notification_service.config;
 
-import com.ms.rr.estoque_service.domain.model.ProdutoCriadoEvent;
+import com.ms.rr.notification_service.domain.model.PessoaCriadaEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,9 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.converter.JsonMessageConverter;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,11 +24,7 @@ public class KafkaConfig {
     private String groupId;
 
     @Bean
-    public ConsumerFactory<String, ProdutoCriadoEvent> consumerFactory() {
-        JsonDeserializer<ProdutoCriadoEvent> deserializer =
-                new JsonDeserializer<>(ProdutoCriadoEvent.class, false);
-        deserializer.addTrustedPackages("*");
-
+    public ConsumerFactory<String, PessoaCriadaEvent> consumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
@@ -40,15 +34,17 @@ public class KafkaConfig {
         return new DefaultKafkaConsumerFactory<>(
                 configProps,
                 new StringDeserializer(),
-                deserializer);
+                new JsonDeserializer<>(PessoaCriadaEvent.class)
+        );
     }
 
+
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, ProdutoCriadoEvent> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, ProdutoCriadoEvent> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, PessoaCriadaEvent> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, PessoaCriadaEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
-        factory.setRecordMessageConverter(new JsonMessageConverter());
         return factory;
     }
+
 }
