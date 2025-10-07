@@ -22,7 +22,7 @@ public class PessoaCadastradaConsumer {
             groupId = "${spring.kafka.consumer.group-id}",
             containerFactory = "kafkaListenerContainerFactory")
     public void listen(PessoaCriadaEvent pessoaCriadaEvent) {
-        log.info("Pessoa Cadastrada: {}", pessoaCriadaEvent);
+        log.info("Pessoa Cadastrada: {}", pessoaCriadaEvent.getNome());
         pessoaNotificationUseCase.sendEmail(pessoaCriadaEvent);
     }
 }
