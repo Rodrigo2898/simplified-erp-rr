@@ -5,6 +5,7 @@ import com.ms.rr.notification_service.domain.port.input.NotificationUseCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,6 +24,17 @@ public class PessoaCadastradaConsumer {
             containerFactory = "kafkaListenerContainerFactory")
     public void listen(PessoaCriadaEvent pessoaCriadaEvent) {
         log.info("Pessoa Cadastrada: {}", pessoaCriadaEvent.getNome());
+        sendEmail(pessoaCriadaEvent);
+        sendSMS(pessoaCriadaEvent);
+    }
+
+    @Async("threadPoolTaskExecutor")
+    public void sendEmail(PessoaCriadaEvent pessoaCriadaEvent) {
         pessoaNotificationUseCase.sendEmail(pessoaCriadaEvent);
+    }
+
+    @Async("threadPoolTaskExecutor")
+    public void sendSMS(PessoaCriadaEvent pessoaCriadaEvent) {
+        pessoaNotificationUseCase.sendSMS(pessoaCriadaEvent);
     }
 }

@@ -15,4 +15,9 @@ public class PessoaNotificationService implements NotificationUseCase<PessoaCria
     public void sendEmail(PessoaCriadaEvent pessoaCriadaEvent) {
         log.info("Enviando e-mail para: {}", pessoaCriadaEvent.getEmail());
     }
+
+    @Override
+    public void sendSMS(PessoaCriadaEvent pessoaCriadaEvent) {
+        log.info("Enviando sms para: {}", pessoaCriadaEvent.getTelefone());
+    }
 }
