@@ -2,6 +2,9 @@ package com.ms.rr.notification_service.domain.service;
 
 import com.ms.rr.notification_service.domain.model.PessoaCriadaEvent;
 import com.ms.rr.notification_service.domain.port.input.NotificationUseCase;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +22,15 @@ public class PessoaNotificationService implements NotificationUseCase<PessoaCria
 
     @Value("${spring.mail.username}")
     private String from;
+
+    @Value("${twilio.accountSid}")
+    private String accountSid;
+
+    @Value("${twilio.authToken}")
+    private String authToken;
+
+    @Value("${twilio.phoneNumber}")
+    private String phoneNumber;
 
     public PessoaNotificationService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
@@ -55,5 +67,15 @@ public class PessoaNotificationService implements NotificationUseCase<PessoaCria
     @Override
     public void sendSMS(PessoaCriadaEvent pessoaCriadaEvent) {
         log.info("Enviando sms para: {}", pessoaCriadaEvent.getTelefone());
+
+        String message = String.format("Seu número %s, foi válidado com sucesso", pessoaCriadaEvent.getTelefone());
+
+        Twilio.init(accountSid, authToken);
+
+        Message.creator(
+                new PhoneNumber(pessoaCriadaEvent.getTelefone()),
+                new PhoneNumber(phoneNumber),
+                message
+        ).create();
     }
 }
