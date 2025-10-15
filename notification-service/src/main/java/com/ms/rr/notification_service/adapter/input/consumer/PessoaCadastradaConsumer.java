@@ -30,11 +30,19 @@ public class PessoaCadastradaConsumer {
 
     @Async("threadPoolTaskExecutor")
     public void sendEmail(PessoaCriadaEvent pessoaCriadaEvent) {
-        pessoaNotificationUseCase.sendEmail(pessoaCriadaEvent);
+        try {
+            pessoaNotificationUseCase.sendEmail(pessoaCriadaEvent);
+        } catch (Exception e) {
+            log.error("Erro ao enviar e-mail para pessoa: {}", pessoaCriadaEvent.getNome(), e);
+        }
     }
 
     @Async("threadPoolTaskExecutor")
     public void sendSMS(PessoaCriadaEvent pessoaCriadaEvent) {
-        pessoaNotificationUseCase.sendSMS(pessoaCriadaEvent);
+        try {
+            pessoaNotificationUseCase.sendSMS(pessoaCriadaEvent);
+        } catch (Exception e) {
+            log.error("Erro ao enviar SMS para pessoa: {}", pessoaCriadaEvent.getNome(), e);
+        }
     }
 }

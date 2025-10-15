@@ -68,14 +68,16 @@ public class PessoaNotificationService implements NotificationUseCase<PessoaCria
     public void sendSMS(PessoaCriadaEvent pessoaCriadaEvent) {
         log.info("Enviando sms para: {}", pessoaCriadaEvent.getTelefone());
 
-        String message = String.format("Seu número %s, foi válidado com sucesso", pessoaCriadaEvent.getTelefone());
+        String messageBody = String.format("Seu número %s, foi válidado com sucesso", pessoaCriadaEvent.getTelefone());
 
         Twilio.init(accountSid, authToken);
 
-        Message.creator(
+        Message message = Message.creator(
                 new PhoneNumber(pessoaCriadaEvent.getTelefone()),
                 new PhoneNumber(phoneNumber),
-                message
+                messageBody
         ).create();
+
+        log.info("Mensagem enviada para: {}", message.getSid());
     }
 }
