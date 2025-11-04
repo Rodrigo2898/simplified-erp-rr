@@ -4,6 +4,7 @@ import com.ms.rr.pessoa_service.application.api.ClienteApi;
 import com.ms.rr.pessoa_service.application.dto.in.CreateCliente;
 import com.ms.rr.pessoa_service.application.dto.in.UpdateCliente;
 import com.ms.rr.pessoa_service.application.dto.out.ClienteResponse;
+import com.ms.rr.pessoa_service.infrastructure.adapter.input.web.rest.impl.ClienteResourceImpl;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -22,13 +23,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ClienteResourceTest {
+class ClienteResourceImplTest {
 
     @Mock
     private ClienteApi clienteApi;
 
     @InjectMocks
-    private ClienteResource clienteResource;
+    private ClienteResourceImpl clienteResourceImpl;
 
     @Captor
     ArgumentCaptor<Long> clienteIdArgumentCaptor;
@@ -40,7 +41,7 @@ class ClienteResourceTest {
     ArgumentCaptor<UpdateCliente> updateClienteArgumentCaptor;
 
     @Nested
-    class CreateClienteResource {
+    class CreateClienteResourceImpl {
 
         @Test
         void shouldReturnHttpCreated() {
@@ -48,7 +49,7 @@ class ClienteResourceTest {
             var in = Instancio.create(CreateCliente.class);
 
             // Act
-            var response = clienteResource.create(in);
+            var response = clienteResourceImpl.create(in);
 
             // Assert
             assertEquals(HttpStatusCode.valueOf(201), response.getStatusCode());
@@ -60,7 +61,7 @@ class ClienteResourceTest {
             var in = Instancio.create(CreateCliente.class);
 
             // Act
-            var response = clienteResource.create(in);
+            var response = clienteResourceImpl.create(in);
 
             // Assert
             verify(clienteApi).create(createClienteArgumentCaptor.capture());
@@ -73,7 +74,7 @@ class ClienteResourceTest {
             var in = Instancio.create(CreateCliente.class);
 
             // Act
-            var response = clienteResource.create(in);
+            var response = clienteResourceImpl.create(in);
 
             // Assert
             assertNotNull(response);
@@ -88,7 +89,7 @@ class ClienteResourceTest {
     }
 
     @Nested
-    class GetAllClienteResource {
+    class GetAllClienteResourceImpl {
 
         @Test
         void shouldReturnHttpOk() {
@@ -97,7 +98,7 @@ class ClienteResourceTest {
             doReturn(out).when(clienteApi).list();
 
             // Act
-            var response = clienteResource.getAll();
+            var response = clienteResourceImpl.getAll();
 
             // Assert
             assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
@@ -110,7 +111,7 @@ class ClienteResourceTest {
             doReturn(out).when(clienteApi).list();
 
             // Act
-            var response = clienteResource.getAll();
+            var response = clienteResourceImpl.getAll();
 
             // Assert
             assertNotNull(response);
@@ -132,7 +133,7 @@ class ClienteResourceTest {
             doReturn(out).when(clienteApi).findById(id);
 
             // Act
-            var response = clienteResource.getById(id);
+            var response = clienteResourceImpl.getById(id);
 
             // Assert
             assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
@@ -146,7 +147,7 @@ class ClienteResourceTest {
             doReturn(out).when(clienteApi).findById(id);
 
             // Act
-            var response = clienteResource.getById(id);
+            var response = clienteResourceImpl.getById(id);
 
             // Assert
             verify(clienteApi).findById(clienteIdArgumentCaptor.capture());
@@ -161,7 +162,7 @@ class ClienteResourceTest {
             doReturn(out).when(clienteApi).findById(id);
 
             // Act
-            var response = clienteResource.getById(id);
+            var response = clienteResourceImpl.getById(id);
 
             // Assert
             assertNotNull(response);
@@ -177,7 +178,7 @@ class ClienteResourceTest {
     }
 
     @Nested
-    class UpdateClienteResource {
+    class UpdateClienteResourceImpl {
 
         @Test
         void shouldReturnHttpOk() {
@@ -188,7 +189,7 @@ class ClienteResourceTest {
             doReturn(out).when(clienteApi).update(id, in);
 
             // Act
-            var response = clienteResource.update(id, in);
+            var response = clienteResourceImpl.update(id, in);
 
             // Assert
             assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
@@ -203,7 +204,7 @@ class ClienteResourceTest {
             doReturn(out).when(clienteApi).update(id, in);
 
             // Act
-            var response = clienteResource.update(id, in);
+            var response = clienteResourceImpl.update(id, in);
 
             // Assert
             verify(clienteApi).update(clienteIdArgumentCaptor.capture(), updateClienteArgumentCaptor.capture());
@@ -220,7 +221,7 @@ class ClienteResourceTest {
             doReturn(out).when(clienteApi).update(id, in);
 
             // Act
-            var response = clienteResource.update(id, in);
+            var response = clienteResourceImpl.update(id, in);
 
             // Assert
             assertNotNull(response);
@@ -236,7 +237,7 @@ class ClienteResourceTest {
     }
 
     @Nested
-    class DeleteClienteResource {
+    class DeleteClienteResourceImpl {
 
         @Test
         void shouldReturnHttpNoContent() {
@@ -245,7 +246,7 @@ class ClienteResourceTest {
             doNothing().when(clienteApi).delete(id);
 
             // Act
-            ResponseEntity<Void> response = clienteResource.delete(id);
+            ResponseEntity<Void> response = clienteResourceImpl.delete(id);
 
             // Arrange
             assertEquals(HttpStatusCode.valueOf(204), response.getStatusCode());
@@ -258,7 +259,7 @@ class ClienteResourceTest {
             doNothing().when(clienteApi).delete(id);
 
             // Act
-            ResponseEntity<Void> response = clienteResource.delete(id);
+            ResponseEntity<Void> response = clienteResourceImpl.delete(id);
 
             // Assert
             verify(clienteApi).delete(clienteIdArgumentCaptor.capture());
