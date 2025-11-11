@@ -1,6 +1,7 @@
 package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity;
 
 import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity.enums.TipoPessoa;
+import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.entity.vo.Endereco;
 import jakarta.persistence.*;
 
 @Entity
@@ -15,6 +16,9 @@ public abstract class Pessoa {
     protected String nome;
     protected String email;
     protected String telefone;
+
+    @Embedded
+    protected Endereco endereco;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_pessoa", insertable = false, updatable = false)
@@ -50,6 +54,14 @@ public abstract class Pessoa {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
     }
 
     public TipoPessoa getTipo() {

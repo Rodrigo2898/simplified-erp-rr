@@ -8,19 +8,22 @@ public record ClienteDomain(Long id,
                             String email,
                             String telefone,
                             String cpf,
-                            LocalDate dataCadastro) {
+                            LocalDate dataCadastro,
+                            EnderecoDomain endereco) {
 
     public static ClienteDomain create(String nome,
                                        String email,
                                        String telefone,
                                        String cpf,
-                                       LocalDate dataCadastro) {
+                                       LocalDate dataCadastro,
+                                       EnderecoDomain endereco) {
         return new ClienteDomain(
                 Integer.toUnsignedLong(new Random().nextInt()),
                 nome,
                 email,
                 telefone,
                 cpf,
-                dataCadastro);
+                dataCadastro,
+                endereco);
     }
 }

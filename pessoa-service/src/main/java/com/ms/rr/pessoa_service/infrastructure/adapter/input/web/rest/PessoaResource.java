@@ -1,5 +1,6 @@
 package com.ms.rr.pessoa_service.infrastructure.adapter.input.web.rest;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,7 +9,7 @@ import java.util.List;
 public interface PessoaResource<CreateDTO, ResponseDTO, UpdateDTO, ID> {
 
     @PostMapping
-    ResponseEntity<CreateDTO> create(@RequestBody CreateDTO dto);
+    ResponseEntity<CreateDTO> create(@RequestBody @Valid CreateDTO dto);
 
     @GetMapping
     ResponseEntity<List<ResponseDTO>> getAll();
@@ -17,7 +18,7 @@ public interface PessoaResource<CreateDTO, ResponseDTO, UpdateDTO, ID> {
     ResponseEntity<ResponseDTO> getById(@PathVariable ID id);
 
     @PutMapping("/{id}")
-    ResponseEntity<ResponseDTO> update(@PathVariable ID id, @RequestBody UpdateDTO dto);
+    ResponseEntity<ResponseDTO> update(@PathVariable ID id, @RequestBody @Valid UpdateDTO dto);
 
     @DeleteMapping("/{id}")
     ResponseEntity<Void> delete(@PathVariable ID id);

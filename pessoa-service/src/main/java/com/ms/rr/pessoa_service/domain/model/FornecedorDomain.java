@@ -7,18 +7,21 @@ public record FornecedorDomain(Long id,
                                String email,
                                String telefone,
                                String cnpj,
-                               String razaoSocial)  {
+                               String razaoSocial,
+                               EnderecoDomain endereco)  {
     public static FornecedorDomain create(String nome,
                                           String email,
                                           String telefone,
                                           String cnpj,
-                                          String razaoSocial) {
+                                          String razaoSocial,
+                                          EnderecoDomain endereco) {
         return new FornecedorDomain(
                 Integer.toUnsignedLong(new Random().nextInt()),
                 nome,
                 email,
                 telefone,
                 cnpj,
-                razaoSocial);
+                razaoSocial,
+                endereco);
     }
 }
