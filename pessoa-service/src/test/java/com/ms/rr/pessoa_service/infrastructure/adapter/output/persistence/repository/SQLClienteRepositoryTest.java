@@ -1,11 +1,8 @@
 package com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.repository;
 
 import com.ms.rr.pessoa_service.api.output.ClienteOutputPortTest;
-import com.ms.rr.pessoa_service.application.port.output.ClienteOutputPort;
-import com.ms.rr.pessoa_service.infrastructure.adapter.output.persistence.repository.impl.SQLClienteRepository;
-import jakarta.inject.Inject;
+import com.ms.rr.pessoa_service.domain.port.output.ClienteOutputPort;
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;

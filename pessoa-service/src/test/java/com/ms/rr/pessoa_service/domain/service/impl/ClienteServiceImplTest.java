@@ -1,7 +1,8 @@
 package com.ms.rr.pessoa_service.domain.service.impl;
 
-import com.ms.rr.pessoa_service.application.port.output.ClienteOutputPort;
+import com.ms.rr.pessoa_service.domain.port.output.ClienteOutputPort;
 import com.ms.rr.pessoa_service.domain.model.ClienteDomain;
+import com.ms.rr.pessoa_service.domain.service.ClienteServiceImpl;
 import com.ms.rr.pessoa_service.factory.CreateClienteDomainFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;

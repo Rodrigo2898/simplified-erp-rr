@@ -1,6 +1,6 @@
 package com.ms.rr.pessoa_service.api.output;
 
-import com.ms.rr.pessoa_service.application.port.output.ClienteOutputPort;
+import com.ms.rr.pessoa_service.domain.port.output.ClienteOutputPort;
 import com.ms.rr.pessoa_service.domain.model.ClienteDomain;
 import com.ms.rr.pessoa_service.domain.query.ClienteQuery;
 import com.ms.rr.pessoa_service.factory.CreateClienteDomainFactory;
