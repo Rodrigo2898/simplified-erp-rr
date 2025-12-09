@@ -10,14 +10,6 @@ public interface FornecedorOutputPort extends BaseOutputPort<FornecedorDomain, L
 
     FornecedorDomain findFornecedorByCnpj(String cnpj);
 
-    List<FornecedorDomain> find(FornecedorQuery fornecedorQuery);
-
-    default List<FornecedorDomain> findAll() {
-        return find(new FornecedorQuery.Builder().build());
-    }
-
-    Optional<FornecedorDomain> findById(Long id);
-
     default void deleteById(Long id) {
         FornecedorDomain entity = findById(id).orElseThrow();
         delete(entity);

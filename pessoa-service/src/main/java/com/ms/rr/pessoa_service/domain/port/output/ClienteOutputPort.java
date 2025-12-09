@@ -10,14 +10,6 @@ public interface ClienteOutputPort extends BaseOutputPort<ClienteDomain, Long> {
 
     ClienteDomain findClienteByCpf(String cpf);
 
-    List<ClienteDomain> find(ClienteQuery clienteQuery);
-
-    default List<ClienteDomain> findAll() {
-        return find(new ClienteQuery.Builder().build());
-    }
-
-    Optional<ClienteDomain> findById(Long id);
-
     default void deleteById(Long id) {
         ClienteDomain entity = findById(id).orElseThrow();
         delete(entity);

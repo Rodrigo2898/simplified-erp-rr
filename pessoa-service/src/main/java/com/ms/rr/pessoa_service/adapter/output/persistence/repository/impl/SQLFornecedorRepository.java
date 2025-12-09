@@ -2,7 +2,6 @@ package com.ms.rr.pessoa_service.adapter.output.persistence.repository.impl;
 
 import com.ms.rr.pessoa_service.domain.port.output.FornecedorOutputPort;
 import com.ms.rr.pessoa_service.domain.model.FornecedorDomain;
-import com.ms.rr.pessoa_service.domain.query.FornecedorQuery;
 import com.ms.rr.pessoa_service.adapter.output.persistence.entity.Fornecedor;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -18,13 +17,12 @@ public class SQLFornecedorRepository implements FornecedorOutputPort {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Override
     @Transactional
-    public void save(List<FornecedorDomain> fornecedores) {
-        fornecedores.stream()
-                .map(Fornecedor::fromDomain)
-                .forEach(entityManager::persist);
+    @Override
+    public void save(FornecedorDomain fornecedorDomain) {
+        entityManager.persist(Fornecedor.fromDomain(fornecedorDomain));
     }
+
 
     @Override
     public Optional<FornecedorDomain> findById(Long id) {
@@ -36,11 +34,6 @@ public class SQLFornecedorRepository implements FornecedorOutputPort {
     @Override
     public FornecedorDomain findFornecedorByCnpj(String cnpj) {
         return null;
-    }
-
-    @Override
-    public List<FornecedorDomain> find(FornecedorQuery fornecedorQuery) {
-        return List.of();
     }
 
     @Override
