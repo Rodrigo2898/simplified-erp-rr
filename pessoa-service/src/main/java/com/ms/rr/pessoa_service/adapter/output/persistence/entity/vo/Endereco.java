@@ -76,6 +76,17 @@ public class Endereco {
         this.estado = estado;
     }
 
+    public static Endereco fromDomain(EnderecoDomain domain) {
+        Endereco endereco = new Endereco();
+        endereco.setCep(domain.cep());
+        endereco.setNomeRua(domain.nomeRua());
+        endereco.setNumeroRua(domain.numeroRua());
+        endereco.setBairro(domain.bairro());
+        endereco.setCidade(domain.cidade());
+        endereco.setEstado(domain.estado());
+        return endereco;
+    }
+
     public EnderecoDomain toDomain() {
         return new EnderecoDomain(
                 getCep(),

@@ -1,6 +1,7 @@
 package com.ms.rr.pessoa_service.adapter.output.persistence.entity;
 
 import com.ms.rr.pessoa_service.adapter.output.persistence.entity.enums.TipoPessoa;
+import com.ms.rr.pessoa_service.adapter.output.persistence.entity.vo.Endereco;
 import com.ms.rr.pessoa_service.domain.model.FornecedorDomain;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
@@ -47,6 +48,7 @@ public class Fornecedor extends Pessoa {
         entity.setTelefone(domain.telefone());
         entity.setCnpj(domain.cnpj());
         entity.setRazaoSocial(domain.razaoSocial());
+        entity.setEndereco(Endereco.fromDomain(domain.endereco()));
         return entity;
     }
 

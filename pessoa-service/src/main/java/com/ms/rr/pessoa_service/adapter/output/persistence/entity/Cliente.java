@@ -1,6 +1,7 @@
 package com.ms.rr.pessoa_service.adapter.output.persistence.entity;
 
 import com.ms.rr.pessoa_service.adapter.output.persistence.entity.enums.TipoPessoa;
+import com.ms.rr.pessoa_service.adapter.output.persistence.entity.vo.Endereco;
 import com.ms.rr.pessoa_service.domain.model.ClienteDomain;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
@@ -62,7 +63,7 @@ public class Cliente extends Pessoa {
         entity.setTelefone(domain.telefone());
         entity.setCpf(domain.cpf());
         entity.setDataCadastro(domain.dataCadastro());
-        System.out.println("Convertendo ClienteDomain -> Cliente: " + entity);
+        entity.setEndereco(Endereco.fromDomain(domain.endereco()));
         return entity;
     }
 
