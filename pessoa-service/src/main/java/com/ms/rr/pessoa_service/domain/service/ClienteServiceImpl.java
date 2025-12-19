@@ -49,15 +49,13 @@ public class ClienteServiceImpl implements ClienteUseCase {
 
     @Transactional
     @Override
-    public ClienteResponse atualizar(Long id, UpdateCliente updateCliente) {
+    public void atualizar(Long id, UpdateCliente updateCliente) {
         var clienteExistente = clienteOutputPort.findById(id)
                 .orElseThrow();
 
         var clienteAtualizado = updateCliente.toDomain(clienteExistente.id());
 
         clienteOutputPort.save(clienteAtualizado);
-
-        return ClienteResponse.fromDomain(clienteAtualizado);
     }
 
     @Transactional

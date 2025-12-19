@@ -38,8 +38,9 @@ public class FornecedorResourceImpl implements PessoaResource<CreateFornecedor, 
     }
 
     @Override
-    public ResponseEntity<FornecedorResponse> update(Long id, UpdateFornecedor updateFornecedor) {
-        return ResponseEntity.ok().body(fornecedorUseCase.atualizar(id, updateFornecedor));
+    public ResponseEntity<String> update(Long id, UpdateFornecedor updateFornecedor) {
+        fornecedorUseCase.atualizar(id, updateFornecedor);
+        return ResponseEntity.ok().body("Fornecedor atualizado com sucesso!");
     }
 
     @Override

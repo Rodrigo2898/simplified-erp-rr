@@ -38,8 +38,9 @@ public class ClienteResourceImpl implements PessoaResource<CreateCliente, Client
     }
 
     @Override
-    public ResponseEntity<ClienteResponse> update(Long id, UpdateCliente updateCliente) {
-        return ResponseEntity.ok().body(clienteUseCase.atualizar(id, updateCliente));
+    public ResponseEntity<String> update(Long id, UpdateCliente updateCliente) {
+        clienteUseCase.atualizar(id, updateCliente);
+        return ResponseEntity.ok().body("Cliente atualizado com sucesso!");
     }
 
     @Override

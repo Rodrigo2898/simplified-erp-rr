@@ -14,4 +14,6 @@ public interface FornecedorOutputPort extends BaseOutputPort<FornecedorDomain, L
         FornecedorDomain entity = findById(id).orElseThrow();
         delete(entity);
     }
+
+    void update(Long id, FornecedorDomain domain);
 }

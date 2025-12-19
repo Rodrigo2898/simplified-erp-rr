@@ -18,7 +18,7 @@ public interface PessoaResource<CreateDTO, ResponseDTO, UpdateDTO, ID> {
     ResponseEntity<ResponseDTO> getById(@PathVariable ID id);
 
     @PutMapping("/{id}")
-    ResponseEntity<ResponseDTO> update(@PathVariable ID id, @RequestBody @Valid UpdateDTO dto);
+    ResponseEntity<String> update(@PathVariable ID id, @RequestBody @Valid UpdateDTO dto);
 
     @DeleteMapping("/{id}")
     ResponseEntity<Void> delete(@PathVariable ID id);

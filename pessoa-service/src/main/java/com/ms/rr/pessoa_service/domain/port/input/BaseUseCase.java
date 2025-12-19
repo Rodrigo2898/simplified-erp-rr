@@ -10,7 +10,7 @@ public interface BaseUseCase<Create, Update, Response, ID> {
 
     List<Response> buscarTodos();
 
-    Response atualizar(ID id, Update domain);
+    void atualizar(ID id, Update domain);
 
     void excluir(ID id);
 }

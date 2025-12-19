@@ -48,15 +48,8 @@ public class FornecedorServiceImpl implements FornecedorUseCase {
 
     @Transactional
     @Override
-    public FornecedorResponse atualizar(Long id, UpdateFornecedor updateFornecedor) {
-        var fornecedorExistente = fornecedorOutputPort.findById(id)
-                .orElseThrow();
-
-        var fornecedorAtualizado = updateFornecedor.toDomain(fornecedorExistente.id());
-
-        fornecedorOutputPort.save(fornecedorAtualizado);
-
-        return FornecedorResponse.fromDomain(fornecedorAtualizado);
+    public void atualizar(Long id, UpdateFornecedor updateFornecedor) {
+        fornecedorOutputPort.update(id, updateFornecedor.toDomain(id));
     }
 
     @Transactional
