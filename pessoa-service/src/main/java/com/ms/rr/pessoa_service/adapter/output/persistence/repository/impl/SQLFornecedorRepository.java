@@ -8,13 +8,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class SQLFornecedorRepository implements FornecedorOutputPort {
@@ -38,7 +39,16 @@ public class SQLFornecedorRepository implements FornecedorOutputPort {
 
     @Override
     public FornecedorDomain findFornecedorByCnpj(String cnpj) {
-        return null;
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Fornecedor> criteriaQuery = criteriaBuilder.createQuery(Fornecedor.class);
+        Root<Fornecedor> root = criteriaQuery.from(Fornecedor.class);
+
+        criteriaQuery.select(root)
+                .where(criteriaBuilder.equal(root.get("cnpj"), cnpj));
+
+        return entityManager
+                .createQuery(criteriaQuery)
+                .getSingleResult().toDomain();
     }
 
     @Override

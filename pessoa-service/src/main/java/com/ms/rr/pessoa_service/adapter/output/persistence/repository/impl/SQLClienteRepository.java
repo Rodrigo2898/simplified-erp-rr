@@ -5,6 +5,9 @@ import com.ms.rr.pessoa_service.domain.model.ClienteDomain;
 import com.ms.rr.pessoa_service.adapter.output.persistence.entity.Cliente;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +36,16 @@ public class SQLClienteRepository implements ClienteOutputPort {
 
     @Override
     public ClienteDomain findClienteByCpf(String cpf) {
-        return null;
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Cliente> criteriaQuery = criteriaBuilder.createQuery(Cliente.class);
+        Root<Cliente> root = criteriaQuery.from(Cliente.class);
+
+        criteriaQuery.select(root)
+                .where(criteriaBuilder.equal(root.get("cpf"), cpf));
+
+        return entityManager
+                .createQuery(criteriaQuery)
+                .getSingleResult().toDomain();
     }
 
     @Override
