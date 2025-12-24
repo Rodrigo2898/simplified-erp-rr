@@ -67,4 +67,10 @@ public class FornecedorServiceImpl implements FornecedorUseCase {
                 pessoa.telefone()
         );
     }
+
+    @Override
+    public FornecedorResponse buscarPorCnpj(String cnpj) {
+        return FornecedorResponse
+                .fromDomain(fornecedorOutputPort.findFornecedorByCnpj(cnpj));
+    }
 }

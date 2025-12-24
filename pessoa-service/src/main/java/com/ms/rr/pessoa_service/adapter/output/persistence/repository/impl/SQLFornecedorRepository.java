@@ -4,10 +4,7 @@ import com.ms.rr.pessoa_service.adapter.output.persistence.entity.vo.Endereco;
 import com.ms.rr.pessoa_service.domain.port.output.FornecedorOutputPort;
 import com.ms.rr.pessoa_service.domain.model.FornecedorDomain;
 import com.ms.rr.pessoa_service.adapter.output.persistence.entity.Fornecedor;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
+import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -39,16 +36,17 @@ public class SQLFornecedorRepository implements FornecedorOutputPort {
 
     @Override
     public FornecedorDomain findFornecedorByCnpj(String cnpj) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Fornecedor> criteriaQuery = criteriaBuilder.createQuery(Fornecedor.class);
-        Root<Fornecedor> root = criteriaQuery.from(Fornecedor.class);
+        String cnpjNormalizado = cnpj.replaceAll("[^0-9]", "");
+        StringBuilder jpql = new StringBuilder("SELECT f FROM Fornecedor f " +
+                "WHERE REPLACE(REPLACE(REPLACE(f.cnpj, '.', ''), '/', ''), '-', '') = :cnpj");
 
-        criteriaQuery.select(root)
-                .where(criteriaBuilder.equal(root.get("cnpj"), cnpj));
+        TypedQuery<Fornecedor> query = entityManager.createQuery(jpql.toString(), Fornecedor.class);
+        query.setParameter("cnpj", cnpjNormalizado);
 
-        return entityManager
-                .createQuery(criteriaQuery)
-                .getSingleResult().toDomain();
+        List<Fornecedor> fornecedores = query
+                .getResultList();
+
+        return fornecedores.getFirst().toDomain();
     }
 
     @Override

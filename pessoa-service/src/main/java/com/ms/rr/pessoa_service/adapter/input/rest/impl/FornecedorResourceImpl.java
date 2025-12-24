@@ -43,6 +43,11 @@ public class FornecedorResourceImpl implements PessoaResource<CreateFornecedor, 
         return ResponseEntity.ok().body("Fornecedor atualizado com sucesso!");
     }
 
+    @GetMapping("/cnpj/{cnpj}")
+    public ResponseEntity<FornecedorResponse> getByCnpj(@PathVariable String cnpj) {
+        return ResponseEntity.ok().body(fornecedorUseCase.buscarPorCnpj(cnpj));
+    }
+
     @Override
     public ResponseEntity<Void> delete(Long id) {
         fornecedorUseCase.excluir(id);

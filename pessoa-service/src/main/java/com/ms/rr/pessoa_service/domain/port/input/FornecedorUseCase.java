@@ -6,4 +6,6 @@ import com.ms.rr.pessoa_service.domain.dto.out.FornecedorResponse;
 import com.ms.rr.pessoa_service.domain.model.FornecedorDomain;
 
 public interface FornecedorUseCase extends BaseUseCase<CreateFornecedor, UpdateFornecedor, FornecedorResponse, Long> {
+
+    FornecedorResponse buscarPorCnpj(String cnpj);
 }
