@@ -14,4 +14,6 @@ public interface ClienteOutputPort extends BaseOutputPort<ClienteDomain, Long> {
         ClienteDomain entity = findById(id).orElseThrow();
         delete(entity);
     }
+
+    void update(Long id, ClienteDomain clienteDomain);
 }

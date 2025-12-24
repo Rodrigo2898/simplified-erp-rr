@@ -1,14 +1,9 @@
 package com.ms.rr.pessoa_service.adapter.output.persistence.repository.impl;
 
-import com.ms.rr.pessoa_service.adapter.output.persistence.entity.vo.Endereco;
 import com.ms.rr.pessoa_service.domain.port.output.FornecedorOutputPort;
 import com.ms.rr.pessoa_service.domain.model.FornecedorDomain;
 import com.ms.rr.pessoa_service.adapter.output.persistence.entity.Fornecedor;
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -109,10 +104,12 @@ public class SQLFornecedorRepository implements FornecedorOutputPort {
 
         if (fornecedorDomain.endereco().cidade() != null) {
             jpql.append("f.endereco.cidade = :cidade , ");
+            params.put("cidade", fornecedorDomain.endereco().cidade());
         }
 
         if (fornecedorDomain.endereco().estado() != null) {
             jpql.append("f.endereco.estado = :estado , ");
+            params.put("estado", fornecedorDomain.endereco().estado());
         }
 
         jpql.setLength(jpql.length() - 2);
