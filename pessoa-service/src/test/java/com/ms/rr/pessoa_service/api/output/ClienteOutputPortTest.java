@@ -1,34 +1,30 @@
-//package com.ms.rr.pessoa_service.api.output;
-//
-//import com.ms.rr.pessoa_service.domain.port.output.ClienteOutputPort;
-//import com.ms.rr.pessoa_service.domain.model.ClienteDomain;
-//import com.ms.rr.pessoa_service.domain.query.ClienteQuery;
-//import com.ms.rr.pessoa_service.factory.CreateClienteDomainFactory;
-//import org.instancio.Instancio;
-//import org.instancio.Select;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//import java.util.List;
-//import java.util.Optional;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//@Transactional
-//public abstract class ClienteOutputPortTest {
-//    public abstract ClienteOutputPort getClienteOutputPort();
-//
-//    @Test
-//    void save() {
-//        ClienteDomain clienteDomain = CreateClienteDomainFactory.buildWithOneItem();
-//        getClienteOutputPort().save(clienteDomain);
-//
-//        Optional<ClienteDomain> result = getClienteOutputPort().findById(clienteDomain.id());
-//
-//        assertTrue(result.isPresent());
-//        assertEquals(clienteDomain, result.get());
-//    }
-//
+package com.ms.rr.pessoa_service.api.output;
+
+import com.ms.rr.pessoa_service.domain.port.output.ClienteOutputPort;
+import com.ms.rr.pessoa_service.domain.model.ClienteDomain;
+import com.ms.rr.pessoa_service.factory.ClienteDomainFactory;
+import com.ms.rr.pessoa_service.infrastructure.adapter.AbstractContainerTest;
+import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public abstract class ClienteOutputPortTest extends AbstractContainerTest {
+    public abstract ClienteOutputPort getClienteOutputPort();
+
+    @Test
+    void save() {
+        ClienteDomain clienteDomain = ClienteDomainFactory.createClienteDomain();
+        getClienteOutputPort().save(clienteDomain);
+
+        Optional<ClienteDomain> result = getClienteOutputPort().findAll()
+                .stream().findFirst();
+
+        assertTrue(result.isPresent());
+        assertEquals("Vegeta", result.get().nome());
+    }
+
 //    @Test
 //    void findAll() {
 //        List<ClienteDomain> clienteDomainList = Instancio.ofList(ClienteDomain.class)
@@ -98,4 +94,4 @@
 //        Optional<ClienteDomain> clienteDeletado = getClienteOutputPort().findById(clienteDomain.id());
 //        assertFalse(clienteDeletado.isPresent());
 //    }
-//}
+}
