@@ -3,10 +3,12 @@ package com.ms.rr.pessoa_service.api.output;
 import com.ms.rr.pessoa_service.adapter.output.persistence.entity.Fornecedor;
 import com.ms.rr.pessoa_service.domain.model.FornecedorDomain;
 import com.ms.rr.pessoa_service.domain.port.output.FornecedorOutputPort;
+import com.ms.rr.pessoa_service.factory.EnderecoDomainFactory;
 import com.ms.rr.pessoa_service.factory.FornecedorDomainFactory;
 import com.ms.rr.pessoa_service.infrastructure.adapter.AbstractContainerTest;
 import org.instancio.Instancio;
 import org.instancio.Select;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -24,28 +26,30 @@ public abstract class FornecedorOutputPortTest extends AbstractContainerTest {
     @Autowired
     TestEntityManager testEntityManager;
 
+    FornecedorDomain fornecedorDomain;
+
+    @BeforeEach
+    void setUp() {
+        fornecedorDomain = FornecedorDomainFactory.createFornecedorDomain();
+    }
+
     @Test
     void save() {
-        FornecedorDomain fornecedorDomain = FornecedorDomainFactory.createFornecedorDomain();
-
         getFornecedorOutputPort().save(fornecedorDomain);
 
-        Optional<FornecedorDomain> fornecedor = getFornecedorOutputPort()
-                .findAll()
-                .stream().findFirst();
+        Fornecedor fornecedorSalvo = testEntityManager.find(Fornecedor.class, fornecedorDomain.id());
 
-        assertTrue(fornecedor.isPresent());
-        assertEquals("Goku", fornecedor.get().nome());
-        assertEquals("goku@gmail.com", fornecedor.get().email());
+        assertNotNull(fornecedorSalvo);
+        assertEquals("Goku", fornecedorSalvo.getNome());
+        assertEquals("goku@gmail.com", fornecedorSalvo.getEmail());
     }
 
     @Test
     void findByCnpj() {
-        FornecedorDomain fornecedorDomain1 = FornecedorDomainFactory.createFornecedorDomain();
+        testEntityManager.persistAndFlush(Fornecedor.fromDomain(fornecedorDomain));
+        testEntityManager.clear();
 
-        testEntityManager.persist(Fornecedor.fromDomain(fornecedorDomain1));
-
-        FornecedorDomain fornecedorRecuperado = getFornecedorOutputPort().findFornecedorByCnpj(fornecedorDomain1.cnpj());
+        FornecedorDomain fornecedorRecuperado = getFornecedorOutputPort().findFornecedorByCnpj(fornecedorDomain.cnpj());
 
         assertEquals("50.095.037/0001-19", fornecedorRecuperado.cnpj());
         assertNotNull(fornecedorRecuperado);
@@ -53,9 +57,8 @@ public abstract class FornecedorOutputPortTest extends AbstractContainerTest {
 
     @Test
     void findById() {
-        FornecedorDomain fornecedorDomain = FornecedorDomainFactory.createFornecedorDomain();
-
-        testEntityManager.persist(Fornecedor.fromDomain(fornecedorDomain));
+        testEntityManager.persistAndFlush(Fornecedor.fromDomain(fornecedorDomain));
+        testEntityManager.clear();
 
         Optional<FornecedorDomain> fornecedorRecuperado = getFornecedorOutputPort().findById(fornecedorDomain.id());
 
@@ -80,11 +83,56 @@ public abstract class FornecedorOutputPortTest extends AbstractContainerTest {
         List<FornecedorDomain> fornecedores = List.of(fornecedorDomain1, fornecedorDomain2);
 
         fornecedores
-                .forEach(fornecedorDomain ->
-                        testEntityManager.persist(Fornecedor.fromDomain(fornecedorDomain)));
+                .forEach(fornecedorDomain -> {
+                            testEntityManager.persistAndFlush(Fornecedor.fromDomain(fornecedorDomain));
+                            testEntityManager.clear();
+                        });
 
         List<FornecedorDomain> fornecedoreRecupreados = getFornecedorOutputPort().findAll();
 
         assertEquals(fornecedores.size(), fornecedoreRecupreados.size());
+    }
+
+    @Test
+    void update() {
+        Fornecedor fornecedor = Fornecedor.fromDomain(fornecedorDomain);
+
+        testEntityManager.persistAndFlush(fornecedor); // -> força a sincronizar o estado atual com as entidades do banco
+        testEntityManager.clear(); // -> limpa o cache de primeiro nível
+
+        FornecedorDomain updateFornecedor = new FornecedorDomain(
+                    fornecedor.getId(),
+                "Novo nome",
+                "novo@gmail.com",
+                "(99)999999998",
+                "50.095.037/0001-19",
+                "razao 2",
+                EnderecoDomainFactory.createEnderecoDomain()
+                );
+
+        getFornecedorOutputPort().update(fornecedor.getId(), updateFornecedor);
+        testEntityManager.flush();
+        testEntityManager.clear();
+
+        Fornecedor fornecedorAtualizado = testEntityManager.find(Fornecedor.class, fornecedor.getId());
+
+        assertNotNull(fornecedorAtualizado);
+
+        assertEquals("Novo nome", fornecedorAtualizado.getNome());
+        assertEquals("novo@gmail.com", fornecedorAtualizado.getEmail());
+    }
+
+    @Test
+    void delete() {
+        Fornecedor fornecedor = Fornecedor.fromDomain(fornecedorDomain);
+
+        testEntityManager.persistAndFlush(fornecedor);
+        testEntityManager.clear();
+
+        getFornecedorOutputPort().delete(fornecedorDomain);
+
+        Fornecedor fornecedorRemovido = testEntityManager.find(Fornecedor.class, fornecedor.getId());
+
+        assertNull(fornecedorRemovido);
     }
 }

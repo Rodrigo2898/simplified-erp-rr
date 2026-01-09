@@ -1,97 +1,96 @@
 package com.ms.rr.pessoa_service.api.output;
 
+import com.ms.rr.pessoa_service.adapter.output.persistence.entity.Cliente;
 import com.ms.rr.pessoa_service.domain.port.output.ClienteOutputPort;
 import com.ms.rr.pessoa_service.domain.model.ClienteDomain;
 import com.ms.rr.pessoa_service.factory.ClienteDomainFactory;
 import com.ms.rr.pessoa_service.infrastructure.adapter.AbstractContainerTest;
+import org.instancio.Instancio;
+import org.instancio.Select;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class ClienteOutputPortTest extends AbstractContainerTest {
     public abstract ClienteOutputPort getClienteOutputPort();
 
-    @Test
-    void save() {
-        ClienteDomain clienteDomain = ClienteDomainFactory.createClienteDomain();
-        getClienteOutputPort().save(clienteDomain);
+    @Autowired
+    TestEntityManager testEntityManager;
 
-        Optional<ClienteDomain> result = getClienteOutputPort().findAll()
-                .stream().findFirst();
+    ClienteDomain clienteDomain;
 
-        assertTrue(result.isPresent());
-        assertEquals("Vegeta", result.get().nome());
+    @BeforeEach
+    void setUp() {
+        clienteDomain = ClienteDomainFactory.createClienteDomain();
     }
 
-//    @Test
-//    void findAll() {
-//        List<ClienteDomain> clienteDomainList = Instancio.ofList(ClienteDomain.class)
-//                .size(20)
-//                .create();
-//
-//        getClienteOutputPort().save(clienteDomainList);
-//
-//        List<ClienteDomain> result = getClienteOutputPort().findAll();
-//
-//        assertEquals(clienteDomainList.size(), result.size());
-//    }
-//
-//    @Test
-//    void findByNome() {
-//        ClienteDomain clienteDomain1 = Instancio.of(ClienteDomain.class)
-//                .set(Select.field("cpf"), "338.061.710-50")
-//                .set(Select.field("email"), "test@example.com")
-//                .create();
-//        ClienteDomain clienteDomain2 = Instancio.of(ClienteDomain.class)
-//                .set(Select.field("nome"), "Rodrigo Feitosa")
-//                .set(Select.field("cpf"), "123.456.789-09")
-//                .set(Select.field("email"), "test2@example.com")
-//                .create();
-//
-//        ClienteQuery query = new ClienteQuery.Builder().nome("ROD").build();
-//
-//        getClienteOutputPort().save(List.of(clienteDomain1, clienteDomain2));
-//
-//        List<ClienteDomain> result = getClienteOutputPort().find(query);
-//
-//        assertEquals(1, result.size());
-//        assertEquals(clienteDomain2, result.get(0));
-//    }
-//
-//    @Test
-//    void findByCpf() {
-//        ClienteDomain clienteDomain1 = Instancio.of(ClienteDomain.class)
-//                .set(Select.field("cpf"), "338.061.710-50")
-//                .set(Select.field("email"), "test@example.com")
-//                .create();
-//        ClienteDomain clienteDomain2 = Instancio.of(ClienteDomain.class)
-//                .set(Select.field("cpf"), "123.456.789-09")
-//                .set(Select.field("email"), "test2@example.com")
-//                .create();
-//
-//        ClienteQuery query = new ClienteQuery.Builder().cpf("123.456.789-09").build();
-//
-//        getClienteOutputPort().save(clienteDomain1);
-//
-//        List<ClienteDomain> result = getClienteOutputPort().find(query);
-//
-//        assertEquals(1, result.size());
-//        assertEquals(clienteDomain2, result.get(0));
-//    }
-//
-//    @Test
-//    void delete() {
-//        ClienteDomain clienteDomain = Instancio.create(ClienteDomain.class);
-//
-//        getClienteOutputPort().save(clienteDomain);
-//
-//        Optional<ClienteDomain> clienteSalvo = getClienteOutputPort().findById(clienteDomain.id());
-//        assertTrue(clienteSalvo.isPresent());
-//
-//        getClienteOutputPort().deleteById(clienteDomain.id());
-//        Optional<ClienteDomain> clienteDeletado = getClienteOutputPort().findById(clienteDomain.id());
-//        assertFalse(clienteDeletado.isPresent());
-//    }
+    @Test
+    void save() {
+
+        getClienteOutputPort().save(clienteDomain);
+
+        Cliente clienteSalvo = testEntityManager.find(Cliente.class, clienteDomain.id());
+
+        assertNotNull(clienteSalvo);
+        assertEquals("Vegeta", clienteSalvo.getNome());
+    }
+
+    @Test
+    void findById() {
+        testEntityManager.persistAndFlush(Cliente.fromDomain(clienteDomain));
+        testEntityManager.clear();
+
+        Optional<ClienteDomain> clienteRecuperado = getClienteOutputPort().findById(clienteDomain.id());
+
+        assertTrue(clienteRecuperado.isPresent());
+        assertEquals("Vegeta", clienteRecuperado.get().nome());
+        assertThat(clienteRecuperado).contains(clienteDomain);
+    }
+
+    @Test
+    void findAll() {
+        ClienteDomain clienteDomain1 = Instancio.of(ClienteDomain.class)
+                .set(Select.field("cpf"), "975.771.250-75")
+                .set(Select.field("email"), "test1@gmail.com")
+                .set(Select.field("telefone"), "(61) 25517852")
+                .create();
+        ClienteDomain clienteDomain2 = Instancio.of(ClienteDomain.class)
+                .set(Select.field("cpf"), "427.215.120-72")
+                .set(Select.field("email"), "test2@gmail.com")
+                .set(Select.field("telefone"), "(61) 37491474")
+                .create();
+
+        List<ClienteDomain> clientes = List.of(clienteDomain1, clienteDomain2);
+
+        clientes
+                .forEach(clienteDomain -> {
+                    testEntityManager.persistAndFlush(Cliente.fromDomain(clienteDomain));
+                    testEntityManager.clear();
+                });
+
+        List<ClienteDomain> clientesRecupreados = getClienteOutputPort().findAll();
+
+        assertEquals(clientes.size(), clientesRecupreados.size());
+    }
+
+    @Test
+    void delete() {
+        Cliente cliente = Cliente.fromDomain(clienteDomain);
+
+        testEntityManager.persistAndFlush(cliente);
+        testEntityManager.clear();
+
+        getClienteOutputPort().delete(clienteDomain);
+
+        Cliente clienteRemovido = testEntityManager.find(Cliente.class, cliente.getId());
+
+        assertNull(clienteRemovido);
+    }
 }
