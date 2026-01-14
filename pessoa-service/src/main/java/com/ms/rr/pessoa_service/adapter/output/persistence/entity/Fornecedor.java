@@ -10,6 +10,8 @@ import jakarta.persistence.Entity;
 @Entity
 @DiscriminatorValue("FORNECEDOR")
 public class Fornecedor extends Pessoa {
+
+    @Column(unique = true, nullable = false)
     private String cnpj;
     @Column(name = "razao_social")
     private String razaoSocial;

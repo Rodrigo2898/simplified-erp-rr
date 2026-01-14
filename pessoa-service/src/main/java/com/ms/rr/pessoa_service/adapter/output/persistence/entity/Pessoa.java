@@ -14,7 +14,9 @@ public abstract class Pessoa {
     protected Long id;
 
     protected String nome;
+    @Column(unique = true, nullable = false)
     protected String email;
+    @Column(unique = true, nullable = false)
     protected String telefone;
 
     @Embedded

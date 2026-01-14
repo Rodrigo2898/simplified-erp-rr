@@ -12,6 +12,8 @@ import java.time.LocalDate;
 @Entity
 @DiscriminatorValue("CLIENTE")
 public class Cliente extends Pessoa {
+
+    @Column(unique = true, nullable = false)
     private String cpf;
     @Column(name = "data_cadastro")
     private LocalDate dataCadastro;
