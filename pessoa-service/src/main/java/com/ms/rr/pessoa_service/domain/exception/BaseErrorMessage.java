@@ -13,10 +13,12 @@ public class BaseErrorMessage {
     public static final BaseErrorMessage NOTBLANK_PESSOA_EMAIL = new BaseErrorMessage("NotBlank.userRequest.pessoa.email");
     public static final BaseErrorMessage NOTBLANK_PESSOA_NOME = new BaseErrorMessage("NotBlank.userRequest.pessoa.nome");
     public static final BaseErrorMessage VERIFY_PESSOA_EMAIL = new BaseErrorMessage("Verify.userRequest.pessoa.email");
-    public static final BaseErrorMessage EXISTS_PESSOA_EMAI = new BaseErrorMessage("Exists.userRequest.email");
-    public static final BaseErrorMessage EXISTS_PESSOA_NOME = new BaseErrorMessage("Exists.userRequest.telefone");
+    public static final BaseErrorMessage EXISTS_PESSOA_EMAIL = new BaseErrorMessage("Exists.userRequest.email");
+    public static final BaseErrorMessage EXISTS_PESSOA_TELEFONE= new BaseErrorMessage("Exists.userRequest.telefone");
     public static final BaseErrorMessage EXISTS_PESSOA_FORNECEDOR_CNPJ = new BaseErrorMessage("Exists.userRequest.fornecedor.cnpf");
     public static final BaseErrorMessage EXISTS_PESSOA_CLIENTE_CPF = new BaseErrorMessage("Exists.userRequest.cliente.cpf");
+    public static final BaseErrorMessage FORNECEDOR_NOT_FOUND = new BaseErrorMessage("NotFound.pessoa.fornecedor");
+    public static final BaseErrorMessage CLIENTE_NOT_FOUND = new BaseErrorMessage("NotFound.pessoa.cliente");
 
     private final String key;
     private String[] params;

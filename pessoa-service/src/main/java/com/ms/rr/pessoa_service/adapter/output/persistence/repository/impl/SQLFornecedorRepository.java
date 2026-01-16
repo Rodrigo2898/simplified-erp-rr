@@ -122,4 +122,30 @@ public class SQLFornecedorRepository implements FornecedorOutputPort {
 
         query.executeUpdate();
     }
+
+    @Override
+    public boolean emailExists(String email) {
+        List<Integer> result = entityManager.createQuery(
+                "SELECT 1 " +
+                "FROM Fornecedor fornecedor " +
+                "WHERE fornecedor.email = :email", Integer.class
+        ).setParameter("email", email)
+                .setMaxResults(1)
+                .getResultList();
+
+        return !result.isEmpty();
+    }
+
+    @Override
+    public boolean cnpjExists(String cnpj) {
+        List<Integer> result = entityManager.createQuery(
+                        "SELECT 1 " +
+                        "FROM Fornecedor fornecedor " +
+                        "WHERE fornecedor.cnpj = :cnpj", Integer.class
+                ).setParameter("cnpj", cnpj)
+                .setMaxResults(1)
+                .getResultList();
+
+        return !result.isEmpty();
+    }
 }

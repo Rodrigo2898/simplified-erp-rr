@@ -16,4 +16,8 @@ public interface FornecedorOutputPort extends BaseOutputPort<FornecedorDomain, L
     }
 
     void update(Long id, FornecedorDomain domain);
+
+    boolean emailExists(String email);
+
+    boolean cnpjExists(String cnpj);
 }
