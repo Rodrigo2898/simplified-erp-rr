@@ -4,7 +4,9 @@ import com.ms.rr.pessoa_service.domain.dto.in.CreateFornecedor;
 import com.ms.rr.pessoa_service.domain.dto.in.UpdateFornecedor;
 import com.ms.rr.pessoa_service.domain.dto.out.FornecedorResponse;
 import com.ms.rr.pessoa_service.domain.exception.BaseErrorMessage;
-import com.ms.rr.pessoa_service.domain.exception.FornecedorException;
+import com.ms.rr.pessoa_service.domain.exception.CNPJExistsException;
+import com.ms.rr.pessoa_service.domain.exception.EmailExistsException;
+import com.ms.rr.pessoa_service.domain.exception.FornecedorNotFoundException;
 import com.ms.rr.pessoa_service.domain.port.input.FornecedorUseCase;
 import com.ms.rr.pessoa_service.domain.port.output.FornecedorOutputPort;
 import com.ms.rr.pessoa_service.domain.port.output.PessoaCriadaOutpuPort;
@@ -31,11 +33,11 @@ public class FornecedorServiceImpl implements FornecedorUseCase {
     @Override
     public void salvar(CreateFornecedor createFornecedor) {
         if (fornecedorOutputPort.emailExists(createFornecedor.email())) {
-            throw new FornecedorException(BaseErrorMessage.EXISTS_PESSOA_EMAIL.getMessage());
+            throw new EmailExistsException(BaseErrorMessage.EXISTS_PESSOA_EMAIL.getMessage());
         }
 
         if (fornecedorOutputPort.cnpjExists(createFornecedor.cnpj())) {
-            throw new FornecedorException(BaseErrorMessage.EXISTS_PESSOA_FORNECEDOR_CNPJ.getMessage());
+            throw new CNPJExistsException(BaseErrorMessage.EXISTS_PESSOA_FORNECEDOR_CNPJ.getMessage());
         }
 
         fornecedorOutputPort.save(createFornecedor.toDomain());
@@ -46,7 +48,7 @@ public class FornecedorServiceImpl implements FornecedorUseCase {
     public FornecedorResponse buscarPorId(Long id) {
         return fornecedorOutputPort.findById(id)
                 .map(FornecedorResponse::fromDomain)
-                .orElseThrow(() -> new FornecedorException(BaseErrorMessage.FORNECEDOR_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new FornecedorNotFoundException(BaseErrorMessage.FORNECEDOR_NOT_FOUND.getMessage()));
     }
 
     @Override
@@ -60,7 +62,7 @@ public class FornecedorServiceImpl implements FornecedorUseCase {
     @Override
     public void atualizar(Long id, UpdateFornecedor updateFornecedor) {
         if (fornecedorOutputPort.findById(id).isEmpty()) {
-            throw new FornecedorException(BaseErrorMessage.FORNECEDOR_NOT_FOUND.getMessage());
+            throw new FornecedorNotFoundException(BaseErrorMessage.FORNECEDOR_NOT_FOUND.getMessage());
         }
         fornecedorOutputPort.update(id, updateFornecedor.toDomain(id));
     }
@@ -69,7 +71,7 @@ public class FornecedorServiceImpl implements FornecedorUseCase {
     @Override
     public void excluir(Long id) {
         if (fornecedorOutputPort.findById(id).isEmpty()) {
-            throw new FornecedorException(BaseErrorMessage.FORNECEDOR_NOT_FOUND.getMessage());
+            throw new FornecedorNotFoundException(BaseErrorMessage.FORNECEDOR_NOT_FOUND.getMessage());
         }
         fornecedorOutputPort.deleteById(id);
     }
@@ -88,7 +90,7 @@ public class FornecedorServiceImpl implements FornecedorUseCase {
     public FornecedorResponse buscarPorCnpj(String cnpj) {
         FornecedorDomain fornecedor = fornecedorOutputPort.findFornecedorByCnpj(cnpj);
         if (fornecedor == null) {
-            throw new FornecedorException(BaseErrorMessage.FORNECEDOR_NOT_FOUND.getMessage());
+            throw new FornecedorNotFoundException(BaseErrorMessage.FORNECEDOR_NOT_FOUND.getMessage());
         }
         return FornecedorResponse
                 .fromDomain(fornecedor);

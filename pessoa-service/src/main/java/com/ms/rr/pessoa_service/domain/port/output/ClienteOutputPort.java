@@ -16,4 +16,8 @@ public interface ClienteOutputPort extends BaseOutputPort<ClienteDomain, Long> {
     }
 
     void update(Long id, ClienteDomain clienteDomain);
+
+    boolean emailExists(String email);
+
+    boolean cpfExists(String cpf);
 }

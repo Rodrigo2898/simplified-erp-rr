@@ -3,6 +3,10 @@ package com.ms.rr.pessoa_service.domain.service;
 import com.ms.rr.pessoa_service.domain.dto.in.CreateCliente;
 import com.ms.rr.pessoa_service.domain.dto.in.UpdateCliente;
 import com.ms.rr.pessoa_service.domain.dto.out.ClienteResponse;
+import com.ms.rr.pessoa_service.domain.exception.BaseErrorMessage;
+import com.ms.rr.pessoa_service.domain.exception.CPFExistsException;
+import com.ms.rr.pessoa_service.domain.exception.ClienteNotFoundException;
+import com.ms.rr.pessoa_service.domain.exception.EmailExistsException;
 import com.ms.rr.pessoa_service.domain.port.input.ClienteUseCase;
 import com.ms.rr.pessoa_service.domain.port.output.ClienteOutputPort;
 import com.ms.rr.pessoa_service.domain.port.output.PessoaCriadaOutpuPort;
@@ -28,6 +32,14 @@ public class ClienteServiceImpl implements ClienteUseCase {
     @Transactional
     @Override
     public void salvar(CreateCliente createCliente) {
+        if (clienteOutputPort.emailExists(createCliente.email())) {
+            throw new EmailExistsException(BaseErrorMessage.EXISTS_PESSOA_EMAIL.getMessage());
+        }
+
+        if (clienteOutputPort.cpfExists(createCliente.cpf())) {
+            throw new CPFExistsException(BaseErrorMessage.EXISTS_PESSOA_CLIENTE_CPF.getMessage());
+        }
+
         clienteOutputPort.save(createCliente.toDomain());
         pessoaCriadaOutpuPort.sendMessage(eventFromClienteDomain(createCliente.toDomain()));
     }
@@ -36,7 +48,7 @@ public class ClienteServiceImpl implements ClienteUseCase {
     public ClienteResponse buscarPorId(Long id) {
         return clienteOutputPort.findById(id)
                 .map(ClienteResponse::fromDomain)
-                .orElseThrow();
+                .orElseThrow(() -> new ClienteNotFoundException(BaseErrorMessage.CLIENTE_NOT_FOUND.getMessage()));
     }
 
     @Override
@@ -50,12 +62,20 @@ public class ClienteServiceImpl implements ClienteUseCase {
     @Transactional
     @Override
     public void atualizar(Long id, UpdateCliente updateCliente) {
+        if (clienteOutputPort.findById(id).isEmpty()) {
+            throw new ClienteNotFoundException(BaseErrorMessage.CLIENTE_NOT_FOUND.getMessage());
+        }
+
         clienteOutputPort.update(id, updateCliente.toDomain(id));
     }
 
     @Transactional
     @Override
     public void excluir(Long id) {
+        if (clienteOutputPort.findById(id).isEmpty()) {
+            throw new ClienteNotFoundException(BaseErrorMessage.CLIENTE_NOT_FOUND.getMessage());
+        }
+
         clienteOutputPort.deleteById(id);
     }
 

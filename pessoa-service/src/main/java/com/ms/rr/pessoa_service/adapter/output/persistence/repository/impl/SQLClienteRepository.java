@@ -125,4 +125,30 @@ public class SQLClienteRepository implements ClienteOutputPort {
             entityManager.remove(entity);
         }
     }
+
+    @Override
+    public boolean emailExists(String email) {
+        List<Integer> result = entityManager.createQuery(
+                "SELECT 1 " +
+                        "FROM Cliente cliente " +
+                        "WHERE cliente.email = :email", Integer.class
+        ).setParameter("email", email)
+                .setMaxResults(1)
+                .getResultList();
+
+        return !result.isEmpty();
+    }
+
+    @Override
+    public boolean cpfExists(String cpf) {
+        List<Integer> result = entityManager.createQuery(
+                "SELECT 1 " +
+                        "FROM Cliente cliente " +
+                        "WHERE cliente.cpf = :cpf", Integer.class
+        ).setParameter("cpf", cpf)
+                .setMaxResults(1)
+                .getResultList();
+
+        return !result.isEmpty();
+    }
 }
