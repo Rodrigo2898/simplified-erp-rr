@@ -1,1 +1,16 @@
-spring.application.name=configserver
+server:
+  port: 8071
+
+spring:
+  application:
+    name: configserver
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: "https://github.com/Rodrigo2898/ms-simplified-erp-config.git"
+          default-label: main
+          timeout: 5
+          clone-on-start: true
+          force-pull: true
