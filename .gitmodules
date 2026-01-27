@@ -1,0 +1,3 @@
+[submodule "config-repo"]
+	path = config-repo
+	url = https://github.com/Rodrigo2898/ms-simplified-erp-config.git
