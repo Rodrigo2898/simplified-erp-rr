@@ -72,9 +72,9 @@ services:
     environment:
       SPRING_APPLICATION_NAME: "pessoa-service"
       SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
-      SPRING_PROFILES_ACTIVE: "default"
+      SPRING_PROFILES_ACTIVE: "prod"
 
 
 networks:
   roddev:
-    driver: "bridge"
+      driver: "bridge"
