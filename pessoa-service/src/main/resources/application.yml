@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: pessoa-service
+
+  profiles:
+    active: "prod"
+
+  config:
+    import: "optional:configserver:http://localhost:8071/"
+
+  # Configurações do DataSource (PostgreSQL)
+  datasource:
+    url: jdbc:postgresql://localhost:5432/pessoa_service
+    username: rod
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  # Configurações JPA/Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: none
+    # Configurações adicionais opcionais:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # Configurações do Kafka
+  kafka:
+    bootstrap-servers: localhost:9092  # Removi o 'http://'
+    # template:
+    #   default-topic: pessoa_cadastrada
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+      # Configurações adicionais para JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+
+server:
+  port: 8084
+
+# Tópicos do Kafka
+topicos:
+  pessoa-cadastrada:
+    producer:
+      topic: pessoa_cadastrada

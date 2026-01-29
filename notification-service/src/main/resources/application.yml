@@ -1,0 +1,71 @@
+spring:
+  application:
+    name: notification-service
+
+  profiles:
+    active: "prod"
+
+  config:
+    import: "optional:configserver:http://localhost:8071/"
+
+  # Configurações do servidor
+  main:
+    allow-bean-definition-overriding: true  # Útil para testes
+
+  # Configurações de Email
+  mail:
+    host: ${EMAIL_HOST}
+    port: ${EMAIL_PORT}
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          # Configurações adicionais
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+  # Configurações do Kafka
+  kafka:
+    bootstrap-servers: localhost:9092
+    # template:
+    #   default-topic: produto_cadastrado
+
+    consumer:
+      group-id: grupo-notificacao
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+      # Configurações para JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"  # Cuidado: ajuste para pacotes específicos em produção
+        # spring.json.value.default.type: com.ms.rr.notification_service.domain.model.PessoaCriadaEvent
+
+server:
+  port: 0  # Porta aleatória (útil para múltiplas instâncias em teste)
+
+# Configurações do Twilio
+twilio:
+  accountSid: ${TWILIO_ACCOUNTID}
+  authToken: ${TWILIO_TOKEN}
+  phoneNumber: ${TWILIO_PHONE}
+
+# Tópicos do Kafka
+topicos:
+  pessoa-cadastrada:
+    cosumer:
+      topic: pessoa_cadastrada
+
+# Mapeamento de classes para deserialização
+kafka:
+  class:
+    value:
+      pessoa-criada-event: com.ms.rr.notification_service.domain.model.PessoaCriadaEvent

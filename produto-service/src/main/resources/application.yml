@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: produto-service
+
+  profiles:
+    active: "prod"
+
+  config:
+    import: "optional:configserver:http://localhost:8071/"
+
+  # Configurações do MongoDB
+  data:
+    mongodb:
+      uri: mongodb://produto:produto@localhost:27017/produtodb?authSource=admin
+
+  # Configurações do Kafka
+  kafka:
+    bootstrap-servers: localhost:9092
+    # template:
+    #   default-topic: produto_cadastrado
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+      # Configurações adicionais para JsonSerializer (recomendadas)
+      properties:
+        spring.json.add.type.headers: false  # Desativa headers de tipo para compatibilidade
+
+server:
+  port: 8082
+
+# Integração com outros serviços
+integracao:
+  pessoas-service:
+    url: http://localhost:8084
+
+# Tópicos do Kafka
+topicos:
+  produto-cadastrado:
+    producer:
+      topic: produto_cadastrado
