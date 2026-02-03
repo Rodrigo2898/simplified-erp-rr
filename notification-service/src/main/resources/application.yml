@@ -50,7 +50,7 @@ spring:
         # spring.json.value.default.type: com.ms.rr.notification_service.domain.model.PessoaCriadaEvent
 
 server:
-  port: 0  # Porta aleatória (útil para múltiplas instâncias em teste)
+  port: 8085
 
 # Configurações do Twilio
 twilio:

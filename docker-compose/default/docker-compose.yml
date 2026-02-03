@@ -74,6 +74,68 @@ services:
       SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
       SPRING_PROFILES_ACTIVE: "default"
 
+  produto-service:
+    container_name: produto-service-rd
+    build:
+      context: ../../produto-service
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8080"
+    depends_on:
+      configserver:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 700ms
+    networks:
+      - roddev
+    environment:
+      SPRING_APPLICATION_NAME: "produto-service"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
+      SPRING_PROFILES_ACTIVE: "default"
+
+  estoque-service:
+    container_name: estoque-service-rd
+    build:
+      context: ../../estoque-service
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8080"
+    depends_on:
+      configserver:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 700ms
+    networks:
+      - roddev
+    environment:
+      SPRING_APPLICATION_NAME: "estoque-service"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
+      SPRING_PROFILES_ACTIVE: "default"
+
+  notification-service:
+    container_name: notification-service-rd
+    build:
+      context: ../../notification-service
+      dockerfile: Dockerfile
+    ports:
+      - "8085:8080"
+    depends_on:
+      configserver:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 700ms
+    networks:
+      - roddev
+    environment:
+      SPRING_APPLICATION_NAME: "notification-service"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
+      SPRING_PROFILES_ACTIVE: "default"
 
 networks:
   roddev:
