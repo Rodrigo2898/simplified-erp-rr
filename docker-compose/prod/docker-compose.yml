@@ -27,8 +27,9 @@ services:
       timeout: 10s
       retries: 5
       start_period: 20s
-    networks:
-      - roddev
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
 
   configserver:
     container_name: configserver-rd
@@ -46,12 +47,9 @@ services:
       timeout: 5s
       retries: 10
       start_period: 10s
-    deploy:
-      resources:
-        limits:
-          memory: 700m
-    networks:
-      - roddev
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
 
   pessoa-service:
     container_name: pessoa-service-rd
@@ -63,16 +61,11 @@ services:
     depends_on:
       configserver:
         condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          memory: 700m
-    networks:
-      - roddev
     environment:
       SPRING_APPLICATION_NAME: "pessoa-service"
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
-      SPRING_PROFILES_ACTIVE: "prod"
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
 
   produto-service:
     container_name: produto-service-rd
@@ -84,16 +77,11 @@ services:
     depends_on:
       configserver:
         condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          memory: 700ms
-    networks:
-      - roddev
     environment:
       SPRING_APPLICATION_NAME: "produto-service"
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
-      SPRING_PROFILES_ACTIVE: "prod"
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
 
   estoque-service:
     container_name: estoque-service-rd
@@ -105,16 +93,11 @@ services:
     depends_on:
       configserver:
         condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          memory: 700ms
-    networks:
-      - roddev
     environment:
       SPRING_APPLICATION_NAME: "estoque-service"
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
-      SPRING_PROFILES_ACTIVE: "prod"
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
 
   notification-service:
     container_name: notification-service-rd
@@ -126,16 +109,11 @@ services:
     depends_on:
       configserver:
         condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          memory: 700ms
-    networks:
-      - roddev
     environment:
       SPRING_APPLICATION_NAME: "notification-service"
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
-      SPRING_PROFILES_ACTIVE: "prod"
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
 
 networks:
   roddev:
