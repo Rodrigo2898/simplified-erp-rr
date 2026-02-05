@@ -1,8 +1,8 @@
 services:
   broker:
     image: apache/kafka:latest
-    hostname: kafka-broker
-    container_name: kafka-broker
+    hostname: broker
+    container_name: broker
     ports:
       - 9092:9092
     environment:
@@ -30,6 +30,50 @@ services:
     extends:
       file: common-config.yml
       service: network-deploy-service
+
+  pessoadb:
+    container_name: pessoadb
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: rod
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: pessoa_service
+    extends:
+      file: common-config.yml
+      service: microservice-postgres-config
+    volumes:
+      # Monta o arquivo init.sql para inicialização do banco
+      - ./db-configs/postgres/init_pessoa.sql:/docker-entrypoint-initdb.d/init_pessoa.sql
+      - postgres_pessoa_data:/var/lib/postgresql/data
+
+  produtodb:
+    container_name: produtodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: produto
+      MONGO_INITDB_ROOT_PASSWORD: produto
+      MONGO_INITDB_DATABASE: produtodb
+    extends:
+      file: common-config.yml
+      service: microservice-mongo-config
+    volumes:
+      - mongo_produto_data:/data/db
+
+  estoquedb:
+    container_name: estoquedb
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: estoque
+      MONGO_INITDB_ROOT_PASSWORD: estoque
+      MONGO_INITDB_DATABASE: estoquedb
+    extends:
+      file: common-config.yml
+      service: microservice-mongo-config
+    volumes:
+      - mongo_estoque_data:/data/db
 
   configserver:
     container_name: configserver-rd
@@ -61,8 +105,11 @@ services:
     depends_on:
       configserver:
         condition: service_healthy
+      pessoadb:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "pessoa-service"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://pessoadb:5432/pessoa_service"
     extends:
       file: common-config.yml
       service: microservice-base-config
@@ -77,8 +124,12 @@ services:
     depends_on:
       configserver:
         condition: service_healthy
+      produtodb:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "produto-service"
+      SPRING_DATA_MONGO_URI: "mongodb://produto:produto@produtodb:27017/produtodb?authSource=admin"
+      SPRING_INTEGRACAO_URL: "http://pessoa-service:8084"
     extends:
       file: common-config.yml
       service: microservice-base-config
@@ -93,8 +144,11 @@ services:
     depends_on:
       configserver:
         condition: service_healthy
+      estoquedb:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "estoque-service"
+      SPRING_DATA_MONGO_URI: "mongodb://estoque:estoque@estoquedb:27017/estoquedb?authSource=admin"
     extends:
       file: common-config.yml
       service: microservice-base-config
@@ -118,3 +172,8 @@ services:
 networks:
   roddev:
     driver: "bridge"
+
+volumes:
+  postgres_pessoa_data:
+  mongo_produto_data:
+  mongo_estoque_data:

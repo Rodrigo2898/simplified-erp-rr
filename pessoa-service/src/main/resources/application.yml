@@ -1,6 +1,6 @@
 spring:
   application:
-    name: pessoa-service
+    name: ${SPRING_APPLICATION_NAME:pessoa-service}
 
   profiles:
     active: "prod"
@@ -10,9 +10,9 @@ spring:
 
   # Configurações do DataSource (PostgreSQL)
   datasource:
-    url: jdbc:postgresql://localhost:5432/pessoa_service
-    username: rod
-    password: password
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/pessoa_service}
+    username: ${POSTGRES_USER:rod}
+    password: ${POSTGRES_PASSWORD:password}
     driver-class-name: org.postgresql.Driver
 
   # Configurações JPA/Hibernate

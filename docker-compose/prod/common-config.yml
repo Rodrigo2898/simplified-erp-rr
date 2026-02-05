@@ -3,6 +3,30 @@ services:
     networks:
       - roddev
 
+  microservice-mongo-config:
+    extends:
+      service: network-deploy-service
+    image: mongo:latest
+    restart: always
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  microservice-postgres-config:
+    extends:
+      service: network-deploy-service
+    image: postgres:16.6
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
   microservice-base-config:
     extends:
       service: network-deploy-service

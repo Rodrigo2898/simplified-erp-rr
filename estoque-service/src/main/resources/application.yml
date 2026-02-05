@@ -1,6 +1,6 @@
 spring:
   application:
-    name: estoque-service
+    name: ${SPRING_APPLICATION_NAME:estoque-service}
 
   profiles:
     active: "prod"
@@ -11,7 +11,7 @@ spring:
   # Configurações do MongoDB
   data:
     mongodb:
-      uri: mongodb://estoque:estoque@localhost:27018/estoquedb?authSource=admin
+      uri: ${SPRING_DATA_MONGO_URI:mongodb://estoque:estoque@localhost:27018/estoquedb?authSource=admin}
       # Para ambiente Docker:
       # uri: mongodb://estoque:estoque@mongo_estoque:27017/estoquedb?authSource=admin
 
