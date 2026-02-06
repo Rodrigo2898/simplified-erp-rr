@@ -7,7 +7,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # imagem que vai rodar em prod - menor
-FROM eclipse-temurin:21-jdk-alpine
+FROM eclipse-temurin:21-jre-alpine
 LABEL "org.opencontainers.image.authors"="rodfeitosa28"
 # diretorio de trabalho onde o .jar vai ficar e ser executado
 WORKDIR /app
