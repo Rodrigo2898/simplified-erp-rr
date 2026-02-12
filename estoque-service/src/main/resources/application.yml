@@ -8,14 +8,10 @@ spring:
   config:
     import: "optional:configserver:http://localhost:8071/"
 
-  # Configurações do MongoDB
   data:
     mongodb:
       uri: ${SPRING_DATA_MONGO_URI:mongodb://estoque:estoque@localhost:27018/estoquedb?authSource=admin}
-      # Para ambiente Docker:
-      # uri: mongodb://estoque:estoque@mongo_estoque:27017/estoquedb?authSource=admin
 
-  # Configurações do Kafka
   kafka:
     bootstrap-servers: localhost:9092
     # template:
@@ -27,18 +23,16 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
-      # Configurações adicionais para o JsonDeserializer (se necessário)
       properties:
         spring:
           json:
             trusted:
-              packages: "*"  # Permite deserialização de qualquer pacote (ajuste conforme segurança)
+              packages: "*"
         # spring.json.value.default.type: com.seupacote.ProdutoEvento
 
 server:
   port: 8083
 
-# Tópicos customizados
 topicos:
   produto-cadastrado:
     cosumer:

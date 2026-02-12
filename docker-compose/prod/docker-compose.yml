@@ -22,7 +22,7 @@ services:
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
     healthcheck:
-      test: [ "CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list || exit 1" ]
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server broker:29092 || exit 1"]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -165,6 +165,13 @@ services:
         condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "notification-service"
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      TWILIO_ACCOUNTID: ${TWILIO_ACCOUNTID}
+      TWILIO_TOKEN: ${TWILIO_TOKEN}
+      TWILIO_PHONE: ${TWILIO_PHONE}
     extends:
       file: common-config.yml
       service: microservice-base-config
